@@ -1,8 +1,5 @@
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
 import ErrorPara from '../ErrorPara';
-
-// Text/Email Input Component
 
 interface ITextInput1Props {
     type?: 'text' | 'email';
@@ -23,21 +20,16 @@ export default function TextInput1({
     onChange,
     ...props 
 }: ITextInput1Props) {
-
-    const [isFocused, setIsFocused] = useState(false);
-
     return (
         <div className="w-full">
             <div 
                 className={`
                     relative flex items-center gap-3 px-4 py-3.5 
-                    rounded-[6px] border border-neutral-5 h-14 text-sm text-neutral-10 placeholder:text-neutral-7 transition-all duration-200
+                    rounded-[6px] border h-14 text-sm transition-all duration-200
                     bg-white
                     ${error 
-                        ? 'border-red-400 focus-within:border-red-500' 
-                        : isFocused 
-                            ? 'border-primary-6 shadow-sm' 
-                            : 'border-neutral-5 hover:border-primary-5'
+                        ? 'border-red-400 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500' 
+                        : 'border-brand-neutral-5 hover:border-brand-primary-4 focus-within:border-brand-primary-6 focus-within:shadow-sm'
                     }
                 `}
             >
@@ -46,24 +38,19 @@ export default function TextInput1({
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    className="flex-1 outline-none text-sm text-neutral-9 placeholder:text-neutral-7 bg-transparent"
+                    className="flex-1 outline-none text-sm text-brand-neutral-9 placeholder:text-brand-neutral-7 bg-transparent peer"
                     {...props}
                 />
-                {
-                    icon &&
+                {icon && (
                     <Icon
                         icon={icon} 
                         className={`size-6 shrink-0 transition-colors ${
                             error 
                                 ? 'text-red-400' 
-                                : isFocused 
-                                    ? 'text-primary-6' 
-                                    : 'text-neutral-8'
+                                : 'text-brand-neutral-8 peer-focus:text-brand-primary-6'
                         }`} 
                     />
-                }
+                )}
             </div>
             {error && (
                 <ErrorPara error={error} />
