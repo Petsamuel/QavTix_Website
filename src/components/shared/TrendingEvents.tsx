@@ -88,7 +88,7 @@ export function TrendingEvents({ className }:{ className?: string }) {
                     }
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-[repeat(auto-fit,minmax(18em,1fr))] gap-6 lg:gap-8 mt-10 justify-items-center md:justify-items-start">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(14em,1fr))] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-[repeat(auto-fit,minmax(16em,1fr))] gap-6 lg:gap-8 mt-10 justify-items-center md:justify-items-start">
                     {pagination.currentItems.map((event) => (
                         <EventsCard1 
                             key={event.href}

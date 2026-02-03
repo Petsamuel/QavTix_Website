@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export type AttendeeFormData = {
-    readonly id: number
+    readonly attendeeID: number
     name: string
     email: string
     phone: string
@@ -10,6 +10,21 @@ export type AttendeeFormData = {
 
 export type SplitMode = 'equal' | 'manual'
 
+export const dobSchema = z
+  .string({ error: "Date of birth is required" })
+  .min(1, "Date of birth is required")
+  .refine((value) => {
+    // Check format YYYY-MM-DD
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+
+    const date = new Date(value);
+    const isValid = !isNaN(date.getTime())
+    const isPast = date < new Date() // Ensure they aren't born in the future (time travellers lol ) 
+    
+    return isValid && isPast;
+  }, {
+    message: "Please enter a valid past date"
+  })
 
 
 export const ticketSelectionSchema = z.object({
@@ -28,7 +43,19 @@ export const attendeeInformationSchema = z.object({
     email: z.email('Invalid email address'),
     phone: z.string().min(10, 'Invalid phone number'),
     
+    // Based On Event Requirements
+    dateOfBirth: dobSchema,
+
+    
     // Optional preferences
+    attendees: z.array(z.object({
+        name: z.string().min(2, "Attendee name is required"),
+        attendeeID: z.number(),
+        email: z.email("Invalid email"),
+        dateOfBirth: dobSchema,
+        phone: z.string().min(10, "Invalid phone number"),
+        amount: z.number().optional()
+    })).optional(),
     sendUpdates: z.boolean().optional(),
     keepInLoop: z.boolean().optional(),
     shareWithGroup: z.boolean().optional(),

@@ -11,69 +11,84 @@ import { useSplitPayment } from '@/contexts/SplitPaymentContextProvider'
 import { mockUserGroups } from '@/components-data/demo-data'
 import { space_grotesk } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { useCheckout } from '@/contexts/CheckoutFlowProvider'
+import { useCheckoutAttendeeInfoForm } from '@/contexts/CheckoutAttendeeInfoFormContext'
 
 interface AttendeeCardProps {
     attendee: AttendeeFormData
     index: number
     canRemove: boolean
     allAttendees: AttendeeFormData[]
+    onRemove: (index: number) => void
 }
 
-export default function SplitPaymentAddAttendee({ attendee, index, canRemove, allAttendees }: AttendeeCardProps) {
-
-    const { splitMode, updateAttendee, splitPaymentEnabled, removeAttendee, copyFromSource } = useSplitPayment()
+export default function SplitPaymentAddAttendee({ attendee, index, canRemove, onRemove }: AttendeeCardProps) {
+    const { eventIsAgeRestricted } = useCheckout()
+    const { splitMode, updateAttendee, splitPaymentEnabled, copyFromSource } = useSplitPayment()
     const { user } = useTicketUser()
     const [selectedGroup, setSelectedGroup] = useState<string>('')
-    const [selectedMember, setSelectedMember] = useState<string>('')
+    
+    const { form } = useCheckoutAttendeeInfoForm()
+    const { register, setValue, watch, formState: { errors } } = form
+
+    const attendeeErrors = (errors.attendees as any)?.[index]
+
+    // Watch the amount specifically to keep the input controlled
+    // Providing a default value of 0 ensures it never becomes 'undefined', against yeye react errors.
+    const amountValue = watch(`attendees.${index}.amount`) ?? 0
 
     const handleCopyFrom = (source: string) => {
-        if (source === 'myself') {
-            copyFromSource(attendee.id, 'myself')
-        } else if (source.startsWith('attendee-')) {
-            copyFromSource(attendee.id, source)
+        if (source === 'myself' && user) {
+            const data = { name: user.full_name, email: user.email, phone: user.phone || '' }
+            setValue(`attendees.${index}.name`, data.name)
+            setValue(`attendees.${index}.email`, data.email)
+            setValue(`attendees.${index}.phone`, data.phone)
+            copyFromSource(attendee.attendeeID, 'myself')
         } else if (source.startsWith('group-')) {
             setSelectedGroup(source)
-            setSelectedMember('')
         }
     }
 
     const handleMemberSelect = (memberId: string) => {
         const group = mockUserGroups.find(g => g.id === selectedGroup)
-        if (group) {
-            const memberIndex = parseInt(memberId)
-            const member = group.members[memberIndex]
-            if (member) {
-                updateAttendee(attendee.id, {
-                    name: member.name,
-                    email: member.email,
-                    phone: member.phone
-                })
-                setSelectedMember(memberId)
-            }
+        const member = group?.members[parseInt(memberId)]
+        if (member) {
+            setValue(`attendees.${index}.name`, member.name)
+            setValue(`attendees.${index}.email`, member.email)
+            setValue(`attendees.${index}.phone`, member.phone)
+            updateAttendee(attendee.attendeeID, { name: member.name, email: member.email, phone: member.phone })
         }
     }
 
     return (
-        <div className="space-y-4">
+        <div className="p-4 space-y-4 border rounded-lg border-neutral-3 bg-neutral-1/50">
             <div className="flex items-center justify-between">
-                <div className="flex w-full justify-between items-center gap-3">
+                <div className="flex items-center justify-between w-full gap-3">
                     <h3 className={`${space_grotesk.className} font-medium md:text-lg text-secondary-9`}>
                         Attendee {index + 1}
                     </h3>
                     
-                    {/* Amount Input - Small select-like input */}
-                    <div className={cn("items-center gap-2", splitPaymentEnabled ? "flex" : "hidden" )}>
-                        <input
-                            type="number"
-                            value={attendee.amount || ''}
-                            onChange={(e) => updateAttendee(attendee.id, { 
-                                amount: parseFloat(e.target.value) || 0 
-                            })}
-                            disabled={splitMode === 'equal'}
-                            className="w-24 px-2 py-1 text-sm border border-neutral-4 rounded-md focus:outline-[1.5px] focus:outline-neutral-6 focus:border-none disabled:bg-neutral-2 disabled:cursor-not-allowed"
-                            placeholder="₦0.00"
-                        />
-                    </div>
+                    {splitPaymentEnabled && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-neutral-6">Amount:</span>
+                            <input
+                                type="number"
+                                // We separate name and onChange from register to handle custom logic
+                                {...register(`attendees.${index}.amount` as const, { valueAsNumber: true })}
+                                value={amountValue} 
+                                onChange={(e) => {
+                                    const val = parseFloat(e.target.value) || 0
+                                    // 1. Update RHF state
+                                    setValue(`attendees.${index}.amount`, val, { shouldValidate: true })
+                                    // 2. Update SplitPayment Context
+                                    updateAttendee(attendee.attendeeID, { amount: val })
+                                }}
+                                disabled={splitMode === 'equal'}
+                                className="w-24 px-2 py-1 text-sm border rounded-md border-neutral-4 disabled:bg-neutral-2 focus:outline-none focus:ring-1 focus:ring-accent-6"
+                                placeholder="0.00"
+                            />
+                        </div>
+                    )}
                 </div>
 
                 {canRemove && (
@@ -81,7 +96,7 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, al
                         type="button"
                         variant="ghost"
                         size="sm"
-                        onClick={() => removeAttendee(attendee.id)}
+                        onClick={() => onRemove(index)}
                         className="text-red-500 hover:text-red-700 hover:bg-red-50"
                     >
                         <Icon icon="mdi:close" className="w-5 h-5" />
@@ -89,82 +104,69 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, al
                 )}
             </div>
 
-            {/* Copy Details From Dropdown */}
-            <div className='mt-4 mb-6'>
+            <div className='grid grid-cols-1 gap-2 mt-4 md:grid-cols-2'>
                 <Select onValueChange={handleCopyFrom}>
-                    <SelectTrigger className="w-full bg-neutral-2 text-xs">
+                    <SelectTrigger className="w-full text-xs bg-neutral-2">
                         <SelectValue placeholder="Copy details from" />
                     </SelectTrigger>
-                    <SelectContent className='text-neutral-8'>
-                        {/* Myself */}
-                        {user && (
-                            <SelectItem value="myself" className='text-xs'>
-                                <div className="flex items-center gap-2">
-                                    <Icon icon="mdi:account-circle" className="w-4 h-4" />
-                                    <span>Myself</span>
-                                </div>
-                            </SelectItem>
-                        )}
-
-                        {/* User Groups */}
+                    <SelectContent>
+                        {user && <SelectItem value="myself" className='text-xs'>Myself</SelectItem>}
                         {mockUserGroups.map(group => (
-                            <SelectItem key={group.id} value={group.id} className='text-xs'>
-                                <div className="flex items-center gap-2">
-                                    <Icon icon="mdi:account-group" className="w-4 h-4" />
-                                    <span>{group.name}</span>
-                                </div>
-                            </SelectItem>
+                            <SelectItem key={group.id} value={group.id} className='text-xs hover:bg-accent-3!'>{group.name}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
 
-                {/* If group selected, show member selector */}
                 {selectedGroup && (
-                    <Select value={selectedMember} onValueChange={handleMemberSelect}>
-                        <SelectTrigger className="w-full bg-neutral-2 text-xs mt-2">
-                            <SelectValue placeholder="Select member from group" />
+                    <Select onValueChange={handleMemberSelect}>
+                        <SelectTrigger className="w-full text-xs bg-neutral-2">
+                            <SelectValue placeholder="Select member" />
                         </SelectTrigger>
                         <SelectContent>
-                            {mockUserGroups
-                                .find(g => g.id === selectedGroup)
-                                ?.members.map((member, idx) => (
-                                    <SelectItem key={idx} value={idx.toString()} className='text-xs'>
-                                        {member.name}
-                                    </SelectItem>
-                                ))
-                            }
+                            {mockUserGroups.find(g => g.id === selectedGroup)?.members.map((m, idx) => (
+                                <SelectItem key={idx} value={idx.toString()} className='text-xs hover:bg-accent-3!'>{m.name}</SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                 )}
             </div>
 
-            {/* Manual Input Fields */}
-            <div className="space-y-4 text-neutral-8">
-                <FormInput2
-                    label="Attendee name"
-                    placeholder="e.g. Jon"
-                    value={attendee.name}
-                    onChange={(e) => updateAttendee(attendee.id, { name: e.target.value })}
-                    required
-                    className="bg-neutral-2 border-neutral-5! focus:border-accent-5!"
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
+                <div className={cn("grid gap-4", eventIsAgeRestricted ? "md:grid-cols-2" : "grid-cols-1")}>
                     <FormInput2
-                        label="Attendee email address"
-                        placeholder="e.g. Jon.Doe@gmail.com"
-                        value={attendee.email}
-                        onChange={(e) => updateAttendee(attendee.id, { email: e.target.value })}
+                        label="Attendee name"
+                        placeholder="e.g. Jon"
+                        {...register(`attendees.${index}.name` as const)}
+                        error={attendeeErrors?.name?.message}
                         required
-                        className="bg-neutral-2 border-neutral-5! focus:border-accent-5!"
+                    />
+                    {eventIsAgeRestricted && (
+                        <FormInput2
+                            label="Date of birth"
+                            placeholder="DD/MM/YY"
+                            type='date'
+                            {...register(`attendees.${index}.dateOfBirth` as const)}
+                            error={attendeeErrors?.dateOfBirth?.message}
+                            required
+                        />
+                    )}
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <FormInput2
+                        label="Email address"
+                        type="email"
+                        placeholder="e.g. Jon.Doe@gmail.com"
+                        {...register(`attendees.${index}.email` as const)}
+                        error={attendeeErrors?.email?.message}
+                        required
                     />
                     <FormInput2
-                        label="Attendee phone number"
+                        label="Phone number"
+                        {...register(`attendees.${index}.phone` as const)}
                         placeholder="e.g. +234 806 123 4567"
-                        value={attendee.phone}
-                        onChange={(e) => updateAttendee(attendee.id, { phone: e.target.value })}
+                        error={attendeeErrors?.phone?.message}
                         required
-                        className="bg-neutral-2 border-neutral-5! focus:border-accent-5!"
                     />
                 </div>
             </div>

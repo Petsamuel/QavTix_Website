@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Icon } from '@iconify/react'
 import { cn } from '@/lib/utils'
-import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
+import { NAV_LINKS } from '@/components-data/navigation/navLinks'
 
 interface SearchEventInputProps {
   placeholder?: string
@@ -45,7 +45,7 @@ export default function SearchInput1({
     if (onSearch) {
       onSearch(query)
     } else {
-      router.push(`${EVENT_ROUTES.SEARCH_EVENTS.href}?q=${encodeURIComponent(query)}`)
+      router.push(`${NAV_LINKS.SEARCH_PAGE.href}?q=${encodeURIComponent(query)}`)
     }
   }, [onSearch, router])
 

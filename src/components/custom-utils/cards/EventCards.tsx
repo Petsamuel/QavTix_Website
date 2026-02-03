@@ -24,7 +24,7 @@ export default function EventsCard1(cardData: IEvent) {
     return (
         <Link 
             href={eventUrl}
-            className="block w-full p-3 relative min-h-[25em] rounded-[32px] border border-neutral-6 bg-white hover:bg-secondary-1 hover:shadow-sm transition-all duration-200 focus:outline-none focus:ring-[1.5px] focus:ring-accent-5 focus:ring-offset-[1.5px] group"
+            className="block w-full max-w-72 sm:max-w-full p-3 relative min-h-[25em] rounded-[32px] border border-neutral-6 bg-white hover:bg-secondary-1 hover:shadow-sm transition-all duration-200 focus:outline-none focus:ring-[1.5px] focus:ring-accent-5 focus:ring-offset-[1.5px] group"
             aria-label={`View event: ${cardData.title}`}
         >
             <div className="flex flex-col h-full">

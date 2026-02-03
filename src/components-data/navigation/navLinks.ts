@@ -27,7 +27,9 @@ export const NAV_LINKS = {
 
 
   HOST_PROFILE: { label: '', href: '/host/profile/[host_id]' },
-  DASHBOARD: { label: '', href: '/' }
+  DASHBOARD: { label: '', href: '/' },
+
+  SEARCH_PAGE: { label: '', href: '/search' },
 } as const satisfies Record<string, NavLink>
 
 export const navLinks: NavLink[] = [

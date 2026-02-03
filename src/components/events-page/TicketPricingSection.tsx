@@ -2,6 +2,7 @@ import { ticketTiers } from "@/components-data/demo-data"
 import { EVENT_ROUTES } from "@/components-data/navigation/navLinks"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
+import AccessDeniedModal from "../modals/AccessDeniedModal"
 
 interface TicketPricingSectionProps {
   tickets?: Partial<TicketTier>[]
@@ -12,7 +13,6 @@ interface TicketPricingSectionProps {
 export default function TicketPricingSection({
   tickets = ticketTiers,
   initialVisibleCount = 4,
-  onGetTicket
 }: TicketPricingSectionProps) {
 
 
@@ -65,6 +65,9 @@ export default function TicketPricingSection({
           Get a ticket
         </button>
       </div>
+
+
+      <AccessDeniedModal open={false} setOpen={() => {}} />
     </section>
   )
 }

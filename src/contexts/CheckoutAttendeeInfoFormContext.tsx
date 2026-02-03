@@ -16,12 +16,19 @@ interface CheckoutAttendeeInfoFormContextType {
 const CheckoutAttendeeInfoFormContext = createContext<CheckoutAttendeeInfoFormContextType | undefined>(undefined)
 
 export function CheckoutAttendeeInfoFormProvider({ children }: { children: ReactNode }) {
+
     const form = useForm<AttendeeInformationData>({
         resolver: zodResolver(attendeeInformationSchema),
+        reValidateMode: "onChange",
+        mode: "onChange",
         defaultValues: {
             name: '',
             email: '',
             phone: '',
+
+            // If event is age restricted Set to undefined so form handles validation
+            // Else set a default date (wont be sent during request), to avoid validation errors
+            dateOfBirth: "",
             sendUpdates: false,
             shareWithGroup: false,
             keepInLoop: false,

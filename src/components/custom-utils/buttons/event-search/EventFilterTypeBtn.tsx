@@ -25,7 +25,7 @@ export default function EventFilterTypeBtn({
         ),
         compact: cn(
             'px-4 justify-between text-xs rounded-[11px] h-9 min-w-24 font-medium',
-            'bg-white border border-neutral-4',
+            'bg-white border border-neutral-5',
             'hover:border-primary hover:bg-primary-1'
         )
     }

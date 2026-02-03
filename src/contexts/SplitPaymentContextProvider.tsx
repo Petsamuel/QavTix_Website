@@ -7,6 +7,7 @@ import { AttendeeFormData, SplitMode } from '@/schemas/checkout-flow.schema'
 
 interface SplitPaymentContextType {
     splitMode: SplitMode
+    nextAttendeeId: number,
     setSplitMode: (mode: SplitMode) => void
     attendees: AttendeeFormData[]
     addAttendee: () => void
@@ -36,7 +37,7 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
 
     const addAttendee = useCallback(() => {
         const newAttendee: AttendeeFormData = {
-            id: nextAttendeeId,
+            attendeeID: nextAttendeeId,
             name: '',
             email: '',
             phone: '',
@@ -46,13 +47,13 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
         setNextAttendeeId(prev => prev + 1) // increment for next
     }, [nextAttendeeId])
 
-    const removeAttendee = useCallback((attendeeID: number) => {
-        setAttendees(prev => prev.filter(a => a.id !== attendeeID))
+    const removeAttendee = useCallback((id: number) => {
+        setAttendees(prev => prev.filter(a => a.attendeeID !== id))
     }, [])
 
-    const updateAttendee = useCallback((attendeeID: number, data: Partial<AttendeeFormData>) => {
+    const updateAttendee = useCallback((id: number, data: Partial<AttendeeFormData>) => {
         setAttendees(prev => prev.map(a => 
-            a.id === attendeeID ? { ...a, ...data } : a
+            a.attendeeID === id ? { ...a, ...data } : a
         ))
     }, [])
 
@@ -95,6 +96,7 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
             splitPaymentEnabled,
             addAttendee,
             removeAttendee,
+            nextAttendeeId,
             updateAttendee,
             copyFromSource,
             canAddMoreAttendees,

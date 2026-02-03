@@ -34,7 +34,7 @@ function InfiniteScrollRow({
                 }}
             >
                 {duplicatedImages.map((image, index) => (
-                    <Image key={index} src={image} alt={`carousel image-${index + 1}`} width={300} height={300} className='h-48 aspect-square rounded-2xl object-cover' />
+                    <Image key={index} src={image} alt={`carousel image-${index + 1}`} width={300} height={300} className='h-48 aspect-square object-cover' />
                 ))}
             </motion.div>
         </div>

@@ -13,7 +13,7 @@ function HostFeaturesSections() {
             </div>
 
 
-            <div className="mt-12 md:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-between gap-10 md:gap-6 md:gap-y-20 items-stretch">
+            <div className="mt-12 md:mt-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-between gap-10 md:gap-6 md:gap-y-20 items-stretch">
                 {
                     hostFeatures.map((v,i) => (
                         <HowItWorksFeatureFilledCard feature={v} index={i} key={v.id} />

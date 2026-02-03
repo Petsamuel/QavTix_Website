@@ -1,23 +1,21 @@
 "use client"
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import SearchInput1 from "../custom-utils/inputs/event-search/SearchInput1";
 import Logo from "./Logo";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { navLinks } from "@/components-data/navigation/navLinks";
+import { NAV_LINKS, navLinks } from "@/components-data/navigation/navLinks";
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 import logoSrc from "@/public-assets/logo/qavtix-logo.svg"
 import { pathsForHeader1 } from "@/helper-fns/pathNameResolvers";
-import SearchModal from "../modals/SearchModal";
 
 export default function Header(){
 
     const pathName = usePathname()
+    const router = useRouter()
     const [showMobileMenu,setShowMobileMenu] = useState(false)
-    const [showSearchModal, setShowSearchModal] = useState(false)
-    const [searchValue, setSearchValue] = useState<string>("")
 
     const isActive = (href: string) => {
         if (href === '/') {
@@ -35,10 +33,7 @@ export default function Header(){
         <header className="py-8 w-full absolute top-0 left-0 z-100 flex justify-between items-center global-px">
             <div className="flex items-center gap-8">
                 <Logo logo={logoSrc} />
-                <SearchInput1 onSearch={(v) => {
-                    setSearchValue(v)
-                    setShowSearchModal(true)
-                }} className="hidden lg:block" />
+                <SearchInput1 className="hidden lg:block" />
             </div>
             <nav className="items-center gap-1 hidden lg:flex">
                 {navLinks.map((link) => {
@@ -80,7 +75,7 @@ export default function Header(){
 
 
             <div className="flex gap-3 lg:hidden items-center text-secondary-9">
-                <button>
+                <button onClick={() => router.push(NAV_LINKS.SEARCH_PAGE.href)}>
                     <Icon icon="lineicons:search-1" width="24" height="25" className="size-7" />
                     <span className="sr-only">Search</span>
                 </button>
@@ -91,7 +86,6 @@ export default function Header(){
             </div>
 
             <MobileMenu openMobileMenu={showMobileMenu} setOpenMobileMenu={setShowMobileMenu} />
-            <SearchModal searchValue={searchValue} setSearchValue={setSearchValue} openSearchModal={showSearchModal} setOpenSearchModal={setShowSearchModal} />
         </header>
     )
 }

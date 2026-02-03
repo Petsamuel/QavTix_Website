@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Controller } from 'react-hook-form'
+import { Controller, useFieldArray } from 'react-hook-form'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
 import { mockAvailableTickets } from '@/components-data/demo-data'
@@ -15,15 +15,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCheckoutAttendeeInfoForm } from '@/contexts/CheckoutAttendeeInfoFormContext'
 import { useCheckout } from '@/contexts/CheckoutFlowProvider'
-import { useTicketUser } from '@/contexts/TicketUserProvider'
 import { space_grotesk } from '@/lib/fonts'
 import { useSplitPayment } from '@/contexts/SplitPaymentContextProvider'
 import SplitPaymentAddAttendee from './SplitPaymentAddAttendee'
 import { SplitMode } from '@/schemas/checkout-flow.schema'
+import { cn } from '@/lib/utils'
+import { AnimatePresence, motion } from 'framer-motion'
 
 export default function TicketCheckoutAttendeeInformationStep() {
 
-    const { initializeTickets, tickets, selectedTickets } = useCheckout()
+    const { initializeTickets, eventIsAgeRestricted, tickets, selectedTickets, total } = useCheckout()
     const isAuthenticated = true;
     const { form } = useCheckoutAttendeeInfoForm()
     const { register, control, setValue, formState: { errors }, watch } = form
@@ -33,14 +34,55 @@ export default function TicketCheckoutAttendeeInformationStep() {
         setSplitMode,
         attendees,
         addAttendee,
+        removeAttendee,
         canAddMoreAttendees,
         getTotalAssignedAmount,
         setSplitPaymentEnabled,
+        nextAttendeeId,
         getRemainingAmount
     } = useSplitPayment()
 
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "attendees" 
+    })
+
+
+    const handleRemoveAttendee = (index: number) => {
+        //Get the ID of the attendee being removed to sync with context
+        const attendeeId = fields[index].attendeeID; 
+        
+        //Remove from React Hook Form state
+        remove(index)
+        
+        // Remove from your Split Payment Context
+        removeAttendee(attendeeId)
+    }
+
+    const handleAddAttendee = () => {
+
+        //Append to RHF
+        append({ 
+            attendeeID: nextAttendeeId,
+            name: '', 
+            email: '', 
+            phone: '', 
+            amount: 0, 
+            dateOfBirth: "" as any 
+        })
+
+        //Add to Context
+        addAttendee()
+
+        window.scrollBy({
+            top: 200, 
+            behavior: 'smooth'
+        })
+    }
+
     const splitPaymentEnabled = watch('splitPayment')
     const shareWithGroupEnabled = watch('shareWithGroup')
+
 
     useEffect(() => {
         if (mockAvailableTickets.length > 0 && tickets.length === 0) {
@@ -53,17 +95,22 @@ export default function TicketCheckoutAttendeeInformationStep() {
     },[splitPaymentEnabled])
 
     useEffect(() => {
+        if (splitMode === 'equal' && fields.length > 0) {
+            const amountPerPerson = total / fields.length;
+            
+            fields.forEach((_, index) => {
+                setValue(`attendees.${index}.amount`, amountPerPerson)
+            })
+        }
+    }, [fields.length, splitMode, total, setValue])
+
+
+
+    useEffect(() => {
         if (!shareWithGroupEnabled){
             setValue("splitPayment", false)
         }
     },[shareWithGroupEnabled])
-
-
-    const handleAddAttendee = () => {
-        if (canAddMoreAttendees && selectedTickets.reduce((v,c) => v+c.quantity,0) > attendees.length) {
-            addAttendee()
-        }
-    }
     
 
     return (
@@ -77,20 +124,36 @@ export default function TicketCheckoutAttendeeInformationStep() {
             )}
 
             <form className="space-y-5">
-                <FormInput2
-                    label="Name"
-                    placeholder="e.g. Jon"
-                    required
-                    {...register('name')}
-                    error={errors.name?.message}
-                    className="bg-neutral-3"
-                />
+                <div className={cn("md:grid gap-4", eventIsAgeRestricted ? "grid-cols-2" : "grid-cols-1")}>
+                    <FormInput2
+                        label="Name"
+                        placeholder="e.g. Jon"
+                        required
+                        {...register('name')}
+                        error={errors.name?.message}
+                        className="bg-neutral-3"
+                    />
+                    {
+                        eventIsAgeRestricted &&
+                        <FormInput2
+                            label="Date of birth"
+                            placeholder="DD/MM/YY"
+                            required
+                            helperText='This event is age-restricted'
+                            type='date'
+                            {...register('dateOfBirth')}
+                            error={errors.dateOfBirth?.message}
+                            className="bg-neutral-3"
+                        />
+                    }
+                </div>
                 
                 <div className="md:grid grid-cols-2 gap-4">
                     <FormInput2
                         label="Email Address"
                         placeholder="e.g. Jon.Doe@gmail.com"
                         required
+                        type='email'
                         {...register('email')}
                         error={errors.email?.message}
                         className="bg-neutral-3"
@@ -286,15 +349,26 @@ export default function TicketCheckoutAttendeeInformationStep() {
 
                         {/* Attendee Cards */}
                         <div className="space-y-8 mt-6">
-                            {attendees.map((attendee, index) => (
-                                <SplitPaymentAddAttendee
-                                    index={index} 
-                                    attendee={attendee} 
-                                    key={index} 
-                                    canRemove={attendees.length > 1}
-                                    allAttendees={attendees}
-                                />
-                            ))}
+                            <AnimatePresence mode="popLayout">
+                                {attendees.map((attendee, index) => (
+                                    <motion.div
+                                        key={attendee.attendeeID}
+                                        initial={{ opacity: 0, height: 0, y: 20 }}
+                                        animate={{ opacity: 1, height: 'auto', y: 0 }}
+                                        exit={{ opacity: 0, height: 0, scale: 0.95, transition: { duration: 0.3 } }}
+                                        layout
+                                    >
+                                        <SplitPaymentAddAttendee
+                                            index={index} 
+                                            attendee={attendee} 
+                                            key={index}
+                                            onRemove={handleRemoveAttendee}
+                                            canRemove={attendees.length > 1}
+                                            allAttendees={attendees}
+                                        />
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
                         </div>
                     </div>
                 )}

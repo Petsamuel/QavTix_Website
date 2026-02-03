@@ -26,6 +26,7 @@ interface CheckoutState {
     checkoutComplete: boolean
     discount: Discount | null
     subtotal: number
+    eventIsAgeRestricted: boolean,
     total: number
     discountAmount: number
     totalTickets: number
@@ -55,8 +56,9 @@ type CheckoutContextType = CheckoutState & CheckoutActions
 const CheckoutContext = createContext<CheckoutContextType | undefined>(undefined)
 
 export function CheckoutFlowProvider({ children }: { children: ReactNode }) {
-    const dispatch = useAppDispatch()
 
+    const dispatch = useAppDispatch()
+    const eventIsAgeRestricted = true;
     const [currentStep, setCurrentStep] = useState(1)
     const [tickets, setTickets] = useState<CheckoutTicket[]>([])
     const [attendeeInfo, setAttendeeInfo] = useState<Partial<AttendeeInformationData>>({})
@@ -173,7 +175,7 @@ export function CheckoutFlowProvider({ children }: { children: ReactNode }) {
     }, [tickets])
 
     const value = useMemo(() => ({
-        currentStep, tickets, attendeeInfo, paymentMethod,
+        currentStep, tickets, eventIsAgeRestricted, attendeeInfo, paymentMethod,
         isProcessing, checkoutComplete, discount, subtotal, total,
         discountAmount, totalTickets, selectedTickets,
         setCurrentStep, nextStep, prevStep, initializeTickets,

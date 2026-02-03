@@ -30,6 +30,7 @@ export default function ActionButton1({
             onClick={action}
             className={`
                 text-sm
+                md:text-base
                 bg-primary
                 hover:bg-primary-7
                 active:bg-primary-8
@@ -39,7 +40,7 @@ export default function ActionButton1({
                 py-3.5
                 px-6
                 rounded-[3em]
-                h-14.5
+                h-14
                 font-medium
                 transition-colors
                 inline-flex

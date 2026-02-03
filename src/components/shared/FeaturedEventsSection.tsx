@@ -81,9 +81,9 @@ export default function FeaturedEventsSection() {
     }, [emblaApi, onSelect])
 
     return (
-        <section className="w-full py-10 px-4 md:ps-10 lg:ps-16 md:pe-0">
+        <section className="w-full py-10 ps-4 md:ps-10 lg:ps-16 md:pe-0">
             <div className="max-w-8xl mx-auto">
-                <div className="flex items-center gap-6 justify-between mb-8 md:pe-16">
+                <div className="flex pe-4 items-center gap-6 justify-between mb-8 md:pe-10">
                     <h2 className={`text-2xl sm:text-3xl  md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
                         Featured events
                     </h2>
@@ -97,8 +97,8 @@ export default function FeaturedEventsSection() {
                 </div>
 
                 {/* Carousel */}
-                <div className="overflow-hidden" ref={emblaRef}>
-                    <div className="flex pt-3">
+                <div className="overflow-hidden p-1.5 lg:py-2" ref={emblaRef}>
+                    <div className="flex">
                         {dupliactedFeaturedEvents.map((event) => (
                             <Link key={event.id} href={EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id.toString())} className='flex-[0_0_85%] sm:flex-[0_0_30%] md:w-[23.75] mr-2'>
                                 <div
@@ -106,32 +106,31 @@ export default function FeaturedEventsSection() {
                                     onMouseLeave={play}
                                     className="pr-6"
                                 >
-                                    <div className="group relative aspect-3/4 bg-white cursor-pointer">
+                                    <div className="group drop-shadow-sm lg:drop-shadow-xs bg-transparent relative aspect-3/4 cursor-pointer">
 
                                         {/* IMAGE */}
                                         <Image
                                             src={event.image}
                                             alt={event.title}
                                             fill
-                                            className="object-cover rounded-4xl transition-transform duration-400 md:group-hover:scale-103"
+                                            className="object-cover rounded-4xl transition-transform duration-400 lg:group-hover:scale-103"
                                         />
 
                                         {/* WHITE SLIDE-UP DETAILS */}
                                         <div
                                             className="
-                                                absolute inset-x-0 bottom-0
+                                                absolute inset-x-0 -bottom-1
                                                 bg-white
-                                                p-4
+                                                p-5
                                                 w-full
                                                 group-hover:scale-103
-                                                shadow-[0px_-8px_24px_rgba(0,0,0,0.08)]
-
+                                                border-b rounded-b-4xl lg:rounded-b-sm
                                                 transform transition-all duration-400
                                                 ease-[cubic-bezier(0.22,1,0.36,1)]
 
                                                 translate-y-0 opacity-100
-                                                md:translate-y-full md:opacity-0
-                                                md:group-hover:translate-y-0 md:group-hover:opacity-100
+                                                lg:translate-y-full lg:opacity-0
+                                                lg:group-hover:translate-y-0 md:group-hover:opacity-100
                                             "
                                         >
                                             {/* CATEGORY */}

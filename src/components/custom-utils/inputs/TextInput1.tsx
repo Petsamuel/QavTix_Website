@@ -31,7 +31,7 @@ export default function TextInput1({
             <div 
                 className={`
                     relative flex items-center gap-3 px-4 py-3.5 
-                    rounded-lg border border-neutral-5 h-14 text-smtransition-all duration-200
+                    rounded-[6px] border border-neutral-5 h-14 text-sm text-neutral-10 placeholder:text-neutral-7 transition-all duration-200
                     bg-white
                     ${error 
                         ? 'border-red-400 focus-within:border-red-500' 

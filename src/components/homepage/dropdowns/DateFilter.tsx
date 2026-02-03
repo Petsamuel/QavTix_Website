@@ -30,15 +30,16 @@ export default function DateFilter({ value, onChange, filterFor = "homepage" }: 
 
     const hasActiveFilter = value && (value?.from || value?.to)
 
+
     const displayText = (() => {
-        if (!hasActiveFilter) return 'Date'
+        if (!hasActiveFilter) return 'Date Range'
         if (value?.from && value?.to) {
             return `${formatDate(value.from, 'MMM dd')} - ${formatDate(value.to, 'MMM dd')}`
         }
         if (value?.from) {
             return formatDate(value.from, 'MMM dd, yyyy')
         }
-        return 'Date'
+        return 'Date Range'
     })()
 
     const handleApply = () => {

@@ -13,21 +13,21 @@ interface FeatureCardProps {
 export default function HowItWorksFeatureFilledCard({ feature, index }: FeatureCardProps) {
     const [isActive, setIsActive] = useState(false)
 
-    // Handle both hover (desktop) and click/tap (mobile)
+    // Handle both hover (desktop) and click/tap (mobile and tablet)
     const handleMouseEnter = () => {
-        if (window.innerWidth >= 640) {
+        if (window.innerWidth >= 768) {
             setIsActive(true)
         }
     }
 
     const handleMouseLeave = () => {
-        if (window.innerWidth >= 640) {
+        if (window.innerWidth >= 768) {
             setIsActive(false)
         }
     }
 
     const handleClick = () => {
-        if (window.innerWidth < 640) { // Only toggle on mobile
+        if (window.innerWidth < 768) { // Only toggle on mobile and tablet
             setIsActive(!isActive)
         }
     }
@@ -55,7 +55,7 @@ export default function HowItWorksFeatureFilledCard({ feature, index }: FeatureC
                 // Mobile: smaller default size
                 "w-full max-w-85",
                 // Desktop: larger size
-                "md:max-w-none",
+                "lg:max-w-none",
                 // Active state: full width on mobile
                 isActive && "max-w-none",
                 isActive ? "h-100 md:h-120 md:-translate-y-10" : "h-90 md:h-100"
@@ -170,7 +170,7 @@ export default function HowItWorksFeatureFilledCard({ feature, index }: FeatureC
 
             {/* Mobile tap indicator (shows briefly on touch devices) */}
             {!isActive && (
-                <div className="absolute bottom-4 right-4 md:hidden">
+                <div className="absolute bottom-4 right-4 lg:hidden">
                     <motion.div
                         animate={{
                             scale: [1, 1.2, 1],

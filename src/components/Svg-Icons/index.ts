@@ -1,6 +1,7 @@
 import ArtsNTheatersIcon from "./ArtsNTheater";
 import BriefCaseIcon from "./BriefCase";
 import DJIcon from "./DJ";
+import Eighteen from "./Eighteen";
 import FestivalIcon from "./Festival";
 import FoodNDrinkIcon from "./FoodNDrinking";
 import LightBulbIcon from "./LightBulbIcon";
@@ -25,5 +26,6 @@ export const CustomIcons = {
     musicConcerts: MusicConcertsIcon,
     timer02: Timer02,
     userMultipleLock: UserMultipleLock,
-    userMultipleListIcon: UserMultipleListIcon
+    userMultipleListIcon: UserMultipleListIcon,
+    eighteen: Eighteen
 }

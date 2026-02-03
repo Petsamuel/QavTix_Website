@@ -5,6 +5,7 @@ interface IPasswordInput1Props {
     placeholder?: string;
     error?: string;
     value?: string;
+    helperText?: string
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     [key: string]: any;
 }
@@ -13,6 +14,7 @@ export default function PasswordInput1({
     placeholder = 'Password',
     error,
     value,
+    helperText,
     onChange,
     ...props 
 }: IPasswordInput1Props) {
@@ -24,7 +26,7 @@ export default function PasswordInput1({
             <div 
                 className={`
                     relative flex items-center gap-3 px-4 py-3.5 
-                    rounded-lg border border-neutral-5 h-14 text-smtransition-all duration-200
+                    rounded-[6px] border border-neutral-5 h-14 text-smtransition-all duration-200
                     bg-white
                     ${error 
                         ? 'border-red-400 focus-within:border-red-500' 
@@ -57,6 +59,10 @@ export default function PasswordInput1({
                     )}
                 </button>
             </div>
+            {
+                helperText && !error &&
+                <p className='text-sm text-neutral-8 mt-1'>{helperText}</p>
+            }
             {error && (
                 <p className="text-xs text-red-500 mt-1.5 ml-1">
                     {error}
