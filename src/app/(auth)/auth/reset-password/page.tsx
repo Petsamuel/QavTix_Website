@@ -3,7 +3,7 @@
 import AuthPageFlexWrapper from "@/components/auth-pages/AuthPageFlexWrapper";
 import ResetPasswordSuccessMessage from "@/components/auth-pages/ResetPasswordSuccessMessage";
 import ActionButton1 from "@/components/custom-utils/buttons/ActionButton1";
-import CountdownTimer from "@/components/custom-utils/CountDownTimer";
+import CountdownTimer from "@/components/auth-pages/CountDownTimer";
 import OTPInput from "@/components/custom-utils/inputs/OTPInput";
 import PasswordInput1 from "@/components/custom-utils/inputs/PasswordInput1";
 import { maskEmail } from "@/helper-fns/maskEmail";

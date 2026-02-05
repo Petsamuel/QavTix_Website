@@ -6,6 +6,10 @@ export default function AttendeeEmailSignUpForm(){
     return (
         <form className="space-y-5">
             <div>
+                <label className="text-sm font-medium text-neutral-10 mb-2 block">Name</label>
+                <TextInput1 placeholder="Enter your first and last name" />
+            </div>
+            <div>
                 <label className="text-sm font-medium text-neutral-10 mb-2 block">Email Address</label>
                 <TextInput1 placeholder="Enter your email address" icon="mage:email" />
             </div>
@@ -13,7 +17,7 @@ export default function AttendeeEmailSignUpForm(){
                 <label className="text-sm font-medium text-neutral-10 mb-2 block">Password</label>
                 <PasswordInput1 />
             </div>
-            <ActionButton1 buttonText="Sign in" className="mt-6 w-full" />
+            <ActionButton1 buttonText="Sign Up" className="mt-6 w-full" />
         </form>
     )
 }

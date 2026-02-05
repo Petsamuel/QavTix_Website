@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
     Popover,
     PopoverContent,
@@ -23,7 +22,6 @@ interface DatePickerInputProps {
 }
 
 export function DatePickerInput({
-    label,
     value,
     onChange,
     placeholder = "Select date",
@@ -82,6 +80,9 @@ export function DatePickerInput({
                             onMonthChange={setMonth}
                             onSelect={handleSelect}
                             captionLayout="dropdown"
+                            classNames={{
+                                caption_dropdowns: "flex gap-1 font-medium! items-center text-xs",
+                            }}
                         />
                     </PopoverContent>
                 </Popover>
