@@ -83,7 +83,7 @@ const MobileInfiniteScroll = forwardRef<MobileInfiniteScrollRef, MobileInfiniteS
                                 alt={`carousel image ${index % images.length + 1}`}
                                 width={400}
                                 height={400}
-                                className="rounded-3xl md:rounded-4xl h-60 max-w-[98%] w-80 object-cover"
+                                className="rounded-3xl md:rounded-4xl aspect-square w-54 md:w-74 max-w-[98%] object-cover"
                             />
                         </div>
                     ))}

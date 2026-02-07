@@ -6,14 +6,14 @@ import EventsNearYouSection from "@/components/shared/EventsNearYou";
 import FeaturedEventsSection from "@/components/shared/FeaturedEventsSection";
 import SectionHeading from "@/components/shared/SectionHeading";
 import WhereItsHappeningSection from "@/components/shared/WhereItsHappeningSection";
-import { space_grotesk } from "@/lib/fonts";
+
 
 export default function EventsPage(){
     return (
         <main className="pb-14">
             <SectionHeading title="Events" />
 
-            <div className="mt-10 md:mt-16">
+            <div className="md:mt-8">
                 <FeaturedEventsSection />
             </div>
 

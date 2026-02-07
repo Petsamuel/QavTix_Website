@@ -30,7 +30,7 @@ export default function Header(){
         !pathName.match("/checkout") &&
         pathsForHeader1(pathName)
         ) && (
-        <header className="py-8 w-full absolute top-0 left-0 z-100 flex justify-between items-center global-px">
+        <header className="h-24 md:h-26 w-full absolute top-0 left-0 z-100 flex justify-between items-center global-px">
             <div className="flex items-center gap-8">
                 <Logo logo={logoSrc} />
                 <SearchInput1 className="hidden lg:block" />
