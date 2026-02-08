@@ -2,7 +2,7 @@ import { EventIconActionButton } from "@/components/shared/EventIconActionButton
 import { Badge } from "@/components/ui/badge";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
-import MapEmbed from "@/components/custom-utils/MapEmbed";
+import MapEmbed from "@/components/custom-utils/maps/MapEmbed";
 import { copyToClipboard } from "@/helper-fns/copyToClipboard";
 import { statusStyles, StatusStylesRecord } from "@/components-data/event-status-styles";
 import { cn } from "@/lib/utils";

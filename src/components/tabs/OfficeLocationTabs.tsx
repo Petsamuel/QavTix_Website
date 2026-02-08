@@ -8,7 +8,7 @@ import { ADDITIONAL_SOCIAL_LINKS, CONTACT_LINKS, SOCIAL_LINKS } from '@/componen
 import { workingHours } from '@/components-data/navigation/working-hours';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import MapEmbed from '../custom-utils/MapEmbed';
+import MapEmbed from '../custom-utils/maps/MapEmbed';
 import { cn } from '@/lib/utils';
 import { isHighlightedSocial } from '@/helper-fns/isHighlightedSocial';
 
