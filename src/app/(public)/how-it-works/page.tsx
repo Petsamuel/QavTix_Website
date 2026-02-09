@@ -14,10 +14,10 @@ export default function HowItWorksPage(){
 
     return (
         <main className="pb-24">
-            <SectionHeading title="How It Works" headerClassName="max-w-sm" />
+            <SectionHeading title="How It Works" />
 
             <div className="global-px max-w-[95em] mx-auto">
-                <div className="mt-10 md:mt-20 md:flex justify-between gap-7 items-center">
+                <div className="mt-8 md:mt-12 md:flex justify-between gap-7 items-center">
                     <div className="md:w-[45%]">
                         <div className="max-w-xl">
                             <h2 className={`${space_grotesk.className} font-bold text-2xl md:text-3xl lg:text-[2.5rem] text-secondary-9`}>Your all-in-one ticketing platform</h2>

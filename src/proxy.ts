@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { COOKIE_KEYS } from '@/components-data/cookie-keys'
 import { DEFAULT_LOCATION, REGION_CURRENCY_MAP } from '@/components-data/settings.data'
 
-export default function Middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next()
 
   // 1. Check if cookies already exist

@@ -1,6 +1,6 @@
 'use client'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 import { Icon } from '@iconify/react'
 
 interface MobileBottomSheetProps {
@@ -18,22 +18,27 @@ export function MobileBottomSheet({
   children,
   className = '',
 }: MobileBottomSheetProps) {
+    const scrollYRef = useRef(0)
+
     useEffect(() => {
         if (isOpen) {
+            // Store current scroll position
+            scrollYRef.current = window.scrollY
+            
             // Prevent body scroll and fix position
-            const scrollY = window.scrollY
             document.body.style.position = 'fixed'
-            document.body.style.top = `-${scrollY}px`
+            document.body.style.top = `-${scrollYRef.current}px`
             document.body.style.width = '100%'
             document.body.style.overflow = 'hidden'
         } else {
             // Restore body scroll and position
-            const scrollY = document.body.style.top
             document.body.style.position = ''
             document.body.style.top = ''
             document.body.style.width = ''
             document.body.style.overflow = ''
-            window.scrollTo(0, parseInt(scrollY || '0') * -1)
+            
+            // Restore scroll position
+            window.scrollTo(0, scrollYRef.current)
         }
         
         return () => {
@@ -75,7 +80,7 @@ export function MobileBottomSheet({
                             <div className="p-6 space-y-6">
                                 {/* Header */}
                                 {(title || true) && (
-                                    <div className="flex items-center justify-between sticky top-0 bg-white z-10 -mt-6 pt-6 pb-4">
+                                    <div className="flex items-center justify-between sticky top-0 bg-transparent z-10 -mt-5 pt-6 pb-4">
                                         {title && (
                                             <h3 className="font-medium text-xl text-gray-900">
                                                 {title}

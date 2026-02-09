@@ -4,8 +4,8 @@ import MobileInfiniteScroll from "../shared/MobileInfiniteScrollCarousel";
 
 export default function YourGatewaySection(){
     return (
-        <section className="mt-16">
-            <div className="global-px max-w-lg md:max-w-2xl">
+        <section className="mt-8 md:mt-12 lg:mt-16">
+            <div className="global-px max-w-xl md:max-w-5xl">
                 <h2
                     className={`text-2xl sm:text-3xl  md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}
                 >

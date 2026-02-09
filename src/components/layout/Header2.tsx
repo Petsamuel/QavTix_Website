@@ -30,13 +30,24 @@ export default function Header2() {
         !pathName.startsWith("/auth") && 
         !pathName.match("/checkout") && 
         pathsForHeader2(pathName) && (
-            <header className="py-8 w-full absolute top-0 left-0 z-100 flex flex-col justify-center">
+            <header className="h-24 md:h-26 w-full absolute top-0 left-0 z-100 flex flex-col justify-center">
                 <div>
                     <div className="global-px flex items-center justify-between">
                         
                         {/* This Header is being used for the search Page, Due to white background of the search page
                         We will use the colored Logo */}
-                        <Logo logo={pathName === NAV_LINKS.SEARCH_PAGE.href ? logoSrc : logoSrcWhite} />
+                        <Logo 
+                            logo={
+                                (
+                                    pathName === NAV_LINKS.SEARCH_PAGE.href || 
+                                    pathName.startsWith(NAV_LINKS.EVENT_CATEGORY.href) ||
+                                    pathName.startsWith(NAV_LINKS.EVENT_LOCATION.href) || 
+                                    pathName.startsWith(NAV_LINKS.EVENT_TRAVEL_AND_TOUR.href)
+                                )
+                                ? logoSrc : logoSrcWhite
+                            } 
+                            className="size-17 md:size-20" 
+                        />
 
                         <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                             {mainNavLinks.map((link) => {

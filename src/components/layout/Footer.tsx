@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { Icon } from '@iconify/react'
-import { useState } from 'react'
 import Logo from './Logo'
 import { space_grotesk } from '@/lib/fonts'
 import { footerData } from '@/components-data/footer-data'

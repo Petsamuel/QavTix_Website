@@ -1,4 +1,4 @@
-import { Currency, LocationData, Region } from "@/lib/redux/slices/settingsSlice"
+import { LocationData } from "@/lib/redux/slices/settingsSlice"
 
 export const REGION_CURRENCY_MAP: Record<string, LocationData> = {
   NG: {
