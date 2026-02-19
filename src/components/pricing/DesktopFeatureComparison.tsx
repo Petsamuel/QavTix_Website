@@ -55,7 +55,7 @@ export default function DesktopFeatureComparison({ data }: { data: PricingData }
                                 />
                                 ) : (
                                 <Icon
-                                    icon="mdi:close"
+                                    icon="basil:lock-outline" 
                                     className="inline-block text-red-500 size-6"
                                 />
                                 )
