@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import TicketCheckoutAttendeeInformationStep from "../forms/checkout-flow-steps/TicketCheckoutAttendeeInformationStep"
 import LeaveCheckoutPrompt from "../modals/LeaveCheckoutPrompt"
 import CheckoutPageContentWrapper from "../forms/checkout-flow-steps/CheckoutPageContentWrapper"
+import { cn } from "@/lib/utils"
 
 interface ICheckoutPageContent {
     showCloseLeaveCheckoutPrompt: boolean
@@ -55,7 +56,7 @@ export default function CheckoutPageContent({
     }, [canProceedToCheckout])
 
     return (
-        <section className="md:flex w-full min-h-screen gap-6 lg:gap-16 items-stretch pb-56 md:pb-24">
+        <section className={cn("md:flex w-full min-h-screen gap-6 lg:gap-16 items-stretch pb-44 md:pb-0")}>
             <div className="md:w-[50%] lg:flex-1 lg:w-auto flex flex-col">
                 {!showMobileSummary && (
                     <div className="my-10 md:-mt-10">
