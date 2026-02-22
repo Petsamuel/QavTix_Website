@@ -17,7 +17,7 @@ export default function EventTicketCheckoutPage(){
         <CheckoutFlowProvider>
             <CheckoutAttendeeInfoFormProvider>
                 <SplitPaymentProvider>
-                    <main className="py-7 md:pt-10 md:pb-16 global-px max-w-7xl mx-auto">
+                    <main className="py-7 md:pt-10 global-px max-w-7xl mx-auto">
                         <div className="md:flex justify-between gap-6 lg:gap-16 items-start">
                             <div className="flex md:w-[50%] lg:max-w-[calc(100%-40%-4rem)] items-center gap-6 justify-between">
                                 <h1 className={`${space_grotesk.className} font-medium text-2xl text-secondary-9`}>
