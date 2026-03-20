@@ -1,7 +1,7 @@
 export interface NavLink {
-    label: string
-    href: string
-    type?: 'default' | 'auth' | 'cta'
+  label: string
+  href: string
+  type?: 'default' | 'auth' | 'cta'
 }
 
 export const NAV_LINKS = {
@@ -18,6 +18,9 @@ export const NAV_LINKS = {
   FORGOT_PASSWORD: { label: 'Forgot password', href: '/auth/forgot-password' },
   RESET_PASSWORD: { label: 'Reset password', href: '/auth/reset-password' },
 
+  // Role-based dashboard URLs — resolved at runtime using getDashboardUrl()
+  DASHBOARD: { label: 'Dashboard', href: '/dashboard', type: 'auth' as const },
+
   SEARCH_EVENTS: { label: '', href: '/events/search' },
   EVENT_LOCATION: { label: '', href: '/events/explore/location/' },
   EVENT_CATEGORY: { label: '', href: '/events/explore/category/' },
@@ -25,19 +28,27 @@ export const NAV_LINKS = {
   EVENTS_DETAILS: { label: '', href: '/events/details/[event_id]' },
   EVENTS_GET_TICKETS_CHECKOUT: { label: '', href: '/events/details/[event_id]/checkout' },
 
-
   HOST_PROFILE: { label: '', href: '/host/profile/[host_id]' },
-  DASHBOARD: { label: '', href: '/' },
 
   SEARCH_PAGE: { label: '', href: '/search' },
 } as const satisfies Record<string, NavLink>
 
+
+// Unauthenticated nav
 export const navLinks: NavLink[] = [
   NAV_LINKS.ABOUT,
   NAV_LINKS.HOW_IT_WORKS,
   NAV_LINKS.PRICING,
   NAV_LINKS.SIGN_IN,
   NAV_LINKS.SIGN_UP,
+]
+
+// Authenticated nav — Sign In becomes Dashboard, Get Started becomes avatar (handled in Header)
+export const navLinksAuthenticated: NavLink[] = [
+  NAV_LINKS.ABOUT,
+  NAV_LINKS.HOW_IT_WORKS,
+  NAV_LINKS.PRICING,
+  NAV_LINKS.DASHBOARD,
 ]
 
 export const navLinksMobileMenu: NavLink[] = [
@@ -71,3 +82,16 @@ export const EVENT_ROUTES = {
   EVENTS_DETAILS: NAV_LINKS.EVENTS_DETAILS,
   CHECKOUT: NAV_LINKS.EVENTS_GET_TICKETS_CHECKOUT
 } as const
+
+
+export const LEGAL_LINKS = {
+  PRIVACY: { label: "Privacy Policy", href: "/legal/privacy-policy" },
+  TERMS: { label: "Terms of Use", href: "/legal/terms-of-use" },
+  COMMISSION: { label: "Commission", href: "/legal/commission" }
+} as const;
+
+
+export const FOOTER_LEGAL_LINKS = [
+  LEGAL_LINKS.PRIVACY,
+  LEGAL_LINKS.TERMS
+]

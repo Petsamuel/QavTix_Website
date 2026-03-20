@@ -9,7 +9,7 @@ interface AuthPersistorClientProps {
     currency: Currency
 }
 
-export default function AuthPersistorClient({ currency, region }: AuthPersistorClientProps) {
+export default function AppSettings({ currency, region }: AuthPersistorClientProps) {
     const dispatch = useAppDispatch()
     const initialized = useRef(false)
 

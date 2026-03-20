@@ -1,15 +1,16 @@
 'use client'
 
 import { createContext, useContext, useState, ReactNode } from 'react'
-import { 
-  IndividualGeneralData, 
+import {
+  IndividualGeneralData,
   OrganizationGeneralData,
   IndividualBusinessData,
   OrganizationBusinessData,
-  PasswordData
-} from '@/schemas/host-signup.schema'
+  PasswordData,
+  } from '@/schemas/host-signup.schema'
+  import { ApiCategory } from '@/actions/filters'
 
-type HostSignupFormData = 
+  type HostSignupFormData =
   | Partial<IndividualGeneralData>
   | Partial<IndividualBusinessData>
   | Partial<OrganizationGeneralData>
@@ -17,25 +18,33 @@ type HostSignupFormData =
   | Partial<PasswordData>
   | Record<string, never>
 
-type SignupContextType = {
-  currentStep: number
-  signUpSuccessful: boolean
-  formData: HostSignupFormData
-  setCurrentStep: (step: number) => void
-  updateFormData: (data: Partial<HostSignupFormData>) => void
-  nextStep: () => void
-  prevStep: () => void
-  resetForm: () => void
-}
+  type SignupContextType = {
+    currentStep:         number
+    signUpSuccessful:    boolean
+    formData:            HostSignupFormData
+    categories:          ApiCategory[]
+    setCurrentStep:      (step: number) => void
+    setSignUpSuccessful: (value: boolean) => void
+    updateFormData:      (data: Partial<HostSignupFormData>) => void
+    nextStep:            () => void
+    prevStep:            () => void
+    resetForm:           () => void
+  }
 
-const SignupContext = createContext<SignupContextType | undefined>(undefined)
+  const SignupContext = createContext<SignupContextType | undefined>(undefined)
 
-export function HostSignupProvider({ children }: { children: ReactNode }) {
-  const [currentStep, setCurrentStep] = useState(1)
+  interface Props {
+    children:   ReactNode
+    categories: ApiCategory[]
+  }
+
+  export function HostSignupProvider({ children, categories }: Props) {
+  const [currentStep,      setCurrentStep]      = useState(1)
+  const [signUpSuccessful, setSignUpSuccessful] = useState(false)
   const [formData, setFormData] = useState<HostSignupFormData>({
-    state: "",
-    country: "",
-    agreedToTerms: false
+    state:         "",
+    country:       "",
+    agreedToTerms: false,
   })
 
   const updateFormData = (data: Partial<HostSignupFormData>) => {
@@ -44,25 +53,26 @@ export function HostSignupProvider({ children }: { children: ReactNode }) {
 
   const nextStep = () => setCurrentStep(prev => prev + 1)
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1))
-  
+
   const resetForm = () => {
     setCurrentStep(1)
+    setSignUpSuccessful(false)
     setFormData({})
   }
 
   return (
-    <SignupContext.Provider
-      value={{
-        currentStep,
-        formData,
-        setCurrentStep,
-        signUpSuccessful: false,
-        updateFormData,
-        nextStep,
-        prevStep,
-        resetForm
-      }}
-    >
+    <SignupContext.Provider value={{
+      currentStep,
+      signUpSuccessful,
+      formData,
+      categories,
+      setCurrentStep,
+      setSignUpSuccessful,
+      updateFormData,
+      nextStep,
+      prevStep,
+      resetForm,
+    }}>
       {children}
     </SignupContext.Provider>
   )
@@ -70,8 +80,6 @@ export function HostSignupProvider({ children }: { children: ReactNode }) {
 
 export function useSignup() {
   const context = useContext(SignupContext)
-  if (!context) {
-    throw new Error('useSignup must be used within HostSignupProvider')
-  }
+  if (!context) throw new Error('useSignup must be used within HostSignupProvider')
   return context
 }

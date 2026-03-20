@@ -1,50 +1,88 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { COOKIE_KEYS } from '@/components-data/cookie-keys'
+import { accessCookieOptions, COOKIE_KEYS } from '@/components-data/cookie-keys'
 import { DEFAULT_LOCATION, REGION_CURRENCY_MAP } from '@/components-data/settings.data'
+import { REFRESH_TOKEN_ENDPOINT, TOKEN_VERIFY_ENDPOINT } from './endpoints';
 
-export function proxy(request: NextRequest) {
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next()
 
-  // 1. Check if cookies already exist
-  const hasRegion = request.cookies.has(COOKIE_KEYS.USER_REGION)
+  // ── Region / Currency
+  const hasRegion   = request.cookies.has(COOKIE_KEYS.USER_REGION)
   const hasCurrency = request.cookies.has(COOKIE_KEYS.USER_CURRENCY)
 
   if (!hasRegion || !hasCurrency) {
-    const country = request.headers.get('x-vercel-ip-country') || 
-                    request.headers.get('cf-ipcountry') || 
-                    'NG'
+    const country =
+      request.headers.get('x-vercel-ip-country') ||
+      request.headers.get('cf-ipcountry') ||
+      'NG'
 
     const detected = REGION_CURRENCY_MAP[country] || DEFAULT_LOCATION
 
-    const cookieOptions = {
-      path: '/',
-      maxAge: 365 * 24 * 60 * 60,
+    const regionCookieOptions = {
+      path:     '/',
+      maxAge:   365 * 24 * 60 * 60,
       sameSite: 'lax' as const,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure:   process.env.NODE_ENV === 'production',
     }
 
-    if (!hasRegion) {
-      response.cookies.set(COOKIE_KEYS.USER_REGION, JSON.stringify(detected.region), cookieOptions)
-    }
-    if (!hasCurrency) {
-      response.cookies.set(COOKIE_KEYS.USER_CURRENCY, JSON.stringify(detected.currency), cookieOptions)
+    if (!hasRegion)   response.cookies.set(COOKIE_KEYS.USER_REGION,   JSON.stringify(detected.region),   regionCookieOptions)
+    if (!hasCurrency) response.cookies.set(COOKIE_KEYS.USER_CURRENCY, JSON.stringify(detected.currency), regionCookieOptions)
+  }
+
+  const accessToken  = request.cookies.get('access_token')?.value
+  const refreshToken = request.cookies.get('refresh_token')?.value
+
+  // Access token exists — verify it
+  if (accessToken) {
+    try {
+      const verifyRes = await fetch(`${API_BASE_URL}/${TOKEN_VERIFY_ENDPOINT}`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: accessToken }),
+      })
+
+      // Valid — nothing to do, continue
+      if (verifyRes.ok) return response
+
+      // Invalid — fall through to refresh
+    } catch {
+      // Network error — fall through to refresh
     }
   }
 
-  return response
+  // Access token missing or invalid — try refresh
+  if (refreshToken) {
+    try {
+      const refreshRes = await fetch(`${API_BASE_URL}/${REFRESH_TOKEN_ENDPOINT}`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ refresh: refreshToken }),
+      })
+
+      if (refreshRes.ok) {
+        const { data } = await refreshRes.json()
+        // Attach new access token and continue
+        response.cookies.set('access_token', data.access, accessCookieOptions)
+        return response
+      }
+
+      // Refresh token expired — clear both cookies, user will need to sign in
+      response.cookies.delete('access_token')
+      response.cookies.delete('refresh_token')
+      return response
+    }catch {
+      return response;
+    }
+  }
+
+  return response;
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }

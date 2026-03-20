@@ -1,6 +1,6 @@
 'use client'
 
-import { TicketSession } from '@/actions/get-ticket-session'
+import { TicketSession } from '@/actions/util/get-ticket-session'
 import { createContext, useContext, ReactNode } from 'react'
 
 interface TicketUserContextType {

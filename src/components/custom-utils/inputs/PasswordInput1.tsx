@@ -31,7 +31,7 @@ export default function PasswordInput1({
                     bg-white
                     ${error 
                         ? 'border-red-400 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500' 
-                        : 'border-brand-neutral-5 focus-within:border-brand-primary-6 focus-within:shadow-sm'
+                        : 'border-neutral-5 focus-within:border-primary-6 focus-within:shadow-sm'
                     }
                 `}
             >
@@ -40,7 +40,7 @@ export default function PasswordInput1({
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
-                    className="flex-1 outline-none text-sm text-brand-neutral-9 placeholder:text-brand-neutral-7 bg-transparent peer"
+                    className="flex-1 outline-none text-sm text-neutral-9 placeholder:text-neutral-7 bg-transparent peer"
                     {...props}
                 />
                 
@@ -55,14 +55,14 @@ export default function PasswordInput1({
                         className={`w-5 h-5 transition-colors ${
                             error 
                                 ? 'text-red-400' 
-                                : 'text-brand-neutral-8 peer-focus:text-brand-primary-6'
+                                : 'text-neutral-8 peer-focus:text-primary-6'
                         }`} 
                     />
                 </button>
             </div>
 
             {helperText && !error && (
-                <p className='text-sm text-brand-neutral-8 mt-1'>{helperText}</p>
+                <p className='text-sm text-neutral-8 mt-1'>{helperText}</p>
             )}
 
             {error && (

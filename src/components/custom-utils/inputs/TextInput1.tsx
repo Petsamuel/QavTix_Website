@@ -29,7 +29,7 @@ export default function TextInput1({
                     bg-white
                     ${error 
                         ? 'border-red-400 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500' 
-                        : 'border-brand-neutral-5 hover:border-brand-primary-4 focus-within:border-brand-primary-6 focus-within:shadow-sm'
+                        : 'border-neutral-5 focus-within:border-primary-6 focus-within:shadow-sm'
                     }
                 `}
             >
@@ -38,7 +38,7 @@ export default function TextInput1({
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
-                    className="flex-1 outline-none text-sm text-brand-neutral-9 placeholder:text-brand-neutral-7 bg-transparent peer"
+                    className="flex-1 outline-none text-sm text-neutral-9 placeholder:text-neutral-7 bg-transparent peer"
                     {...props}
                 />
                 {icon && (
@@ -47,7 +47,7 @@ export default function TextInput1({
                         className={`size-6 shrink-0 transition-colors ${
                             error 
                                 ? 'text-red-400' 
-                                : 'text-brand-neutral-8 peer-focus:text-brand-primary-6'
+                                : 'text-neutral-8 peer-focus:text-primary-6'
                         }`} 
                     />
                 )}
