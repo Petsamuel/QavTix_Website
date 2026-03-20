@@ -1,6 +1,6 @@
 export const LOGIN_ENDPOINT = "auth/login/"
 export const ATTENDEE_REGISTER_ENDPOINT = "auth/auth/register/attendee/"
-export const HOST_REGISTER_ENDPOINT = "auth/auth/host/attendee/"
+export const HOST_REGISTER_ENDPOINT = "auth/auth/register/host/"
 
 
 export const GET_PROFILE_ENDPOINT = "attendee/profile/"

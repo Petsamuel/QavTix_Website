@@ -6,11 +6,11 @@ import { X, Plus } from 'lucide-react'
 import { Icon } from '@iconify/react'
 import { useSignup } from '@/contexts/HostSignupProvider'
 import { organizationBusinessSchema, type OrganizationBusinessData } from '@/schemas/host-signup.schema'
-import FormInput2 from '@/components/custom-utils/inputs/FormInput2'
 import FormTextarea1 from '@/components/custom-utils/inputs/FormTextarea1'
 import FormSelect1 from '@/components/custom-utils/inputs/FormSelect1'
 import FormCheckbox1 from '@/components/custom-utils/inputs/FormCheckbox1'
 import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepFormButtonDuo'
+import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
 
 const BUSINESS_TYPES = [
     { value: 'llc',         label: 'LLC' },
@@ -58,7 +58,8 @@ export function OrganizationBusinessStep() {
             className="space-y-5"
             data-testid="org-business-form"
         >
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="Business/Organization name"
                 placeholder="Enter your Business/Organization name"
                 required
@@ -77,7 +78,8 @@ export function OrganizationBusinessStep() {
             />
 
             <div className="grid grid-cols-2 gap-4">
-                <FormInput2
+                <TextInput1
+                    showLabel
                     label="Business registration number"
                     placeholder="Enter registration number"
                     required
@@ -85,7 +87,8 @@ export function OrganizationBusinessStep() {
                     error={errors.registrationNumber?.message}
                     data-testid="registration-number"
                 />
-                <FormInput2
+                <TextInput1
+                    showLabel
                     label="Tax ID/TIN"
                     placeholder="Enter Tax ID/TIN"
                     required
@@ -95,7 +98,8 @@ export function OrganizationBusinessStep() {
                 />
             </div>
 
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="Postal code"
                 placeholder="Enter your postal code"
                 required
@@ -122,8 +126,7 @@ export function OrganizationBusinessStep() {
                         <div key={field.id} className="flex gap-2 items-start">
                             <div className="flex-1">
                                 <input
-                                    value={field.link}
-                                    onChange={e => setValue(`relevantLinks.${index}`, { link: e.target.value })}
+                                    {...register(`relevantLinks.${index}.link`)}
                                     placeholder="https://website.com or social media link"
                                     data-testid={`relevant-link-${index}`}
                                     className={`w-full px-4 py-3 text-sm rounded-[6px] h-14 transition-all outline-none bg-white text-neutral-9 placeholder:text-neutral-6 ${

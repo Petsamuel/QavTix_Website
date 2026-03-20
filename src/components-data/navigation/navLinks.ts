@@ -91,7 +91,7 @@ export const LEGAL_LINKS = {
 } as const;
 
 
-export const FOOTER_LEGAL_LINKS = [
-  LEGAL_LINKS.PRIVACY,
-  LEGAL_LINKS.TERMS
-]
+export const FOOTER_LEGAL_LINKS = {
+  PRIVACY: LEGAL_LINKS.PRIVACY,
+  TERMS: LEGAL_LINKS.TERMS
+}

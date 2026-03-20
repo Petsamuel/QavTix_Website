@@ -153,12 +153,12 @@ export default function Footer() {
                     {/* Legal Links */}
                     <div className="flex relative order-1 md:order-[unset] z-10 items-center gap-1 text-sm font-medium">
                         {footerData.legal.map((link, index) => (
-                        <span key={link.label} className="flex items-center gap-1">
+                        <span key={link} className="flex items-center gap-1">
                             <Link
-                                href={link.href}
+                                href={link}
                                 className="text-neutral-8 font-bold hover:text-primary-6 transition-colors"
                             >
-                            {link.label}
+                            {link}
                             </Link>
                             {index < footerData.legal.length - 1 && (
                                 <span className="text-neutral-7 mx-2">•</span>

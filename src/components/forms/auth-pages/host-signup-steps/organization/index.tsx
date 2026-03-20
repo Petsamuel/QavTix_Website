@@ -16,7 +16,7 @@ export default function OrganizationHostSignupSection() {
         currentStep === 2 ?
         <OrganizationBusinessStep /> : 
         currentStep === 3 ?
-        <PasswordStep />
+        <PasswordStep accountType="organization" />
         :
         null
     )

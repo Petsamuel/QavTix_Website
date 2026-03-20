@@ -5,16 +5,16 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Icon } from '@iconify/react'
 import { useSignup } from '@/contexts/HostSignupProvider'
 import { individualBusinessSchema, type IndividualBusinessData } from '@/schemas/host-signup.schema'
-import FormInput2 from '@/components/custom-utils/inputs/FormInput2'
+import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
 import FormTextarea1 from '@/components/custom-utils/inputs/FormTextarea1'
 import FormCheckbox1 from '@/components/custom-utils/inputs/FormCheckbox1'
 import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepFormButtonDuo'
 
-
 export function IndividualBusinessStep() {
-    
+
     const { formData, updateFormData, nextStep, categories } = useSignup()
 
+    
     const {
         register,
         handleSubmit,
@@ -52,7 +52,8 @@ export function IndividualBusinessStep() {
             className="space-y-5"
             data-testid="individual-business-form"
         >
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="Brand name"
                 placeholder="Enter your brand name"
                 required
@@ -79,19 +80,18 @@ export function IndividualBusinessStep() {
                         <div key={field.id} className="flex gap-2 items-start">
                             <div className="flex-1">
                                 <input
-                                    value={field.link}
-                                    onChange={e => setValue(`relevantLinks.${index}`, { link: e.target.value })}
+                                    {...register(`relevantLinks.${index}.link`)}
                                     placeholder="https://website.com or social media link"
                                     data-testid={`relevant-link-${index}`}
                                     className={`w-full px-4 py-3 text-sm rounded-[6px] h-14 transition-all outline-none bg-white text-neutral-9 placeholder:text-neutral-6 ${
-                                        errors.relevantLinks?.[index]
+                                        errors.relevantLinks?.[index]?.link
                                             ? 'border border-red-400 focus:border-red-500'
                                             : 'border-[1.5px] border-neutral-5 focus:border-[1.5px] focus:border-primary hover:border-neutral-6'
                                     }`}
                                 />
-                                {errors.relevantLinks?.[index] && (
+                                {errors.relevantLinks?.[index]?.link && (
                                     <p className="text-xs text-red-500 mt-1">
-                                        {errors.relevantLinks[index]?.message}
+                                        {errors.relevantLinks[index]?.link?.message}
                                     </p>
                                 )}
                             </div>

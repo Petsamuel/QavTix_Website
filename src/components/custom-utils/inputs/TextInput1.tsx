@@ -2,11 +2,13 @@ import { Icon } from '@iconify/react';
 import ErrorPara from '../ErrorPara';
 
 interface ITextInput1Props {
-    type?: 'text' | 'email';
+    type?: 'text' | 'email' | 'tel';
     placeholder?: string;
     icon?: string
     error?: string;
+    showLabel?: boolean
     value?: string;
+    required?: boolean
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     [key: string]: any;
 }
@@ -15,13 +17,22 @@ export default function TextInput1({
     type = 'text',
     placeholder,
     icon,
+    showLabel,
     error,
+    label,
+    required = false,
     value,
     onChange,
     ...props 
 }: ITextInput1Props) {
     return (
         <div className="w-full">
+            {
+                label && showLabel &&
+                <label className="block text-sm font-medium text-neutral-9 mb-2">
+                    {label} {required && <span className="">*</span>}
+                </label>
+            }
             <div 
                 className={`
                     relative flex items-center gap-3 px-4 py-3.5 

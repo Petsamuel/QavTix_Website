@@ -31,6 +31,7 @@ export function buildIndividualPayload(
         email:          formData.email,
         password:       formData.password,
         full_name:      formData.fullName,
+        business_name:  formData.brandName,
         phone_number:   formData.phone,
         country:        formData.country,
         state:          formData.state,

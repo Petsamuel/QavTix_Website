@@ -1,15 +1,28 @@
 import { accessCookieOptions } from "@/components-data/cookie-keys"
-import { HOST_REGISTER_ENDPOINT } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { NextRequest, NextResponse } from "next/server"
 
-export async function POST(req: NextRequest) {
+const PROVIDER_ENDPOINTS: Record<string, string> = {
+    google:   "auth/google/",
+    facebook: "auth/facebook/",
+    apple:    "auth/apple/",
+}
+
+export async function POST(
+    req:     NextRequest,
+    context: { params: { provider: string } },
+) {
+    const provider = context.params.provider
+    const endpoint = PROVIDER_ENDPOINTS[provider]
+
+    if (!endpoint) {
+        return NextResponse.json({ message: "Unknown provider" }, { status: 400 })
+    }
+
     try {
         const body = await req.json()
 
-        console.log(body)
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${HOST_REGISTER_ENDPOINT}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${endpoint}`, {
             method:  "POST",
             headers: { "Content-Type": "application/json" },
             body:    JSON.stringify(body),
@@ -18,8 +31,8 @@ export async function POST(req: NextRequest) {
         const json = await res.json()
 
         if (!res.ok) {
-            console.log("[host-register] status:", res.status)
-            console.log("[host-register] raw json:", JSON.stringify(json, null, 2))
+            console.log(`[social-auth:${provider}] status:`, res.status)
+            console.log(`[social-auth:${provider}] body:`, JSON.stringify(json, null, 2))
             return NextResponse.json(
                 { message: handleApiError(json) },
                 { status: res.status }
@@ -30,7 +43,7 @@ export async function POST(req: NextRequest) {
 
         const response = NextResponse.json(
             { message: json.message, user },
-            { status: 201 }
+            { status: 200 }
         )
 
         response.cookies.set("access_token", tokens.access, accessCookieOptions)
@@ -46,10 +59,7 @@ export async function POST(req: NextRequest) {
         return response
 
     } catch (err) {
-        console.log("[host-register] caught error:", err)
-        return NextResponse.json(
-            { message: "Internal server error" },
-            { status: 500 }
-        )
+        console.log(`[social-auth:${provider}] caught error:`, err)
+        return NextResponse.json({ message: "Internal server error" }, { status: 500 })
     }
 }

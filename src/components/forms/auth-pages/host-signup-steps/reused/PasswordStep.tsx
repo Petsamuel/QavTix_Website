@@ -17,6 +17,9 @@ import {
 import PasswordInput2 from '@/components/custom-utils/inputs/PasswordInput2'
 import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepFormButtonDuo'
 import PasswordStrengthIndicator from '@/components/custom-utils/PasswordStrengthIndicator'
+import { HOST_SIGNUP_PATH } from '@/apiPaths'
+import { useAppDispatch } from '@/lib/redux/hooks'
+import { showAlert } from '@/lib/redux/slices/alertSlice'
 
 interface Props {
     accountType: HostAccountType
@@ -38,6 +41,8 @@ export function PasswordStep({ accountType }: Props) {
 
     const password = watch("password")
 
+    const dispatch = useAppDispatch()
+
     const onSubmit = async (data: PasswordData) => {
         setSubmitError(null)
 
@@ -48,14 +53,20 @@ export function PasswordStep({ accountType }: Props) {
             : buildOrganizationPayload(merged as OrganizationSubmitData, categories)
 
         try {
-            await axios.post("/api/auth/host-register", payload)
+            await axios.post(HOST_SIGNUP_PATH, payload)
             setSignUpSuccessful(true)
         } catch (error) {
+            let message = "An unexpected error occurred. Please try again.";
             if (error instanceof AxiosError) {
-                setSubmitError(handleApiError(error.response?.data))
-            } else {
-                setSubmitError("An unexpected error occurred. Please try again.")
+               message = handleApiError(error.response?.data)
             }
+            setSubmitError(message)
+
+            dispatch(showAlert({
+                title: "Sign Up Failed",
+                description:  message,
+                variant: "default"
+            }))
         }
     }
 

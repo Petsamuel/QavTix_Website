@@ -6,11 +6,13 @@ import Link from 'next/link'
 import { Country, State } from 'country-state-city'
 import { useSignup } from '@/contexts/HostSignupProvider'
 import { individualGeneralSchema, type IndividualGeneralData } from '@/schemas/host-signup.schema'
-import FormInput2 from '@/components/custom-utils/inputs/FormInput2'
+import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
 import FormSelect1 from '@/components/custom-utils/inputs/FormSelect1'
 import FormCheckbox1 from '@/components/custom-utils/inputs/FormCheckbox1'
 import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepFormButtonDuo'
 import { space_grotesk } from '@/lib/fonts'
+import { LEGAL_LINKS } from '@/components-data/navigation/navLinks'
+
 
 export function IndividualGeneralStep() {
     const { formData, updateFormData, nextStep } = useSignup()
@@ -48,7 +50,8 @@ export function IndividualGeneralStep() {
                 General Information
             </h2>
 
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="Full name"
                 placeholder="Enter your first and last name"
                 required
@@ -57,7 +60,8 @@ export function IndividualGeneralStep() {
                 data-testid="full-name"
             />
 
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="Email address"
                 type="email"
                 placeholder="Enter your email address"
@@ -67,7 +71,8 @@ export function IndividualGeneralStep() {
                 data-testid="email"
             />
 
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="Phone number"
                 type="tel"
                 placeholder="Enter your phone number"
@@ -113,7 +118,8 @@ export function IndividualGeneralStep() {
                 />
             </div>
 
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="City"
                 placeholder="Enter your city"
                 required
@@ -137,12 +143,12 @@ export function IndividualGeneralStep() {
                         label={
                             <span className="font-normal">
                                 I agree to the QavTix Seller{' '}
-                                <Link href="/terms" className="text-accent-6 font-medium hover:underline">
+                                <Link href={LEGAL_LINKS.TERMS.href} className="text-accent-6 font-medium hover:underline">
                                     Terms of Service
                                 </Link>
                                 {' '}and understand the{' '}
-                                <Link href="/commission" className="text-accent-6 font-medium hover:underline">
-                                    commission structure
+                                <Link href={LEGAL_LINKS.COMMISSION.href} className="text-accent-6 font-medium hover:underline">
+                                    Commission structure
                                 </Link>.
                             </span>
                         }
