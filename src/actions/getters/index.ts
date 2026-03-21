@@ -1,0 +1,77 @@
+import {
+    FEATURED_EVENTS_ENDPOINT,
+    EVENTS_NEARBY_ENDPOINT,
+    TOP_LOCATIONS_ENDPOINT,
+    LOCATION_PAGE_ENDPOINT,
+    TRENDING_EVENTS_ENDPOINT,
+} from "@/endpoints"
+
+async function publicFetch<T>(url: string): Promise<T | null> {
+    try {
+        const res = await fetch(url, { next: { revalidate: 60 * 10 } })
+        if (!res.ok) {
+            console.log("[publicFetch] failed:", url, res.status)
+            return null
+        }
+        const json = await res.json()
+        return json.data ?? json
+    } catch (err) {
+        console.log("[publicFetch] error:", url, err)
+        return null
+    }
+}
+
+export async function getFeaturedEvents(): Promise<PublicPagesEvent[]> {
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL
+    const data = await publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${FEATURED_EVENTS_ENDPOINT}`)
+    return data?.results ?? []
+}
+
+export async function getTrendingEvents(): Promise<PublicPagesEvent[]> {
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL
+    const data = await publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${TRENDING_EVENTS_ENDPOINT}`)
+    return data?.results ?? []
+}
+
+export async function getNearbyEvents(city: string): Promise<PublicPagesEvent[]> {
+    const base   = process.env.NEXT_PUBLIC_API_BASE_URL
+    const params = new URLSearchParams({ city })
+    const data   = await publicFetch<{ results: PublicPagesEvent[] }>(
+        `${base}/${EVENTS_NEARBY_ENDPOINT}?${params}`
+    )
+    return data?.results ?? []
+}
+
+export async function getTopLocations(): Promise<TopLocation[]> {
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL
+    const data = await publicFetch<{ data: TopLocation[] }>(`${base}/${TOP_LOCATIONS_ENDPOINT}`)
+    return data?.data ?? (Array.isArray(data) ? data : [])
+}
+
+interface LocationPageResult {
+    success:  boolean
+    data?:    LocationPageData
+    message?: string
+}
+
+export async function getLocationPage(city: string): Promise<LocationPageResult> {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/${LOCATION_PAGE_ENDPOINT.replace("[loc]", city)}`,
+            { next: { revalidate: 60 * 5 } }
+        )
+
+        const json = await res.json()
+
+        if (!res.ok) {
+            console.log("[getLocationPage] status:", res.status, JSON.stringify(json))
+            return { success: false, message: json.message ?? "Failed to load location data." }
+        }
+
+        return { success: true, data: json.data }
+
+    } catch (err) {
+        console.log("[getLocationPage] error:", err)
+        return { success: false, message: "Request failed." }
+    }
+}

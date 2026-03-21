@@ -1,48 +1,29 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import FilterButtonsActions1 from '@/components/custom-utils/buttons/event-search/FilterActionButtons1'
-import { MobileBottomSheet } from '@/components/custom-utils/EventFilterDropdownMobileBottomSheet'
-import CategoryItemBtn from '@/components/custom-utils/buttons/event-search/CategoryItemBtn'
+import { useState } from 'react'
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import EventFilterTypeBtn from '@/components/custom-utils/buttons/event-search/EventFilterTypeBtn'
-import { useMediaQuery } from '@/lib/custom-hooks/UseMediaQuery'
 import { cn } from '@/lib/utils'
+import { useMediaQuery } from '@/lib/custom-hooks/UseMediaQuery'
+import CategoryItemBtn from '@/components/custom-utils/buttons/event-search/CategoryItemBtn'
+import EventFilterTypeBtn from '@/components/custom-utils/buttons/event-search/EventFilterTypeBtn'
+import { MobileBottomSheet } from '@/components/custom-utils/EventFilterDropdownMobileBottomSheet'
+import FilterButtonsActions1 from '@/components/custom-utils/buttons/event-search/FilterActionButtons1'
 
-interface Category {
-    value: string
-    label: string
-    count: number
-}
 
 interface CategoryFilterProps {
     value?: string[]
-    filterFor?: string
     onChange: (value: string[]) => void
     categories?: Category[]
 }
 
-const defaultCategories: Category[] = [
-    { value: 'all', label: 'All Events', count: 30 },
-    { value: 'concerts', label: 'Concerts & Music', count: 30 },
-    { value: 'sports', label: 'Sport & Fitness', count: 30 },
-    { value: 'arts', label: 'Arts & Theater', count: 30 },
-    { value: 'food', label: 'Food & Dining', count: 30 },
-    { value: 'festivals', label: 'Festivals', count: 30 },
-    { value: 'business', label: 'Business & Networking', count: 30 },
-    { value: 'travel', label: 'Travel & Tours', count: 30 },
-    { value: 'nightlife', label: 'Nightlife & Parties', count: 30 },
-]
-
 export default function CategoryFilter({
     value = [],
     onChange,
-    filterFor = "homepage",
-    categories = defaultCategories,
+    categories = [],
 }: CategoryFilterProps) {
 
     
@@ -51,12 +32,12 @@ export default function CategoryFilter({
     
     const [selectedCategories, setSelectedCategories] = useState<string[]>(value)
 
-    // Sync local state with parent value when dropdown opens
-    useEffect(() => {
-        if (isOpen) {
+    const handleOpenChange = (open: boolean) => {
+        setIsOpen(open)
+        if (open) {
             setSelectedCategories(value)
         }
-    }, [isOpen, value])
+    }
 
     const handleToggle = (categoryValue: string) => {
         if (categoryValue === 'all') {
@@ -80,12 +61,11 @@ export default function CategoryFilter({
         setSelectedCategories([])
     }
 
-    const hasActiveFilter = value.length > 0 // Use parent value for display
+    const hasActiveFilter = value.length > 0
     const displayText = hasActiveFilter
-        ? `${value.length} selected` // Use parent value
+        ? `${value.length} selected`
         : 'Event category'
     
-    const triggerVariant = filterFor === "homepage" ? 'default' : 'compact'
 
     const categoryList = (
         <div className="space-y-1 max-h-[50vh] overflow-y-auto md:max-h-[unset]">
@@ -116,7 +96,6 @@ export default function CategoryFilter({
                         onClick={() => setIsOpen(true)}
                         displayText={displayText} 
                         hasActiveFilter={hasActiveFilter}
-                        variant={triggerVariant}
                     />
 
                     <MobileBottomSheet
@@ -132,20 +111,16 @@ export default function CategoryFilter({
 
             {/* Tablet - Dropdown Menu */}
             {isTablet && (
-                <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+                <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
                     <DropdownMenuTrigger asChild>
-                        <div>
-                            <EventFilterTypeBtn 
-                                displayText={displayText} 
-                                hasActiveFilter={hasActiveFilter}
-                                variant={triggerVariant}
-                                onClick={() => setIsOpen(true)}
-                            />
-                        </div>
+                        <EventFilterTypeBtn 
+                            displayText={displayText} 
+                            hasActiveFilter={hasActiveFilter}
+                        />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent 
                         className={cn(
-                            "w-full z-100! p-4 rounded-xl shadow-[0px_3.69px_14.76px_0px_rgba(51,38,174,0.08)]",
+                            "w-full min-w-[18em] z-100! p-4 rounded-xl shadow-[0px_3.69px_14.76px_0px_rgba(51,38,174,0.08)]",
                             // Open animation
                             "data-[state=open]:animate-in",
                             "data-[state=open]:fade-in-0",

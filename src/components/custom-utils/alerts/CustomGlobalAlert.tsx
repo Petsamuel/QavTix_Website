@@ -9,7 +9,7 @@ import { hideAlert } from '@/lib/redux/slices/alertSlice'
 
 const variantStyles = {
   default: 'bg-secondary-6 border-border text-white',
-  destructive: 'bg-destructive/30 border-destructive/50 text-destructive',
+  destructive: 'bg-gray-200 border-destructive/50 text-destructive',
   success: 'bg-green-50 border-green-500/50 text-green-800',
   warning: 'bg-yellow-50 border-yellow-500/50 text-yellow-800',
   info: 'bg-blue-50 border-blue-500/50 text-blue-800',

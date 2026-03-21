@@ -14,6 +14,7 @@ import AuthPersistor from "@/components/custom-utils/persistors/AuthPersistor";
 import { GET_PROFILE_ENDPOINT } from "@/endpoints";
 import { DEFAULT_LOCATION } from "@/components-data/settings.data";
 import { getServerAxios } from "@/lib/axios";
+import ModalRenderer from "@/components/modals/ModalRenderer";
 
 export const metadata: Metadata = {
   title: "Qavtix Website - In Development",
@@ -54,9 +55,13 @@ export default async function RootLayout({
             <AppSettings currency={locationData.currency} region={locationData.region} />
             <AuthPersistor userData={userData} />
             <CustomGlobalAlert />
+            
             <Header2 />
             <Header />
+
             {children}
+
+            <ModalRenderer/>
             <Footer />
           </body>
         </TicketUserProvider>

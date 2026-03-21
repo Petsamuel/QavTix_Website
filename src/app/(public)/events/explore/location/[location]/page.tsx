@@ -1,18 +1,38 @@
-import EventLocationDetailsSection from "@/components/events-page/EventLocationDetailsSection";
+import { notFound } from "next/navigation"
+import EventLocationDetailsSection from "@/components/events-page/EventLocationDetailsSection"
+import EventsNearYouSection from "@/components/shared/EventsNearYou"
+import { getLocationPage } from "@/actions/getters"
 
-export default async function EventLocationPage({ params }:{ params: Promise<{location: string}>}){
+interface Props {
+    params: Promise<{ location: string }>
+}
 
-    const location = (await params).location;
+export default async function EventLocationPage({ params }: Props) {
+
+    const { location } = await params
+
+    const result = await getLocationPage(location)
+
+    if (!result.success || !result.data) notFound()
+
+    const { city, description, total_events, total_subscribers, events } = result.data
 
     return (
         <main className="pt-24 md:pt-40">
-            <EventLocationDetailsSection 
-                location="Lagos" 
-                events={30} 
-                subscribers={230}
-                heading={`Events Happening in ${location}`}
-                description={`From concerts and parties to conferences and pop-ups, ${location} is where experiences come alive. Discover what's happening next that bring  to life.`}
+            <EventLocationDetailsSection
+                location={city}
+                events={total_events}
+                subscribers={total_subscribers}
+                heading={`Events Happening in ${city}`}
+                description={description}
             />
+
+            <div className="mt-16">
+                <EventsNearYouSection
+                    events={events}
+                    city={city}
+                />
+            </div>
         </main>
     )
 }

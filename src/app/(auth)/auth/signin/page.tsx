@@ -6,6 +6,7 @@ import SignInForm from "@/components/forms/auth-pages/SignInForm";
 import { space_grotesk } from "@/lib/fonts";
 import { useRouter } from "next/navigation";
 import SocialAuthButtons from "@/components/auth-pages/SocialAuthButtons";
+import { AUTH_ROUTES } from "@/components-data/navigation/navLinks";
 
 export default function SignInPage(){
 
@@ -30,7 +31,7 @@ export default function SignInPage(){
 
                 <SignInForm />
 
-                <p className="text-sm text-neutral-8 mt-4 text-center">Forgot Password? <button onClick={() => router.push("/auth/forgot-password")} className="font-medium text-accent-6">Recover</button></p>
+                <p className="text-sm text-neutral-8 mt-4 text-center">Forgot Password? <button onClick={() => router.push(AUTH_ROUTES.SIGN_IN.href)} className="font-medium text-accent-6">Recover</button></p>
             </main>
         </AuthPageFlexWrapper>
     )

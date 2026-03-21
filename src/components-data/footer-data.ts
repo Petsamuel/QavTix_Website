@@ -25,5 +25,5 @@ export const footerData = {
     info: Object.values(CONTACT_LINKS.LAGOS)
   },
   social: Object.values(SOCIAL_LINKS), 
-  legal: Object.values(LEGAL_LINKS.PRIVACY)
+  legal: Object.values(LEGAL_LINKS).filter(v => !v.href.includes("commission"))
 }

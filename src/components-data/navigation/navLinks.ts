@@ -95,3 +95,7 @@ export const FOOTER_LEGAL_LINKS = {
   PRIVACY: LEGAL_LINKS.PRIVACY,
   TERMS: LEGAL_LINKS.TERMS
 }
+
+
+export const HOST_CREATE_EVENT = "/dashboard/events/create"
+export const ATTENDEE_SELL_TICKET = "/dashboard"

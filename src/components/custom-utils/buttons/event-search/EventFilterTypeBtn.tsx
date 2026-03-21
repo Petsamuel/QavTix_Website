@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react'
 import { cn } from '@/lib/utils'
 
 interface EventFilterTypeBtnProps {
-    onClick: () => void
+    onClick?: () => void
     displayText: string
     hasActiveFilter: boolean
     variant?: 'default' | 'compact'

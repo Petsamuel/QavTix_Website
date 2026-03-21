@@ -1,17 +1,17 @@
 "use client"
 
-import { space_grotesk } from "@/lib/fonts";
-import { useRouter } from "next/navigation";
+import { space_grotesk } from "@/lib/fonts"
+import { useRouter } from "next/navigation"
+import { ATTENDEE_SELL_TICKET, NAV_LINKS } from "@/components-data/navigation/navLinks"
+import Link from "next/link"
 
-export default function SellTicketsSection(){
+const ATTENDEE_URL = `https://attendee.${process.env.NEXT_PUBLIC_APP_DOMAIN}`
 
-    const router = useRouter()
+export default function SellTicketsSection() {
 
     return (
         <section className="global-px mt-14 mb-28 flex flex-col justify-center items-center text-center">
-            <h2
-                className={`text-2xl sm:text-3xl  md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}
-            >
+            <h2 className={`text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
                 Do you have tickets to sell?
             </h2>
 
@@ -20,21 +20,20 @@ export default function SellTicketsSection(){
             </p>
 
             <div className="w-full flex items-center mt-8 justify-between sm:justify-center md:mt-14 gap-4">
-                <button
-                    onClick={() => router.push("/tickets/sell")}
+                <Link
+                    href={`${ATTENDEE_SELL_TICKET}${ATTENDEE_SELL_TICKET}`}
+                    target="_blank"
                     className="w-[45%] max-w-[10em] h-14 p-4 rounded-[30px] bg-primary hover:bg-primary-7 active:bg-primary-8 hover:shadow-md active:scale-[0.98] disabled:bg-neutral-5 disabled:cursor-not-allowed disabled:opacity-60 text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150 flex items-center justify-center gap-2"
                 >
                     Sell Ticket
-                </button>
+                </Link>
 
-
-                <button
-                    type="button"
-                    onClick={() => router.push("/user-guide")}
+                <Link
+                    href={NAV_LINKS.FAQ.href}
                     className="w-[45%] max-w-[10em] h-14 text-secondary-8 bg-white p-4 hover:shadow flex items-center gap-2 justify-center px-6 py-3 rounded-[30px] border-2 border-secondary-3 font-medium text-sm hover:bg-neutral-2 hover:border-secondary-5 active:bg-neutral-3 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-neutral-4 focus:ring-offset-2 transition-all duration-150"
                 >
                     Learn More
-                </button>
+                </Link>
             </div>
         </section>
     )

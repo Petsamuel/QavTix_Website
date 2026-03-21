@@ -5,15 +5,18 @@ import Image from 'next/image'
 import { z } from 'zod'
 import { space_grotesk } from '@/lib/fonts'
 import ErrorPara from '../custom-utils/ErrorPara'
+import { subscribeToCity } from '@/actions/subscribe'
+import { useAppDispatch } from '@/lib/redux/hooks'
+import { showAlert } from '@/lib/redux/slices/alertSlice'
 
-const emailSchema = z.string().email('Please enter a valid email address')
+const emailSchema = z.email('Please enter a valid email address')
 
-interface EventLocationDetailsSectionProps {
-    location?: string
-    subscribers: number
-    events: number
-    imageSrc?: string
-    heading?: string
+interface Props {
+    location?:    string
+    subscribers:  number
+    events:       number
+    imageSrc?:    string
+    heading?:     string
     description?: string
 }
 
@@ -25,37 +28,59 @@ export default function EventLocationDetailsSection({
     events,
     imageSrc = DEFAULT_IMAGE,
     heading,
-    description
-}: EventLocationDetailsSectionProps) {
-    const [email, setEmail] = useState('')
-    const [error, setError] = useState('')
+    description,
+}: Props) {
+
+    const [email,        setEmail]        = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [isSuccess, setIsSuccess] = useState(false)
 
-    const handleSubmit = () => {
-        setError('')
-        setIsSuccess(false)
+    const dispatch = useAppDispatch()
 
-        const result = emailSchema.safeParse(email)
-        if (!result.success) {
-            setError(result.error.issues[0].message)
+    const handleSubmit = async () => {
+
+        const validation = emailSchema.safeParse(email)
+        if (!validation.success) {
+            dispatch(showAlert({
+                variant: "destructive",
+                title: "Request Failed",
+                description: validation.error.issues[0].message
+            }))
+            return
+        }
+        
+        if (!location) {
+            dispatch(showAlert({
+                variant: "destructive",
+                title: "Request Failed",
+                description: 'Location is required to subscribe.'
+            }))
             return
         }
 
         setIsSubmitting(true)
+        const result = await subscribeToCity(location, email)
+        setIsSubmitting(false)
 
-        setTimeout(() => {
-            setIsSubmitting(false)
-            setIsSuccess(true)
-            setEmail('')
-
-            setTimeout(() => setIsSuccess(false), 3000)
-        }, 1000)
+        if (result.success) {
+            dispatch(showAlert({
+                variant: "success",
+                title: "",
+                description: 'Successfully subscribed!'
+            }))
+        } else {
+            dispatch(showAlert({
+                variant: "destructive",
+                title: "Request Failed",
+                description: result.message ?? 'Something went wrong. Please try again.'
+            }))
+        }
     }
 
     return (
-        <section className="relative w-full overflow-hidden sm:px-10 lg:px-12 xl:px-16">
-            {/* Mobile Background Image with Overlay */}
+        <section
+            className="relative w-full overflow-hidden sm:px-10 lg:px-12 xl:px-16"
+            data-testid="location-details-section"
+        >
             <div className="md:hidden absolute inset-0">
                 <Image
                     src={imageSrc}
@@ -71,33 +96,27 @@ export default function EventLocationDetailsSection({
                 <div className="relative z-10 flex flex-col justify-end min-h-screen md:w-1/2 md:min-h-0 px-4 md:px-0 pb-12 pt-20 md:py-0">
                     <div className="space-y-6 max-w-xl">
                         <div className="space-y-3">
-                            <h2
-                                className={`text-2xl max-w-[10em] capitalize sm:text-3xl font-medium md:font-bold text-white md:text-secondary-9 leading-tight ${space_grotesk.className}`}
-                            >
+                            <h2 className={`[text-shadow:0_2px_8px_rgba(0,0,0,0.6)] text-2xl max-w-[10em] capitalize sm:text-3xl font-medium md:font-bold text-white md:text-secondary-9 leading-tight ${space_grotesk.className}`}>
                                 {heading}
                             </h2>
-                            <p className="text-secondary-1 md:text-neutral-7 mt-5 text-sm leading-relaxed">
+                            <p className="[text-shadow:0_2px_8px_rgba(0,0,0,0.6)] text-secondary-1 md:text-neutral-7 mt-5 text-sm leading-relaxed">
                                 {description}
                             </p>
                         </div>
 
                         <div className={`${space_grotesk.className} flex items-center gap-5`}>
                             <div>
-                                <p className="text-xl font-medium text-neutral-5 md:text-neutral-7">
+                                <p className="text-xl font-medium text-neutral-5 md:text-neutral-7 drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)] [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
                                     {subscribers.toLocaleString()}
                                 </p>
-                                <p className="text-white md:text-secondary-9 font-medium mt-1">
-                                    Subscribers
-                                </p>
+                                <p className="text-white md:text-secondary-9 font-medium mt-1">Subscribers</p>
                             </div>
                             <div className="w-0.5 h-12 bg-neutral-6" />
                             <div>
-                                <p className="text-xl font-medium text-neutral-5 md:text-neutral-7">
+                                <p className="text-xl font-medium text-neutral-5 md:text-neutral-7 drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)] [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
                                     {events.toLocaleString()}
                                 </p>
-                                <p className="text-white md:text-secondary-9 font-medium mt-1">
-                                    Events
-                                </p>
+                                <p className="text-white md:text-secondary-9 font-medium mt-1">Events</p>
                             </div>
                         </div>
 
@@ -108,33 +127,25 @@ export default function EventLocationDetailsSection({
                                     value={email}
                                     onChange={(e) => {
                                         setEmail(e.target.value)
-                                        setError('')
-                                        setIsSuccess(false)
                                     }}
                                     placeholder="Enter email address"
-                                    className="flex-1 p-4 rounded-sm bg-neutral-3/90 backdrop-blur-sm text-xs md:text-sm text-neutral-8 placeholder:text-neutral-7 outline-none focus:ring-2 focus:ring-white transition-all"
                                     disabled={isSubmitting}
+                                    data-testid="subscribe-email"
+                                    className="flex-1 p-4 rounded-sm bg-neutral-3/90 backdrop-blur-sm text-xs md:text-sm text-neutral-8 placeholder:text-neutral-7 outline-none focus:ring-2 focus:ring-white transition-all"
                                 />
                                 <button
                                     onClick={handleSubmit}
                                     disabled={isSubmitting || !email.trim()}
+                                    data-testid="subscribe-submit"
                                     className="px-8 py-4 rounded-full bg-secondary-6 text-white font-medium text-sm hover:bg-secondary-7 disabled:hover:bg-secondary-6 active:scale-95 disabled:cursor-not-allowed transition-all whitespace-nowrap"
                                 >
                                     {isSubmitting ? 'Subscribing...' : 'Subscribe'}
                                 </button>
                             </div>
-
-                            {error && <ErrorPara error={error} />}
-                            {isSuccess && (
-                                <p className="text-xs text-green-300 ml-4">
-                                    Successfully subscribed!
-                                </p>
-                            )}
                         </div>
                     </div>
                 </div>
 
-                {/* Desktop Image */}
                 <div className="hidden md:block relative w-2/5 aspect-square rounded-4xl overflow-hidden shadow-2xl">
                     <Image
                         src={imageSrc}

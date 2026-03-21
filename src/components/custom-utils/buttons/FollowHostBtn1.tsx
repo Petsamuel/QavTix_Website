@@ -1,4 +1,3 @@
-import FollowHostPromptDialog from "@/components/modals/FollowHostPromptDialog";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -16,8 +15,6 @@ export default function FollowHostBtn1({ className }:{ className?: string }){
             >
                 Follow
             </button>
-
-            <FollowHostPromptDialog open={openModal} setOpen={setOpenModal} />
         </>
     )
 }
