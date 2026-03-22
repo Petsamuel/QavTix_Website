@@ -77,7 +77,7 @@ export default function PricingCard({ plan, index }: PricingCardProps) {
         >
             <div
                 className={cn(
-                    "rounded-[32px] overflow-hidden p-[1.6px] transition-all",
+                    "rounded-[32px] p-[1.6px] transition-all",
                     plan.highlighted
                         ? "bg-linear-to-br from-[#0052CC] via-[#FF7A21] to-[#6B7280]"
                         : "bg-white",

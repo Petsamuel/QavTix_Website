@@ -10,8 +10,8 @@
 export const hostPricingData: PricingData = {
     plans: [
         {
-            id:           'free',
-            name:         'Free Plan',
+            id:           'standard',
+            name:         'Standard Plan',
             price:        0,
             currency:     '₦',
             perTicketFee: 0,
@@ -133,8 +133,8 @@ export const hostPricingData: PricingData = {
 export const attendeePricingData: PricingData = {
     plans: [
         {
-            id:           'free',
-            name:         'Free',
+            id:           'standard',
+            name:         'Standard',
             price:        0,
             currency:     '₦',
             perTicketFee: 0,

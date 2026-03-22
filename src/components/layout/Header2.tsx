@@ -128,7 +128,7 @@ export default function Header2() {
                         {/* Authenticated — avatar + name + sign out */}
                         {isAuthenticated && user?.id && (
                             <div className="flex items-center gap-2">
-                                <CustomAvatar id={user.id} name={user.full_name} size="size-7 ring-2!" />
+                                <CustomAvatar id={user.id} name={user.full_name} size="size-7 ring-2!" textSize="text-base" />
                                 <div className="flex flex-col">
                                     <span className="text-xs font-medium text-neutral-8">
                                         {user.full_name}

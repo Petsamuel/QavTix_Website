@@ -36,16 +36,6 @@ export default function DesktopFeatureComparison({ data }: { data: PricingData }
                     <tbody>
                         {Object.entries(grouped).map(([category, features]) => (
                             <>
-                                {/* Category header row */}
-                                <tr key={`cat-${category}`} className="bg-neutral-1 border-t border-neutral-3">
-                                    <td
-                                        colSpan={data.plans.length + 1}
-                                        className="py-3 px-6 text-xs font-semibold text-neutral-6 uppercase tracking-widest"
-                                    >
-                                        {category}
-                                    </td>
-                                </tr>
-
                                 {/* Feature rows */}
                                 {features.map((feature, index) => (
                                     <tr
@@ -72,7 +62,7 @@ export default function DesktopFeatureComparison({ data }: { data: PricingData }
                                                         ) : (
                                                             <Icon
                                                                 icon="basil:lock-outline"
-                                                                className="inline-block text-red-500 size-6"
+                                                                className="inline-block text-neutral-8 size-6"
                                                             />
                                                         )
                                                     ) : (
