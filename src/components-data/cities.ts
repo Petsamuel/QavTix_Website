@@ -16,7 +16,7 @@ const CITY_DATA: Record<string, CityStaticData> = {
         description: "Nigeria's modern capital city with iconic landmarks and beautiful green spaces.",
     },
     "port harcourt": {
-        image:       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=90&auto=format&fit=crop",
+        image:       "https://visaliv.s3.ap-south-1.amazonaws.com/Port-Harcourt-Tourist-Beach-NG.jpg",
         description: "The garden city of Nigeria, famous for its rivers and vibrant food culture.",
     },
     "kano": {
