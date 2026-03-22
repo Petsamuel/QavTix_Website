@@ -76,14 +76,14 @@ export async function getHostDetails(hostId: number | string): Promise<GetHostDe
 }
 
 
-export async function followHost(hostId: number | string): Promise<MutateResult> {
+export async function followHost(hostID: number | string): Promise<MutateResult> {
     try {
         const axiosInstance = await getServerAxios()
         const url = FOLLOW_HOST_ENDPOINT
-            .replace("[host_id]", String(hostId))
+            .replace("[host_id]", String(hostID))
             .replace("[action]", "follow")
 
-        await axiosInstance.post(url)
+        await axiosInstance.post(url, { host_id: hostID })
 
         revalidateTag(CACHE_TAGS.TRENDING_HOSTS, "max")
 
@@ -96,14 +96,14 @@ export async function followHost(hostId: number | string): Promise<MutateResult>
     }
 }
 
-export async function unfollowHost(hostId: number | string): Promise<MutateResult> {
+export async function unfollowHost(hostID: number | string): Promise<MutateResult> {
     try {
         const axiosInstance = await getServerAxios()
         const url = FOLLOW_HOST_ENDPOINT
-            .replace("[host_id]", String(hostId))
+            .replace("[host_id]", String(hostID))
             .replace("[action]", "unfollow")
 
-        await axiosInstance.delete(url)
+        await axiosInstance.delete(url, { data: { host_id: hostID } })
 
         revalidateTag(CACHE_TAGS.TRENDING_HOSTS, "max")
 

@@ -28,4 +28,5 @@ export const TRENDING_EVENTS_ENDPOINT = "public/event/trending"
 export const TRENDING_HOSTS_ENDPOINT = "public/event/trending-hosts"
 export const FOLLOW_HOST_ENDPOINT = "public/hosts/[host_id]/[action]/"
 export const HOST_DETAILS_ENDPOINT = "public/hosts/[host_id]"
+export const HOST_PAST_EVENTS_ENDPOINT = "public/hosts/[host_id]/past"
 

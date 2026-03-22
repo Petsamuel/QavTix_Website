@@ -52,10 +52,10 @@ interface HostDetails {
     state:           string
     country:         string
     followers_count: number
-    events_count:    string
-    upcoming_events: string
-    past_events:     string
+    events_count:    number
+    upcoming_events: PublicPagesEvent[]
+    past_events:     PublicPagesEvent[]
     is_following:    boolean
-    relevant_links:  string
+    relevant_links:  Record<string, string>[]
     description:     string
 }
