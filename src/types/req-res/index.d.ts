@@ -41,20 +41,6 @@ interface LoginRequest {
 // GET /auth/me/ or /auth/profile/
 type ProfileResponse = ApiResponse<AuthUser>
 
-interface UserProfile {
-    id:               number
-    full_name:        string
-    email:            string
-    email_verified:   boolean
-    phone_number:     string
-    dob:              string | null
-    gender:           string
-    country:          string
-    state:            string
-    city:             string
-    profile_picture:  string | null
-    role:             string
-}
 
 interface UpdateProfilePayload {
     full_name?:       string
@@ -66,4 +52,13 @@ interface UpdateProfilePayload {
     city?:            string
     profile_picture?: string | null
     role?:            string
+}
+
+
+interface CategoryPageData {
+    name:              string
+    description:       string
+    total_events:      number
+    total_subscribers: number
+    events:            PublicPagesEvent[]
 }

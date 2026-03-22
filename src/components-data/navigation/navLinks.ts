@@ -23,7 +23,7 @@ export const NAV_LINKS = {
 
   SEARCH_EVENTS: { label: '', href: '/events/search' },
   EVENT_LOCATION: { label: '', href: '/events/explore/location/' },
-  EVENT_CATEGORY: { label: '', href: '/events/explore/category/' },
+  EVENT_CATEGORY: { label: '', href: '/events/explore/category/[category_name]/' },
   EVENT_TRAVEL_AND_TOUR: { label: '', href: '/events/explore/travel-and-tours/' },
   EVENTS_DETAILS: { label: '', href: '/events/details/[event_id]' },
   EVENTS_GET_TICKETS_CHECKOUT: { label: '', href: '/events/details/[event_id]/checkout' },

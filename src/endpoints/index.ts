@@ -17,6 +17,9 @@ export const TOKEN_VERIFY_ENDPOINT = "auth/token/verify/"
 
 
 export const CATEGORIES_ENDPOINT = "public/categories"
+export const CATEGORY_PAGE_ENDPOINT = "public/categories/[category_name]"
+
+
 export const FEATURED_EVENTS_ENDPOINT = "public/event/featured"
 export const EVENTS_NEARBY_ENDPOINT = "public/events/nearby"
 export const TOP_LOCATIONS_ENDPOINT = "public/event/top-locations"
@@ -24,6 +27,7 @@ export const LOCATION_PAGE_ENDPOINT = "public/locations/[loc]"
 export const CITY_SUBSCRIBE_ENDPOINT = "public/locations/subscribe/"
 export const TRENDING_EVENTS_ENDPOINT = "public/event/trending"
 
+export const SEARCH_EVENTS_ENDPOINT = "public/event/trending"
 
 export const TRENDING_HOSTS_ENDPOINT = "public/event/trending-hosts"
 export const FOLLOW_HOST_ENDPOINT = "public/hosts/[host_id]/[action]/"

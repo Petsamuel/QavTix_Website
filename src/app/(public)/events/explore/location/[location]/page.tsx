@@ -1,7 +1,6 @@
-import { notFound } from "next/navigation"
-import EventLocationDetailsSection from "@/components/events-page/EventLocationDetailsSection"
-import EventsNearYouSection from "@/components/shared/EventsNearYou"
 import { getLocationPage } from "@/actions/getters"
+import EventSectionHero from "@/components/events-page/EventSectionHero"
+import { getCityStaticData } from "@/components-data/cities"
 
 interface Props {
     params: Promise<{ location: string }>
@@ -13,26 +12,20 @@ export default async function EventLocationPage({ params }: Props) {
 
     const result = await getLocationPage(location)
 
-    if (!result.success || !result.data) notFound()
-
-    const { city, description, total_events, total_subscribers, events } = result.data
+    const { image } = getCityStaticData(result.data?.city || location)
 
     return (
         <main className="pt-24 md:pt-40">
-            <EventLocationDetailsSection
-                location={city}
-                events={total_events}
-                subscribers={total_subscribers}
-                heading={`Events Happening in ${city}`}
-                description={description}
+            <EventSectionHero
+                heading={`Events Happening in ${result.data?.city || location}`}
+                description={result.data?.description || ""}
+                stats={[
+                    { label: "Events",      value: result.data?.total_events || 0 },
+                    { label: "Subscribers", value: result.data?.total_subscribers || 0 },
+                ]}
+                imageSrc={image || undefined}
+                subscribeKey={result.data?.city || location}
             />
-
-            <div className="mt-16">
-                <EventsNearYouSection
-                    events={events}
-                    city={city}
-                />
-            </div>
         </main>
     )
 }

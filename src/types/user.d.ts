@@ -23,6 +23,22 @@ type UserGroup = {
 }
 
 
+interface UserProfile {
+    id:               number
+    full_name:        string
+    email:            string
+    email_verified:   boolean
+    phone_number:     string
+    dob:              string | null
+    gender:           string
+    country:          string
+    state:            string
+    city:             string
+    profile_picture:  string | null
+    role:             string
+}
+
+
 type Attendee = {
     id: number,
     name: string,

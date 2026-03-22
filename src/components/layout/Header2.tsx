@@ -32,7 +32,7 @@ export default function Header2() {
 
     const isLightBg =
         pathName === NAV_LINKS.SEARCH_PAGE.href ||
-        pathName.startsWith(NAV_LINKS.EVENT_CATEGORY.href) ||
+        pathName.startsWith(NAV_LINKS.EVENT_CATEGORY.href.replace("[category_name]/", "")) ||
         pathName.startsWith(NAV_LINKS.EVENT_LOCATION.href) ||
         pathName.startsWith(NAV_LINKS.EVENT_TRAVEL_AND_TOUR.href)
 

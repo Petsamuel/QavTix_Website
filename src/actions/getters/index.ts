@@ -5,6 +5,7 @@ import {
     LOCATION_PAGE_ENDPOINT,
     TRENDING_EVENTS_ENDPOINT,
 } from "@/endpoints"
+import { headers } from "next/headers"
 
 async function publicFetch<T>(url: string): Promise<T | null> {
     try {
@@ -40,6 +41,14 @@ export async function getNearbyEvents(city: string): Promise<PublicPagesEvent[]>
         `${base}/${EVENTS_NEARBY_ENDPOINT}?${params}`
     )
     return data?.results ?? []
+}
+
+
+export async function getUserLocation(): Promise<{ city: string; country: string }> {
+  const headersList = await headers()
+  const city    = headersList.get("x-vercel-ip-city")    ?? "Lagos"
+  const country = headersList.get("x-vercel-ip-country") ?? "NG"
+  return { city: decodeURIComponent(city), country }
 }
 
 export async function getTopLocations(): Promise<TopLocation[]> {
