@@ -19,6 +19,7 @@ import { usePublicEvents } from '@/lib/custom-hooks/UsePublicEvents'
 import EventCardLoaderContainer from '../loaders/EventCardLoader'
 import { ApiCategory } from '@/actions/filters'
 import { deriveCategories } from '@/helper-fns/deriveCategories'
+import { useAppSelector } from '@/lib/redux/hooks'
 
 interface Props {
     className?:     string
@@ -61,6 +62,8 @@ export function TrendingEvents({
     const pageSize   = showAll ? 12 : 8
     const displayed  = showAll ? items : items.slice(0, pageSize)
 
+    const { currency } = useAppSelector(store => store.settings)
+
     
     const availableCategories = useMemo(
         () => deriveCategories(categories, items),
@@ -74,7 +77,7 @@ export function TrendingEvents({
                     <CategoryFilter
                         value={filters.categories}
                         categories={availableCategories}
-                        
+                        filterFor='eventPage'
                         onChange={(categories) => setFilters(prev => ({ ...prev, categories }))}
                     />
                 )}
@@ -106,7 +109,7 @@ export function TrendingEvents({
             <div>
                 <div className="flex items-center justify-between gap-8">
                     <h2 className={`text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
-                        {buildTrendingEventsHeading(filters)}
+                        {buildTrendingEventsHeading(filters, categories, currency)}
                     </h2>
                     {!showAll && items.length > pageSize && (
                         <button onClick={() => setShowAll(true)} className="text-sm font-medium text-primary-6 hover:underline">

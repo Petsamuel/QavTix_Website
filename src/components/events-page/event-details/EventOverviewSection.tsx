@@ -4,11 +4,11 @@ import { Icon } from "@iconify/react";
 import Link from "next/link";
 import MapEmbed from "@/components/custom-utils/maps/MapEmbed";
 import { copyToClipboard } from "@/helper-fns/copyToClipboard";
-import { statusStyles, StatusStylesRecord } from "@/components-data/event-status-styles";
 import { cn } from "@/lib/utils";
 import { space_grotesk } from "@/lib/fonts";
 import HostNAttendeeDetailsSection from "./HostNAttendeeSection";
 import TicketStatusSection from "./TicketStatusSection";
+import { statusStyles, StatusStylesRecord } from "@/components/custom-utils/cards/resources/event-status-styles";
 
 export default function EventOverviewSection({ className }:{ className?: string }){
     return (

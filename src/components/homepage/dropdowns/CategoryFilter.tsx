@@ -13,30 +13,29 @@ import EventFilterTypeBtn from '@/components/custom-utils/buttons/event-search/E
 import { MobileBottomSheet } from '@/components/custom-utils/EventFilterDropdownMobileBottomSheet'
 import FilterButtonsActions1 from '@/components/custom-utils/buttons/event-search/FilterActionButtons1'
 
-
 interface CategoryFilterProps {
-    value?: string[]
-    onChange: (value: string[]) => void
+    value?:      string[]
+    onChange:    (value: string[]) => void
     categories?: Category[]
+    filterFor?:  'homepage' | 'eventPage' 
 }
 
 export default function CategoryFilter({
-    value = [],
+    value      = [],
     onChange,
     categories = [],
+    filterFor  = "homepage",
 }: CategoryFilterProps) {
 
-    
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen,              setIsOpen]              = useState(false)
+    const [selectedCategories,  setSelectedCategories]  = useState<string[]>(value)
     const isTablet = useMediaQuery('(min-width: 768px)')
-    
-    const [selectedCategories, setSelectedCategories] = useState<string[]>(value)
+
+    const triggerVariant = filterFor === "homepage" ? 'default' : 'compact'
 
     const handleOpenChange = (open: boolean) => {
         setIsOpen(open)
-        if (open) {
-            setSelectedCategories(value)
-        }
+        if (open) setSelectedCategories(value)
     }
 
     const handleToggle = (categoryValue: string) => {
@@ -44,10 +43,9 @@ export default function CategoryFilter({
             setSelectedCategories([])
             return
         }
-
-        setSelectedCategories((prev) =>
+        setSelectedCategories(prev =>
             prev.includes(categoryValue)
-                ? prev.filter((v) => v !== categoryValue)
+                ? prev.filter(v => v !== categoryValue)
                 : [...prev, categoryValue]
         )
     }
@@ -62,25 +60,21 @@ export default function CategoryFilter({
     }
 
     const hasActiveFilter = value.length > 0
-    const displayText = hasActiveFilter
-        ? `${value.length} selected`
-        : 'Event category'
-    
+    const displayText     = hasActiveFilter ? `${value.length} selected` : 'Event category'
 
     const categoryList = (
         <div className="space-y-1 max-h-[50vh] overflow-y-auto md:max-h-[unset]">
             {categories.map((category, index) => {
-                const isSelected =
-                    category.value === 'all'
-                        ? selectedCategories.length === 0
-                        : selectedCategories.includes(category.value)
+                const isSelected = category.value === 'all'
+                    ? selectedCategories.length === 0
+                    : selectedCategories.includes(category.value)
 
                 return (
                     <CategoryItemBtn
                         key={index}
                         category={category}
                         isSelected={isSelected}
-                        handleToggle={handleToggle} // Only updates local state
+                        handleToggle={handleToggle}
                     />
                 )
             })}
@@ -89,15 +83,15 @@ export default function CategoryFilter({
 
     return (
         <>
-            {/* Mobile & Tablet - Bottom Sheet */}
+            {/* Mobile — Bottom Sheet */}
             {!isTablet && (
                 <>
-                    <EventFilterTypeBtn 
+                    <EventFilterTypeBtn
                         onClick={() => setIsOpen(true)}
-                        displayText={displayText} 
+                        displayText={displayText}
                         hasActiveFilter={hasActiveFilter}
+                        variant={triggerVariant}
                     />
-
                     <MobileBottomSheet
                         isOpen={isOpen}
                         onClose={() => setIsOpen(false)}
@@ -109,30 +103,21 @@ export default function CategoryFilter({
                 </>
             )}
 
-            {/* Tablet - Dropdown Menu */}
+            {/* Tablet+ — Dropdown */}
             {isTablet && (
                 <DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
                     <DropdownMenuTrigger asChild>
-                        <EventFilterTypeBtn 
-                            displayText={displayText} 
+                        <EventFilterTypeBtn
+                            displayText={displayText}
                             hasActiveFilter={hasActiveFilter}
+                            variant={triggerVariant}
                         />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent 
+                    <DropdownMenuContent
                         className={cn(
                             "w-full min-w-[18em] z-100! p-4 rounded-xl shadow-[0px_3.69px_14.76px_0px_rgba(51,38,174,0.08)]",
-                            // Open animation
-                            "data-[state=open]:animate-in",
-                            "data-[state=open]:fade-in-0",
-                            "data-[state=open]:duration-500 data-[state=open]:ease-[cubic-bezier(0.16,1,0.3,1)]",
-                            "data-[state=open]:zoom-in-90",
-                            "data-[state=open]:slide-in-from-top-4",
-                            // Close animation
-                            "data-[state=closed]:animate-out",
-                            "data-[state=closed]:fade-out-0",
-                            "data-[state=closed]:duration-400 data-[state=closed]:ease-in",
-                            "data-[state=closed]:zoom-out-90",
-                            "data-[state=closed]:slide-out-to-top-4"
+                            "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-500 data-[state=open]:ease-[cubic-bezier(0.16,1,0.3,1)] data-[state=open]:zoom-in-90 data-[state=open]:slide-in-from-top-4",
+                            "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-400 data-[state=closed]:ease-in data-[state=closed]:zoom-out-90 data-[state=closed]:slide-out-to-top-4"
                         )}
                         align="start"
                     >

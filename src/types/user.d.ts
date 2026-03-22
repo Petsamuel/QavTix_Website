@@ -22,16 +22,6 @@ type UserGroup = {
     }[]
 }
 
- // Havent confirmed Proper Type //
-
-type Host = {
-    id: number,
-    followers: number,
-    events: number,
-    profile_img: string,
-    name: string,
-    username: string
-}
 
 type Attendee = {
     id: number,
@@ -43,4 +33,29 @@ type Attendee = {
         text: string,
         icon: string
     }[]
+}
+
+interface TrendingHost {
+    id:             number
+    business_name:  string
+    followers:      number
+    events_count:   number
+    trending_score: number
+    is_following:    boolean
+}
+
+interface HostDetails {
+    id:              number
+    host:            string
+    business_type:   string
+    city:            string
+    state:           string
+    country:         string
+    followers_count: number
+    events_count:    string
+    upcoming_events: string
+    past_events:     string
+    is_following:    boolean
+    relevant_links:  string
+    description:     string
 }
