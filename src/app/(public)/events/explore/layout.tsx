@@ -16,13 +16,13 @@ export default async function EventExploreLayout({ children }: { children: React
     ])
 
     return (
-        <>
+        <div className="pb-10">
             {children}
             <div className="mt-10 md:mt-16">
                 <FeaturedEventsSection events={featuredEvents} />
             </div>
             <TrendingEvents className="" initialEvents={trendingEvents} categories={categoriesResult.data} />
             <TopHostsSection hosts={hostsResult.data ?? []} />
-        </>
+        </div>
     )
 }

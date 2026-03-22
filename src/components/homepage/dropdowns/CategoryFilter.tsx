@@ -17,7 +17,7 @@ interface CategoryFilterProps {
     value?:      string[]
     onChange:    (value: string[]) => void
     categories?: Category[]
-    filterFor?:  'homepage' | 'eventPage' 
+    filterFor?:  'homepage' | 'eventPage'
 }
 
 export default function CategoryFilter({
@@ -27,8 +27,8 @@ export default function CategoryFilter({
     filterFor  = "homepage",
 }: CategoryFilterProps) {
 
-    const [isOpen,              setIsOpen]              = useState(false)
-    const [selectedCategories,  setSelectedCategories]  = useState<string[]>(value)
+    const [isOpen,             setIsOpen]             = useState(false)
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(value)
     const isTablet = useMediaQuery('(min-width: 768px)')
 
     const triggerVariant = filterFor === "homepage" ? 'default' : 'compact'
@@ -55,29 +55,25 @@ export default function CategoryFilter({
         setIsOpen(false)
     }
 
-    const handleClear = () => {
-        setSelectedCategories([])
-    }
+    const handleClear = () => setSelectedCategories([])
 
     const hasActiveFilter = value.length > 0
     const displayText     = hasActiveFilter ? `${value.length} selected` : 'Event category'
 
     const categoryList = (
         <div className="space-y-1 max-h-[50vh] overflow-y-auto md:max-h-[unset]">
-            {categories.map((category, index) => {
-                const isSelected = category.value === 'all'
-                    ? selectedCategories.length === 0
-                    : selectedCategories.includes(category.value)
-
-                return (
-                    <CategoryItemBtn
-                        key={index}
-                        category={category}
-                        isSelected={isSelected}
-                        handleToggle={handleToggle}
-                    />
-                )
-            })}
+            {categories.map((category, index) => (
+                <CategoryItemBtn
+                    key={index}
+                    category={category}
+                    isSelected={
+                        category.value === 'all'
+                            ? selectedCategories.length === 0
+                            : selectedCategories.includes(category.value)
+                    }
+                    handleToggle={handleToggle}
+                />
+            ))}
         </div>
     )
 
@@ -115,14 +111,14 @@ export default function CategoryFilter({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                         className={cn(
-                            "w-full min-w-[18em] z-100! p-4 rounded-xl shadow-[0px_3.69px_14.76px_0px_rgba(51,38,174,0.08)]",
+                            "w-full min-w-[18em] z-100 p-4 rounded-xl shadow-[0px_3.69px_14.76px_0px_rgba(51,38,174,0.08)]",
                             "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-500 data-[state=open]:ease-[cubic-bezier(0.16,1,0.3,1)] data-[state=open]:zoom-in-90 data-[state=open]:slide-in-from-top-4",
                             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-400 data-[state=closed]:ease-in data-[state=closed]:zoom-out-90 data-[state=closed]:slide-out-to-top-4"
                         )}
                         align="start"
                     >
                         <div className="space-y-4">
-                            <h3 className="text-sm font-semibold text-gray-900">Category</h3>
+                            <h3 className="text-sm font-semibold text-secondary-9">Category</h3>
                             {categoryList}
                             <FilterButtonsActions1 onApply={handleApply} onClear={handleClear} />
                         </div>

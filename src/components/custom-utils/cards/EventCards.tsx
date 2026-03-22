@@ -127,21 +127,21 @@ export default function EventsCard(card: EventCardProps) {
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-2">
+                       <div className="flex items-center flex-wrap justify-between pt-2 gap-2">
                             {(card.attendees?.length ?? 0) > 0 && (
-                                <div className="flex -space-x-2">
-                                    {card.attendees!.slice(0, 6).map((user) => (
+                                <div className="flex -space-x-1.5 shrink-0">
+                                    {card.attendees!.slice(0, 3).map((user) => (
                                         <Avatar key={user.id} className="ring-2 ring-background size-8">
                                             {user.profile_picture && <AvatarImage src={user.profile_picture} alt={user.full_name} />}
-                                            <AvatarFallback className={`${getAvatarColor(user.id.toString())} text-white font-medium text-xs`}>
+                                            <AvatarFallback className={`${getAvatarColor(user.id.toString())} text-white font-medium text-[10px]`}>
                                                 {getInitialsFromName(user.full_name)}
                                             </AvatarFallback>
                                         </Avatar>
                                     ))}
-                                    {card.attendees!.length > 4 && (
+                                    {card.attendees!.length > 3 && (
                                         <Avatar className="ring-2 ring-background size-8">
                                             <AvatarFallback className="bg-primary-1 font-medium text-secondary-7 text-xs">
-                                                +{card.attendees!.length - 4}
+                                                +{card.attendees!.length - 3}
                                             </AvatarFallback>
                                         </Avatar>
                                     )}
@@ -155,7 +155,7 @@ export default function EventsCard(card: EventCardProps) {
                                     </p>
                                 )}
                                 {card.price && parsePrice(card.price) != null && (
-                                    <p className={`${space_grotesk.className} font-medium text-lg text-secondary-9`}>
+                                    <p className={`${space_grotesk.className} font-semibold text-lg text-secondary-9`}>
                                         {formatPrice(parsePrice(card.price)!, currency)}
                                     </p>
                                 )}

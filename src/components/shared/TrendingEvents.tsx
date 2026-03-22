@@ -137,7 +137,7 @@ export function TrendingEvents({
                 )}
 
                 {!isLoading && !isError && !isEmpty && (
-                    <div className="grid grid-cols-[repeat(auto-fit,minmax(14em,1fr))] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-[repeat(auto-fit,minmax(16em,1fr))] gap-6 lg:gap-8 mt-10 justify-items-center md:justify-items-start">
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(14em,1fr))] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[repeat(auto-fill,minmax(16em,1fr))] gap-6 lg:gap-8 mt-10 justify-items-center md:justify-items-start">
                         {displayed.map(event => (
                             <EventsCard1
                                 key={event.id}

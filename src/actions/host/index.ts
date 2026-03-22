@@ -46,7 +46,7 @@ export async function getTrendingHosts(): Promise<GetTrendingHostsResult> {
             return { success: false, message: handleApiError(json) }
         }
 
-        const results = json.data?.results ?? json.results ?? []
+        const results = json.data ?? json.results.data ?? []
         return { success: true, data: results }
 
     } catch (err) {
