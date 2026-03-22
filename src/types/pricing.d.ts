@@ -13,9 +13,10 @@ interface PricingPlan {
 }
 
 interface PricingFeature {
-  name: string
-  free: boolean | string
-  professional: boolean | string
+  category?:  string 
+  name:       string
+  free:       boolean | string
+  pro:        boolean | string
   enterprise: boolean | string
 }
 

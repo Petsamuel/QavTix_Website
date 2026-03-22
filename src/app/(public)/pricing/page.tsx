@@ -1,5 +1,5 @@
 "use client"
-import HostPricingContent from "@/components/pricing/HostPricingContent";
+import PricingContent from "@/components/pricing/PricingContent";
 import SectionHeading from "@/components/shared/SectionHeading";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect, useRef } from "react";
@@ -49,7 +49,7 @@ export default function PricingPage(){
                             Attendee
                         </TabsTrigger>
                     </TabsList>
-                    <HostPricingContent />
+                    <PricingContent />
                 </Tabs>
             </div>
         </main>

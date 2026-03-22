@@ -131,7 +131,7 @@ export function TrendingEvents({
 
                 {isEmpty && (
                     <div className="flex flex-col items-center justify-center py-16 gap-3 text-center mt-6">
-                        <Icon icon="mage:filter" className="size-6 text-neutral-4" />
+                        <Icon icon="mage:filter" className="size-7 text-neutral-7" />
                         <p className="text-sm font-medium text-secondary-8">No events match your filters</p>
                     </div>
                 )}

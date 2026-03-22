@@ -91,19 +91,6 @@ export default function EventsNearYouSection2({ events }: Props) {
                 </h2>
 
                 <div className="flex items-center gap-3">
-                    <ActionButton1
-                        buttonText="Explore"
-                        className="hidden! md:flex!"
-                        iconPosition="right"
-                        icon="iconoir:arrow-right"
-                        action={() => router.push(NAV_LINKS.EVENTS.href)}
-                    />
-                    <button
-                        onClick={() => router.push(NAV_LINKS.EVENTS.href)}
-                        className="text-sm md:hidden bg-primary hover:bg-primary-7 active:bg-primary-8 text-white p-2 rounded-full h-12 aspect-square font-medium transition-colors inline-flex items-center justify-center"
-                    >
-                        <Icon icon="lucide:arrow-up-right" width="20" height="20" className="text-white" />
-                    </button>
                     {shouldCarousel && (
                         <CarouselActionBtns
                             scrollPrev={scrollPrev}
