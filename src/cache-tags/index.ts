@@ -9,4 +9,6 @@ export const CACHE_TAGS = {
     AFFILIATE_PERFORMANCE_MONTH: "affiliate-performance-month",
     WITHDRAWAL_HISTORY:          "withdrawal-history",
     AFFILIATE_PERFORMANCE_YEAR:  "affiliate-performance-year",
+    HOSTS:  "hosts",
+    HOST_DETAILS:  "host-details",
 } as const

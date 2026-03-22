@@ -1,5 +1,6 @@
 "use server"
 
+import { CACHE_TAGS } from "@/cache-tags"
 import {
     TRENDING_HOSTS_ENDPOINT,
     FOLLOW_HOST_ENDPOINT,
@@ -27,16 +28,12 @@ interface MutateResult {
     message?: string
 }
 
-const CACHE_TAGS = {
-    TRENDING_HOSTS: "trending-hosts",
-}
-
 
 export async function getTrendingHosts(): Promise<GetTrendingHostsResult> {
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/${TRENDING_HOSTS_ENDPOINT}`,
-            { next: { revalidate: 60 * 10, tags: [CACHE_TAGS.TRENDING_HOSTS] } }
+            { next: { revalidate: 60 * 10, tags: [CACHE_TAGS.HOSTS] } }
         )
 
         const json = await res.json()
@@ -57,21 +54,17 @@ export async function getTrendingHosts(): Promise<GetTrendingHostsResult> {
 
 export async function getHostDetails(hostId: number | string): Promise<GetHostDetailsResult> {
     try {
-        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${HOST_DETAILS_ENDPOINT.replace("[host_id]", String(hostId))}`
+        const url = `${HOST_DETAILS_ENDPOINT.replace("[host_id]", String(hostId))}`
 
-        const res = await fetch(url, { next: { revalidate: 60 * 5 } })
-        const json = await res.json()
-
-        if (!res.ok) {
-            console.log("[getHostDetails] status:", res.status, JSON.stringify(json))
-            return { success: false, message: handleApiError(json) }
-        }
+        const axiosInstance = await getServerAxios()
+        const { data: json } = await axiosInstance.get(url)
 
         return { success: true, data: json.data ?? json }
 
-    } catch (err) {
-        console.log("[getHostDetails] error:", err)
-        return { success: false, message: "Failed to load host details." }
+    } catch (error: any) {
+        console.log("[getHostDetails] status:", error?.response?.status)
+        console.log("[getHostDetails] body:", JSON.stringify(error?.response?.data))
+        return { success: false, message: handleApiError(error?.response?.data) }
     }
 }
 
@@ -85,7 +78,8 @@ export async function followHost(hostID: number | string): Promise<MutateResult>
 
         await axiosInstance.post(url, { host_id: hostID })
 
-        revalidateTag(CACHE_TAGS.TRENDING_HOSTS, "max")
+        revalidateTag(CACHE_TAGS.HOSTS, "max")
+        revalidateTag(CACHE_TAGS.HOST_DETAILS, "max")
 
         return { success: true }
 
@@ -105,7 +99,9 @@ export async function unfollowHost(hostID: number | string): Promise<MutateResul
 
         await axiosInstance.delete(url, { data: { host_id: hostID } })
 
-        revalidateTag(CACHE_TAGS.TRENDING_HOSTS, "max")
+        
+        revalidateTag(CACHE_TAGS.HOSTS, "max")
+        revalidateTag(CACHE_TAGS.HOST_DETAILS, "max")
 
         return { success: true }
 

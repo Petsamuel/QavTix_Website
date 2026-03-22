@@ -38,7 +38,7 @@ export default function HostProfilePageHeader({ host }: Props) {
         <button
             onClick={toggle}
             className={cn(
-                "p-3 rounded-3xl font-medium text-sm w-36 transition-all duration-200 hover:shadow-md active:scale-[0.98]",
+                "p-3 rounded-4xl font-medium text-sm w-34 h-12 transition-all duration-200 hover:shadow-md active:scale-[0.98]",
                 isFollowing
                     ? "bg-white text-secondary-7 border-2 border-secondary-3 hover:bg-neutral-2"
                     : "bg-secondary-6 text-white hover:bg-secondary-7",
