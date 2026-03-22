@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { z } from 'zod'
 import { space_grotesk } from '@/lib/fonts'
-import ErrorPara from '../custom-utils/ErrorPara'
 import { subscribeToCity } from '@/actions/subscribe'
 import { useAppDispatch } from '@/lib/redux/hooks'
 import { showAlert } from '@/lib/redux/slices/alertSlice'
@@ -33,27 +32,17 @@ export default function EventLocationDetailsSection({
 
     const [email,        setEmail]        = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
-
     const dispatch = useAppDispatch()
 
     const handleSubmit = async () => {
-
         const validation = emailSchema.safeParse(email)
         if (!validation.success) {
-            dispatch(showAlert({
-                variant: "destructive",
-                title: "Request Failed",
-                description: validation.error.issues[0].message
-            }))
+            dispatch(showAlert({ variant: "destructive", title: "Request Failed", description: validation.error.issues[0].message }))
             return
         }
-        
+
         if (!location) {
-            dispatch(showAlert({
-                variant: "destructive",
-                title: "Request Failed",
-                description: 'Location is required to subscribe.'
-            }))
+            dispatch(showAlert({ variant: "destructive", title: "Request Failed", description: 'Location is required to subscribe.' }))
             return
         }
 
@@ -62,17 +51,10 @@ export default function EventLocationDetailsSection({
         setIsSubmitting(false)
 
         if (result.success) {
-            dispatch(showAlert({
-                variant: "success",
-                title: "",
-                description: 'Successfully subscribed!'
-            }))
+            dispatch(showAlert({ variant: "success", title: "", description: 'Successfully subscribed!' }))
+            setEmail('')
         } else {
-            dispatch(showAlert({
-                variant: "destructive",
-                title: "Request Failed",
-                description: result.message ?? 'Something went wrong. Please try again.'
-            }))
+            dispatch(showAlert({ variant: "destructive", title: "Request Failed", description: result.message ?? 'Something went wrong. Please try again.' }))
         }
     }
 
@@ -81,14 +63,9 @@ export default function EventLocationDetailsSection({
             className="relative w-full overflow-hidden sm:px-10 lg:px-12 xl:px-16"
             data-testid="location-details-section"
         >
+            {/* Background image — mobile only, hidden on md+ where flex layout takes over */}
             <div className="md:hidden absolute inset-0">
-                <Image
-                    src={imageSrc}
-                    alt={`${location} cityscape`}
-                    fill
-                    className="object-cover"
-                    priority
-                />
+                <Image src={imageSrc} alt={`${location} cityscape`} fill className="object-cover" priority />
                 <div className="absolute inset-0 bg-black/25 backdrop-blur-[1px]" />
             </div>
 
@@ -96,24 +73,40 @@ export default function EventLocationDetailsSection({
                 <div className="relative z-10 flex flex-col justify-end min-h-screen md:w-1/2 md:min-h-0 px-4 md:px-0 pb-12 pt-20 md:py-0">
                     <div className="space-y-6 max-w-xl">
                         <div className="space-y-3">
-                            <h2 className={`[text-shadow:0_2px_8px_rgba(0,0,0,0.6)] text-2xl max-w-[10em] capitalize sm:text-3xl font-medium md:font-bold text-white md:text-secondary-9 leading-tight ${space_grotesk.className}`}>
+                            <h2 className={`
+                                text-2xl max-w-[10em] capitalize sm:text-3xl font-medium md:font-bold leading-tight
+                                text-white md:text-secondary-9
+                                [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] md:text-shadow-none
+                                ${space_grotesk.className}
+                            `}>
                                 {heading}
                             </h2>
-                            <p className="[text-shadow:0_2px_8px_rgba(0,0,0,0.6)] text-secondary-1 md:text-neutral-7 mt-5 text-sm leading-relaxed">
+                            <p className="
+                                text-secondary-1 md:text-neutral-7 mt-5 text-sm leading-relaxed
+                                [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] md:text-shadow-none
+                            ">
                                 {description}
                             </p>
                         </div>
 
                         <div className={`${space_grotesk.className} flex items-center gap-5`}>
                             <div>
-                                <p className="text-xl font-medium text-neutral-5 md:text-neutral-7 drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)] [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
+                                <p className="
+                                    text-xl font-medium text-white md:text-neutral-7
+                                    drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)] md:drop-shadow-none
+                                    [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] md:text-shadow-none
+                                ">
                                     {subscribers.toLocaleString()}
                                 </p>
                                 <p className="text-white md:text-secondary-9 font-medium mt-1">Subscribers</p>
                             </div>
                             <div className="w-0.5 h-12 bg-neutral-6" />
                             <div>
-                                <p className="text-xl font-medium text-neutral-5 md:text-neutral-7 drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)] [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
+                                <p className="
+                                    text-xl font-medium text-white md:text-neutral-7
+                                    drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)] md:drop-shadow-none
+                                    [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] md:text-shadow-none
+                                ">
                                     {events.toLocaleString()}
                                 </p>
                                 <p className="text-white md:text-secondary-9 font-medium mt-1">Events</p>
@@ -125,9 +118,7 @@ export default function EventLocationDetailsSection({
                                 <input
                                     type="email"
                                     value={email}
-                                    onChange={(e) => {
-                                        setEmail(e.target.value)
-                                    }}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     placeholder="Enter email address"
                                     disabled={isSubmitting}
                                     data-testid="subscribe-email"
@@ -146,14 +137,9 @@ export default function EventLocationDetailsSection({
                     </div>
                 </div>
 
+                {/* Desktop image */}
                 <div className="hidden md:block relative w-2/5 aspect-square rounded-4xl overflow-hidden shadow-2xl">
-                    <Image
-                        src={imageSrc}
-                        alt={`${location} cityscape`}
-                        fill
-                        className="object-cover"
-                        priority
-                    />
+                    <Image src={imageSrc} alt={`${location} cityscape`} fill className="object-cover" priority />
                 </div>
             </div>
         </section>

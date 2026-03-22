@@ -22,10 +22,10 @@ interface Props {
 export default function FeaturedEventsSection({ events }: Props) {
 
     // Duplicate for infinite loop feel
-    const displayEvents = events.length ? [...events, ...events, ...events].map((e, i) => ({
+    const displayEvents = events.length && events.length < 3 ? [...events, ...events, ...events].map((e, i) => ({
         ...e,
         _key: `${e.id}-${i}`,
-    })) : []
+    })) : events.length >= 3 ? events : []
 
     const [emblaRef, emblaApi] = useEmblaCarousel(
         { loop: true, align: 'start', skipSnaps: false, dragFree: false },
@@ -82,7 +82,7 @@ export default function FeaturedEventsSection({ events }: Props) {
                     <div className="flex">
                         {displayEvents.map(event => (
                             <Link
-                                key={event._key}
+                                key={event.id}
                                 href={EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}
                                 className="flex-[0_0_85%] sm:flex-[0_0_30%] mr-2"
                             >
