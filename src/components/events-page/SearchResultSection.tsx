@@ -45,6 +45,8 @@ export function SearchResultSection({
     const { currency } = useAppSelector(s => s.settings)
     const [filters, setFilters] = useState<Partial<FilterValues>>(initialFilters)
 
+    console.log(initialEvents)
+
     const {
         items, count, totalPages, currentPage,
         isLoading, isError,
@@ -102,7 +104,7 @@ export function SearchResultSection({
                 <DateFilter
                     filterFor="eventPage"
                     value={filters.dateRange}
-                    onChange={(v) => setFilters(prev => ({ ...prev, dateRange: v || { from: new Date(), to: new Date() } as DateRange }))}
+                    onChange={(v) => setFilters(prev => ({ ...prev, dateRange: v }))}                
                 />
             </div>
 
@@ -133,7 +135,7 @@ export function SearchResultSection({
             {showEmpty && (
                 <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
                     <div className="size-14 rounded-full bg-neutral-2 flex items-center justify-center">
-                        <Icon icon="hugeicons:search-remove-01" className="size-7 text-neutral-5" />
+                        <Icon icon="hugeicons:search-remove-01" className="size-7 text-neutral-7" />
                     </div>
                     <div>
                         <p className={`${space_grotesk.className} text-base font-medium text-secondary-9`}>
@@ -156,7 +158,7 @@ export function SearchResultSection({
             {/* Prompt — page opened with no search or filters yet */}
             {showPrompt && (
                 <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
-                    <Icon icon="hugeicons:search-01" className="size-10 text-neutral-4" />
+                    <Icon icon="hugeicons:search-01" className="size-10 text-neutral-6" />
                     <p className={`${space_grotesk.className} text-base font-medium text-secondary-9`}>
                         Search for events
                     </p>
@@ -169,7 +171,7 @@ export function SearchResultSection({
             {/* Results */}
             {!isLoading && !isError && items.length > 0 && (
                 <>
-                    <p className="text-xs text-neutral-5 mb-6">
+                    <p className="text-xs text-neutral-7 mb-6">
                         Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, count)} of {count} result{count !== 1 ? 's' : ''}
                     </p>
                     <div className="grid grid-cols-[repeat(auto-fit,minmax(14em,1fr))] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-[repeat(auto-fit,minmax(16em,1fr))] gap-6 lg:gap-8 justify-items-center md:justify-items-start">

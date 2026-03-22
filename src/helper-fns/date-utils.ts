@@ -98,7 +98,11 @@ export function formatDateTime(date: string | Date) {
 
 
 export function formatEventDate(isoString: string): string {
-  
+  if (!isoString) return "Date TBA"
+
+  const raw = new Date(isoString)
+  if (isNaN(raw.getTime())) return "Date TBA"
+
   const date = new Date(new Date(isoString).getTime() + 60 * 60 * 1000)
   const now  = new Date()
 

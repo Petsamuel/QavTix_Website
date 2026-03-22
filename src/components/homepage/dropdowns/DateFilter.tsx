@@ -50,6 +50,7 @@ export default function DateFilter({ value, onChange, filterFor = "homepage" }: 
     const handleClear = () => {
         setDateRange({ from: undefined, to: undefined })
         onChange(null)
+        setIsOpen(false)
     }
 
     const handleQuickSelect = (range: DateRange) => {
