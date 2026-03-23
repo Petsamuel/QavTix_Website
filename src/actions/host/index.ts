@@ -5,6 +5,7 @@ import {
     TRENDING_HOSTS_ENDPOINT,
     FOLLOW_HOST_ENDPOINT,
     HOST_DETAILS_ENDPOINT,
+    CONTACT_HOST_ENDPOINT,
 } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { getServerAxios } from "@/lib/axios"
@@ -109,5 +110,38 @@ export async function unfollowHost(hostID: number | string): Promise<MutateResul
         console.log("[unfollowHost] status:", error?.response?.status)
         console.log("[unfollowHost] body:", JSON.stringify(error?.response?.data))
         return { success: false, message: handleApiError(error?.response?.data) }
+    }
+}
+
+
+
+interface ContactHostResult {
+    success:  boolean
+    message?: string
+}
+
+export async function contactHost(payload: ContactHostPayload): Promise<ContactHostResult> {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/${CONTACT_HOST_ENDPOINT}`,
+            {
+                method:  "POST",
+                headers: { "Content-Type": "application/json" },
+                body:    JSON.stringify(payload),
+            }
+        )
+
+        const json = await res.json()
+
+        if (!res.ok) {
+            console.log("[contactHost] status:", res.status, JSON.stringify(json))
+            return { success: false, message: handleApiError(json) }
+        }
+
+        return { success: true }
+
+    } catch (err) {
+        console.log("[contactHost] error:", err)
+        return { success: false, message: "Failed to send message. Please try again." }
     }
 }

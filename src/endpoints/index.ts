@@ -28,9 +28,11 @@ export const CITY_SUBSCRIBE_ENDPOINT = "public/locations/subscribe/"
 export const TRENDING_EVENTS_ENDPOINT = "public/event/trending"
 
 export const SEARCH_EVENTS_ENDPOINT = "public/event/trending"
+export const EVENT_DETAILS_ENDPOINT = "public/event/[event_id]"
 
 export const TRENDING_HOSTS_ENDPOINT = "public/event/trending-hosts"
 export const FOLLOW_HOST_ENDPOINT = "public/hosts/[host_id]/[action]/"
 export const HOST_DETAILS_ENDPOINT = "public/hosts/[host_id]"
 export const HOST_PAST_EVENTS_ENDPOINT = "public/hosts/[host_id]/past"
+export const CONTACT_HOST_ENDPOINT = "public/message/"
 

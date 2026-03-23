@@ -4,7 +4,9 @@ import {
     TOP_LOCATIONS_ENDPOINT,
     LOCATION_PAGE_ENDPOINT,
     TRENDING_EVENTS_ENDPOINT,
+    EVENT_DETAILS_ENDPOINT,
 } from "@/endpoints"
+import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { headers } from "next/headers"
 
 async function publicFetch<T>(url: string): Promise<T | null> {
@@ -82,5 +84,34 @@ export async function getLocationPage(city: string): Promise<LocationPageResult>
     } catch (err) {
         console.log("[getLocationPage] error:", err)
         return { success: false, message: "Request failed." }
+    }
+}
+
+
+
+
+
+interface GetEventDetailsResult {
+    success:  boolean
+    data?:    EventDetails
+    message?: string
+}
+
+export async function getEventDetails(eventID: string): Promise<GetEventDetailsResult> {
+    try {
+        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`
+        const res = await fetch(url, { next: { revalidate: 60 * 5 } })
+        const json = await res.json()
+
+        if (!res.ok) {
+            console.log("[getEventDetails] status:", res.status, JSON.stringify(json))
+            return { success: false, message: handleApiError(json) }
+        }
+
+        return { success: true, data: json.data ?? json }
+
+    } catch (err) {
+        console.log("[getEventDetails] error:", err)
+        return { success: false, message: "Failed to load event details." }
     }
 }

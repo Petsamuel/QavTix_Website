@@ -62,3 +62,10 @@ interface CategoryPageData {
     total_subscribers: number
     events:            PublicPagesEvent[]
 }
+
+interface ContactHostPayload {
+    full_name: string
+    email:     string
+    message:   string
+    host:      number
+}

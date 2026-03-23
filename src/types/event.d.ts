@@ -154,3 +154,47 @@ interface EventMedia {
     video_url:   string | null
     is_featured: boolean
 }
+
+interface EventTicketPromoCode {
+    code:                string
+    discount_percentage: number
+    maximum_users:       number
+    valid_till:          string
+}
+
+interface EventTicket {
+    ticket_type:    string
+    description:    string
+    price:          string
+    quantity:       number
+    per_person_max: number
+    sales_start:    string
+    sales_end:      string
+    promo_codes:    EventTicketPromoCode[]
+}
+
+interface EventSocialLink {
+    url: string
+}
+
+interface EventDetails {
+    id:                     string
+    title:                  string
+    category:               number
+    tags:                   string[]
+    event_type:             string
+    start_datetime:         string
+    end_datetime:           string
+    location_type:          string
+    short_description:      string
+    full_description:       string
+    organizer_display_name: string
+    organizer_description:  string
+    public_email:           string
+    phone_number:           string
+    event_location:         EventLocation
+    social_links:           EventSocialLink[]
+    tickets:                EventTicket[]
+    event_status:           string
+    attendees_count:        number
+}

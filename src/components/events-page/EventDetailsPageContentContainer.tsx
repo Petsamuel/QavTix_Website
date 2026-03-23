@@ -1,63 +1,68 @@
 "use client"
 
-import SectionHeading from "@/components/shared/SectionHeading";
-import Image from "next/image";
-import EventOverviewSection from "./event-details/EventOverviewSection";
-import HostNAttendeeDetailsSection from "./event-details/HostNAttendeeSection";
-import RelatedEventsYouMightLike from "./event-details/RelatedEventsYouMightLike";
-import ContactHostForm from "../forms/host/ContactHostForm";
+import SectionHeading from "@/components/shared/SectionHeading"
+import Image from "next/image"
+import EventOverviewSection from "./event-details/EventOverviewSection"
+import HostNAttendeeDetailsSection from "./event-details/HostNAttendeeSection"
+import RelatedEventsYouMightLike from "./event-details/RelatedEventsYouMightLike"
+import ContactHostForm from "../forms/host/ContactHostForm"
 
 
-export default function EventDetailsPageContentContainer(){
+interface Props {
+    event: EventDetails
+}
 
-
+export default function EventDetailsPageContentContainer({ event }: Props) {
     return (
         <main className="pb-20">
             <SectionHeading title="Events" />
 
             <div className="md:flex md:mt-20 global-px justify-between gap-8">
 
+                {/* Left column — desktop only */}
                 <div className="hidden md:block md:w-[45%]">
                     <figure>
-                        <Image 
+                        <Image
                             src="/images/demo-images/event-detail-img.png"
-                            alt="Event Image"
+                            alt={event.title}
                             width={900}
                             height={900}
                             className="rounded-4xl h-60 object-cover md:h-96"
                         />
                     </figure>
-                    <HostNAttendeeDetailsSection className="md:mt-8" />
-                    <ContactHostForm />
+                    <HostNAttendeeDetailsSection event={event} className="md:mt-8" />
+                    <ContactHostForm event={event} />
                 </div>
 
-
+                {/* Right column */}
                 <section className="mt-12 md:mt-0 md:w-[50%]">
+                    {/* Mobile image */}
                     <figure className="md:hidden">
-                        <Image 
+                        <Image
                             src="/images/demo-images/event-detail-img.png"
-                            alt="Event Image"
+                            alt={event.title}
                             width={900}
                             height={900}
                             className="rounded-4xl h-[50%] max-w-full w-[32em] mx-auto object-cover"
                         />
                     </figure>
 
-                    <HostNAttendeeDetailsSection className="hidden" />
+                    <EventOverviewSection event={event} />
 
-                    <EventOverviewSection />
+                    {/* Mobile host section */}
+                    <div className="mt-10 md:hidden">
+                        <HostNAttendeeDetailsSection event={event} />
+                    </div>
 
                     <div className="md:hidden">
-                        <ContactHostForm />
+                        <ContactHostForm event={event} />
                     </div>
                 </section>
 
-
-                <EventOverviewSection className="hidden" />
-
-                <div className="md:hidden mt-20">
-                    <RelatedEventsYouMightLike />            
-                </div>
+                {/* Mobile related events */}
+                {/* <div className="md:hidden mt-20">
+                    <RelatedEventsYouMightLike eventId={event.id} />
+                </div> */}
             </div>
         </main>
     )
