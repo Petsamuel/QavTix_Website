@@ -91,7 +91,7 @@ export default function Header2() {
                                 href={dashboardUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={cn("px-4 py-2 rounded-lg text-sm transition-all duration-150 hover:text-primary-7 active:scale-[0.98]", isLightBg ? "text-neutral-7" : "text-neutral-6")}
+                                className={cn("px-4 py-2 rounded-lg text-sm transition-all duration-150 hover:text-primary-7 active:scale-[0.98] text-neutral-7")}
                             >
                                 Dashboard
                             </Link>

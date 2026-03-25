@@ -10,9 +10,10 @@ import ContactHostForm from "../forms/host/ContactHostForm"
 
 interface Props {
     event: EventDetails
+    relatedEvents: PublicPagesEvent[]
 }
 
-export default function EventDetailsPageContentContainer({ event }: Props) {
+export default function EventDetailsPageContentContainer({ event, relatedEvents }: Props) {
     return (
         <main className="pb-20">
             <SectionHeading title="Events" />
@@ -58,11 +59,11 @@ export default function EventDetailsPageContentContainer({ event }: Props) {
                         <ContactHostForm event={event} />
                     </div>
                 </section>
+            </div>
 
-                {/* Mobile related events */}
-                {/* <div className="md:hidden mt-20">
-                    <RelatedEventsYouMightLike eventId={event.id} />
-                </div> */}
+            {/* Mobile related events */}
+            <div className="mt-20">
+                <RelatedEventsYouMightLike events={relatedEvents} />
             </div>
         </main>
     )

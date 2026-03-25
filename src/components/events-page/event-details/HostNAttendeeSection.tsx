@@ -1,6 +1,6 @@
-import { EVENT_ROUTES, NAV_LINKS } from "@/components-data/navigation/navLinks"
+import { EVENT_ROUTES } from "@/components-data/navigation/navLinks"
 import FollowHostBtn1 from "@/components/custom-utils/buttons/FollowHostBtn1"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { getAvatarColor } from "@/helper-fns/getAvatarColor"
 import { getInitialsFromName } from "@/helper-fns/getInitialFromName"
@@ -28,10 +28,11 @@ function AttendeeAvatars({ count, eventId }: { count: number; eventId: string })
             className="inline-flex focus:outline-none"
         >
             <div className="flex -space-x-1.5 shrink-0">
-                {Array.from({ length: displayCount }).map((_, i) => (
-                    <Avatar key={i} className="ring-2 ring-background size-9">
-                        <AvatarFallback className={`${getAvatarColor(String(i))} text-white font-medium text-xs`}>
-                            {String.fromCharCode(65 + i)}
+                {mockAttendees.slice(displayCount).map((attendee, i) => (
+                    <Avatar key={attendee.id} className="ring-2 ring-background size-8">
+                        {attendee.profile_picture && <AvatarImage src={attendee.profile_picture} alt={attendee.full_name} />}
+                        <AvatarFallback className={`${getAvatarColor(attendee.id.toString())} text-white font-medium text-[10px]`}>
+                            {getInitialsFromName(attendee.full_name)}
                         </AvatarFallback>
                     </Avatar>
                 ))}
@@ -49,10 +50,10 @@ function AttendeeAvatars({ count, eventId }: { count: number; eventId: string })
 
 const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
 
-    const { isFollowing, toggle } = useFollowHost(event.category, false)
+    const { isFollowing, toggle } = useFollowHost(event.category, event.is_following)
 
     const socialPlatformIcon = (url: string) => {
-        if (url.includes("twitter") || url.includes("x.com")) return "hugeicons:new-twitter"
+        if (url.includes("twitter") || url.includes("x.com"))  return "hugeicons:new-twitter"
         if (url.includes("instagram"))                         return "hugeicons:instagram"
         if (url.includes("facebook"))                          return "fa6-brands:facebook"
         if (url.includes("tiktok"))                            return "ic:baseline-tiktok"
@@ -85,7 +86,7 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                 <FollowHostBtn1
                     isFollowing={isFollowing}
                     onClick={(e) => { e.preventDefault(); toggle() }}
-                    className={cn("w-auto! px-4 bg-secondary-6!", "md:px-6")}
+                    className={cn("w-auto! px-4", "md:px-6")}
                 />
             </div>
 
@@ -93,7 +94,7 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
             {event.social_links.length > 0 && (
                 <div className="flex gap-3 mt-4">
                     {event.social_links.map((link, i) => (
-                        <a
+                        <Link
                             key={i}
                             href={link.url}
                             target="_blank"
@@ -101,7 +102,7 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                             className="text-neutral-6 hover:text-secondary-9 transition-colors"
                         >
                             <Icon icon={socialPlatformIcon(link.url)} className="size-5" />
-                        </a>
+                        </Link>
                     ))}
                 </div>
             )}

@@ -27,7 +27,7 @@ export const LOCATION_PAGE_ENDPOINT = "public/locations/[loc]"
 export const CITY_SUBSCRIBE_ENDPOINT = "public/locations/subscribe/"
 export const TRENDING_EVENTS_ENDPOINT = "public/event/trending"
 
-export const SEARCH_EVENTS_ENDPOINT = "public/event/trending"
+export const SEARCH_EVENTS_ENDPOINT = "public/search"
 export const EVENT_DETAILS_ENDPOINT = "public/event/[event_id]"
 
 export const TRENDING_HOSTS_ENDPOINT = "public/event/trending-hosts"

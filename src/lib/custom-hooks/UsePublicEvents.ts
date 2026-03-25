@@ -31,7 +31,6 @@ interface Config {
 // Builds query params from public filter values
 const buildPublicFilterParams = (filters: Partial<FilterValues>): Record<string, string> => {
     const params: Record<string, string> = {}
-    if (filters.categories?.length)                                    params.category  = filters.categories.join(',')
     if (filters.dateRange?.from)                                       params.start_date = format(new Date(filters.dateRange.from), 'yyyy-MM-dd')
     if (filters.dateRange?.to)                                         params.end_date   = format(new Date(filters.dateRange.to), 'yyyy-MM-dd')
     if (filters.priceRange?.min != null && filters.priceRange.min > 0) params.min_price  = String(filters.priceRange.min)
@@ -54,11 +53,13 @@ const hasActiveFilters = (filters: Partial<FilterValues>): boolean =>
 
 async function fetchPublicEvents(
     endpoint:    string,
+    categories:   string[],
     filterParams: Record<string, string>,
     page:        number,
 ): Promise<{ results: PublicPagesEvent[]; count: number; next: boolean; total_pages: number } | null> {
     try {
         const params = new URLSearchParams({ ...filterParams, page: String(page) })
+        categories.forEach(id => params.append("category", String(id)))
         const res    = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${endpoint}?${params}`)
 
         if (!res.ok) {
@@ -118,6 +119,7 @@ export function usePublicEvents(
 
         const result = await fetchPublicEvents(
             config.endpoint,
+            filters.categories || [],
             buildPublicFilterParams(filtersRef.current),
             page,
         )

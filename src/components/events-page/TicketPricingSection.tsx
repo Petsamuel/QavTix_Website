@@ -1,73 +1,68 @@
-import { ticketTiers } from "@/components-data/demo-data"
 import { EVENT_ROUTES } from "@/components-data/navigation/navLinks"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 import AccessDeniedModal from "../modals/AccessDeniedModal"
+import { formatPrice } from "@/helper-fns/formatPrice"
+import { useAppSelector } from "@/lib/redux/hooks"
 
-interface TicketPricingSectionProps {
-  tickets?: Partial<TicketTier>[]
-  initialVisibleCount?: number
-  onGetTicket?: (ticket: TicketTier) => void
+
+
+interface Props {
+    tickets?: EventTicket[]
+    initialVisibleCount?: number
 }
 
 export default function TicketPricingSection({
-  tickets = ticketTiers,
-  initialVisibleCount = 4,
-}: TicketPricingSectionProps) {
+    tickets = [],
+    initialVisibleCount = 4,
+}: Props) {
 
+    const router    = useRouter()
+    const params    = useParams<{ event_id: string }>()
+    const { currency } = useAppSelector(s => s.settings)
+    const [showAll, setShowAll] = useState(false)
 
-  const router = useRouter()
-  const [showAll, setShowAll] = useState(false)
+    const visibleTickets = showAll ? tickets : tickets.slice(0, initialVisibleCount)
+    const hasMore = tickets.length > initialVisibleCount
 
-  const params = useParams<{ event_id: string }>()
-  const visibleTickets = showAll ? tickets : tickets.slice(0, initialVisibleCount)
-  const hasMore = tickets.length > initialVisibleCount
+    return (
+        <section>
+            {tickets.length > 0 && (
+                <div className="w-full bg-accent-1 mt-12 rounded-xl p-6">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="flex items-center flex-wrap gap-6 overflow-x-auto pb-2">
+                            {visibleTickets.map((ticket, i) => (
+                                <div key={`${ticket.ticket_type}-${i}`} className="shrink-0 border-e-[1.5px] pe-3 border-accent-2">
+                                    <p className="text-sm text-neutral-7 mb-2">{ticket.ticket_type}</p>
+                                    <p className="text-sm font-medium text-neutral-10 tracking-[10%] md:tracking-[12%]">
+                                        {formatPrice(parseFloat(ticket.price), currency)}
+                                    </p>
+                                </div>
+                            ))}
 
-  // const handleGetTicket = () => {
-  //   if (onGetTicket) {
-  //     onGetTicket(ticket)
-  //   } else {
-  //     console.log('Selected ticket:', ticket)
-  //   }
-  // }
-
-  return (
-    <section>
-      <div className="w-full bg-accent-1 mt-12 rounded-xl p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center flex-wrap gap-6 overflow-x-auto pb-2">
-            {visibleTickets.map((ticket) => (
-              <div key={ticket.id} className="shrink-0 border-e-[1.5px] pe-3 border-accent-2">
-                <p className="text-sm text-neutral-7 mb-2">{ticket.name}</p>
-                <p className="text-sm font-medium text-neutral-10 tracking-[10%] md:tracking-[12%]">
-                  {ticket.currency}{ticket.price?.toLocaleString()}
-                </p>
-              </div>
-            ))}
-
-            {hasMore && !showAll && (
-              <button
-                onClick={() => setShowAll(true)}
-                className="shrink-0 text-sm text-neutral-7 hover:text-neutral-9 underline transition-colors"
-              >
-                See more
-              </button>
+                            {hasMore && !showAll && (
+                                <button
+                                    onClick={() => setShowAll(true)}
+                                    className="shrink-0 text-sm text-neutral-7 hover:text-neutral-9 underline transition-colors"
+                                >
+                                    See more
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
             )}
-          </div>
-        </div>
-      </div>
 
-      <div className="mt-8">
-        <button
-          onClick={() => router.push(`${EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", params.event_id)}`)}
-          className="bg-primary-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
-        >
-          Get a ticket
-        </button>
-      </div>
+            <div className="mt-8">
+                <button
+                    onClick={() => router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", params.event_id))}
+                    className="bg-primary-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
+                >
+                    Get a ticket
+                </button>
+            </div>
 
-
-      <AccessDeniedModal open={false} setOpen={() => {}} />
-    </section>
-  )
+            <AccessDeniedModal open={false} setOpen={() => {}} />
+        </section>
+    )
 }

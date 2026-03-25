@@ -1,15 +1,3 @@
-interface TicketTier {
-  id: string
-  name: string
-  price: number
-  originalPrice: number
-  currency: string
-  description?: string
-  features?: string[]
-  available: boolean
-  soldOut?: boolean
-}
-
 interface Discount {
     type: 'coupon' | 'membership'
     code?: string
@@ -197,4 +185,7 @@ interface EventDetails {
     tickets:                EventTicket[]
     event_status:           string
     attendees_count:        number
+    age_restriction:        boolean,
+    is_following:           boolean,
+    is_favorite:            boolean
 }

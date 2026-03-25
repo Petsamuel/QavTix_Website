@@ -233,6 +233,6 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground box-border;
+    @apply bg-background text-foreground box-border overflow-x-hidden;
   }
 }

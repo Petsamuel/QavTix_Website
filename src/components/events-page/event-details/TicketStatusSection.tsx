@@ -6,24 +6,27 @@ import GuestGettingTicketCard from "./GuestGettingTicketCard"
 import TicketPricingSection from "../TicketPricingSection"
 import { useState } from "react"
 import CancelledTicketCard from "./CancelledTicketCard"
+import { useAppSelector } from "@/lib/redux/hooks"
 
+interface Props {
+    eventId: string
+    tickets: EventTicket[]
+}
 
-export default function TicketStatusSection({ eventId }: { eventId: string }) {
+export default function TicketStatusSection({ eventId, tickets }: Props) {
 
-    const ticketCancelled = useState(true)
-    const { user, ticketSession, isAuthenticated } = useTicketUser()
+    const [ticketCancelled] = useState(false)
+    const { user, ticketSession } = useTicketUser()
+    const { isAuthenticated } = useAppSelector(store => store.auth)
     const hasTicket = useHasTicketForEvent(eventId)
-    
-    // Authenticated user with ticket
+
     if (isAuthenticated && user && hasTicket) {
-        return  !ticketCancelled ? <AuthUserGettingTicketCard /> : <CancelledTicketCard />
+        return ticketCancelled ? <CancelledTicketCard /> : <AuthUserGettingTicketCard />
     }
-    
-    // Guest user with ticket session
+
     if (!isAuthenticated && ticketSession && hasTicket) {
         return <GuestGettingTicketCard />
     }
-    
-    // No tickets - show pricing
-    return <TicketPricingSection />
+
+    return <TicketPricingSection tickets={tickets} />
 }
