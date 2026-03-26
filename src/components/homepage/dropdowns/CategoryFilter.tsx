@@ -18,6 +18,7 @@ interface CategoryFilterProps {
     onChange:    (value: string[]) => void
     categories?: Category[]
     filterFor?:  'homepage' | 'eventPage'
+    showCount?: boolean
 }
 
 export default function CategoryFilter({
@@ -25,6 +26,7 @@ export default function CategoryFilter({
     onChange,
     categories = [],
     filterFor  = "homepage",
+    showCount = true
 }: CategoryFilterProps) {
 
     const [isOpen,             setIsOpen]             = useState(false)
@@ -66,6 +68,7 @@ export default function CategoryFilter({
                 <CategoryItemBtn
                     key={index}
                     category={category}
+                    showCount={showCount}
                     isSelected={
                         category.value === 'all'
                             ? selectedCategories.length === 0

@@ -1,7 +1,6 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { DateRange } from "react-day-picker"
 import { space_grotesk } from "@/lib/fonts"
 import { Icon } from "@iconify/react"
 import Link from "next/link"
@@ -45,15 +44,14 @@ export function SearchResultSection({
     const { currency } = useAppSelector(s => s.settings)
     const [filters, setFilters] = useState<Partial<FilterValues>>(initialFilters)
 
-    console.log(initialEvents)
-
     const {
         items, count, totalPages, currentPage,
         isLoading, isError,
         goToPage,
     } = usePublicEvents(
         {
-            endpoint:     `${SEARCH_EVENTS_ENDPOINT}?q=${encodeURIComponent(query)}`,
+            endpoint:     SEARCH_EVENTS_ENDPOINT,
+            query,
             initialItems: initialEvents,
             initialCount: initialCount,
             initialPages: Math.ceil(initialCount / PAGE_SIZE) || 1,
@@ -67,12 +65,11 @@ export function SearchResultSection({
         [categories, items]
     )
 
-    // User has typed a query or applied at least one filter
     const hasActiveSearch =
         !!query.trim() ||
         (filters.categories?.length ?? 0) > 0 ||
-        !!filters.location?.country   ||
-        !!filters.priceRange          ||
+        !!filters.location?.country ||
+        !!filters.priceRange        ||
         !!filters.dateRange?.from
 
     const showEmpty  = !isLoading && !isError && items.length === 0 && hasActiveSearch
@@ -104,11 +101,11 @@ export function SearchResultSection({
                 <DateFilter
                     filterFor="eventPage"
                     value={filters.dateRange}
-                    onChange={(v) => setFilters(prev => ({ ...prev, dateRange: v }))}                
+                    onChange={(v) => setFilters(prev => ({ ...prev, dateRange: v }))}
                 />
             </div>
 
-            {/* Heading — only when there's something active */}
+            {/* Heading */}
             {hasActiveSearch && !isLoading && (
                 <h2 className={`max-w-xl text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 mb-10 ${space_grotesk.className}`}>
                     {buildSearchResultsHeading(filters as FilterValues, currency)}
@@ -131,7 +128,7 @@ export function SearchResultSection({
                 </div>
             )}
 
-            {/* Empty — search/filter returned nothing */}
+            {/* Empty — search returned nothing */}
             {showEmpty && (
                 <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
                     <div className="size-14 rounded-full bg-neutral-2 flex items-center justify-center">
@@ -155,7 +152,7 @@ export function SearchResultSection({
                 </div>
             )}
 
-            {/* Prompt — page opened with no search or filters yet */}
+            {/* Prompt — no search or filters yet */}
             {showPrompt && (
                 <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
                     <Icon icon="hugeicons:search-01" className="size-10 text-neutral-6" />

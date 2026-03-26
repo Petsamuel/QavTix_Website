@@ -8,16 +8,23 @@ import LocationFilterDropdown from './dropdowns/LocationFilter'
 import DateFilter from './dropdowns/DateFilter'
 import CategoryFilter from './dropdowns/CategoryFilter'
 import PriceFilter from './dropdowns/PriceFilter'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { ApiCategory } from '@/actions/filters'
+import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
+import { useRecentSearches } from '@/lib/custom-hooks/UseRecentSearch'
+import { deriveCategories } from '@/helper-fns/deriveCategories'
 
-export function EventSearchFilters({
-    initialFilters,
-}: {
+interface Props {
     initialFilters?: Partial<FilterValues>
-}) {
-    const router = useRouter()
+    categories?: ApiCategory[]
+}
+
+export function EventSearchFilters({ initialFilters, categories = [] }: Props) {
+    
+    const router        = useRouter()
     const currentParams = useSearchParams()
+    const { push }      = useRecentSearches()
 
     const [filters, setFilters] = useState<FilterValues>({
         categories: initialFilters?.categories ?? [],
@@ -51,10 +58,54 @@ export function EventSearchFilters({
             if (filters.dateRange.to) params.set('date_to', filters.dateRange.to.toISOString())
         }
 
-        router.push(`/explore?${params.toString()}`)
+        const hasFilters =
+            filters.categories.length > 0 ||
+            filters.location?.country ||
+            filters.priceRange ||
+            filters.dateRange?.from ||
+            q
+
+        if (hasFilters) {
+            let locationEntry: Parameters<typeof push>[0]['location'] = null
+
+            if (filters.location?.country) {
+                const countryCode  = filters.location.country
+                const countryMatch = Country.getCountryByCode(countryCode.toUpperCase())
+
+                let stateLabel: string | undefined
+                if (filters.location.state) {
+                    const stateCode  = filters.location.state
+                    const stateMatch = State.getStatesOfCountry(countryCode.toUpperCase())
+                        .find(s => s.isoCode === stateCode.toUpperCase())
+                    stateLabel = stateMatch?.name ?? stateCode
+                }
+
+                locationEntry = {
+                    countryCode,
+                    countryLabel: countryMatch?.name ?? countryCode,
+                    stateCode:    filters.location.state || undefined,
+                    stateLabel,
+                }
+            }
+
+            // Map selected category IDs → { id, name } using the categories prop
+            const selectedCategories = filters.categories.map(catId => {
+                const match = categories.find(c => String(c.id) === String(catId))
+                return { id: catId, name: match?.name ?? String(catId) }
+            })
+
+            push({
+                query:      q ?? "",
+                location:   locationEntry,
+                categories: selectedCategories,
+                priceRange: filters.priceRange ?? null,
+            })
+        }
+
+        router.push(`${EVENT_ROUTES.SEARCH_EVENTS.href}?${params.toString()}`)
     }
 
-    const countries = Country.getAllCountries().map(c => ({
+    const allCountries = Country.getAllCountries().map(c => ({
         value: c.isoCode,
         label: c.name,
     }))
@@ -64,6 +115,11 @@ export function EventSearchFilters({
             value: s.isoCode,
             label: s.name,
         }))
+
+    const availableCategories = useMemo(
+        () => deriveCategories(categories, []),
+        [categories]
+    )
 
     return (
         <div className="w-full py-8 md:py-0 md:mt-[6vh]">
@@ -83,7 +139,7 @@ export function EventSearchFilters({
                         <LocationFilterDropdown
                             value={filters.location}
                             onChange={(location) => setFilters({ ...filters, location })}
-                            countries={countries}
+                            countries={allCountries}
                             getStates={getStates}
                         />
                     </div>
@@ -92,6 +148,8 @@ export function EventSearchFilters({
                     <div className="grid grid-cols-2 gap-4">
                         <CategoryFilter
                             value={filters.categories}
+                            categories={availableCategories}
+                            showCount={false}
                             onChange={(categories) => setFilters({ ...filters, categories })}
                         />
                         <PriceFilter

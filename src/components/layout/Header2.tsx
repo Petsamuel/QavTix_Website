@@ -42,9 +42,10 @@ export default function Header2() {
     const dashboardUrl = getDashboardURL(user?.role ?? undefined)
 
     if (
-        pathName === "/" ||
-        pathName.startsWith("/auth") ||
-        pathName.match("/checkout") ||
+        pathName === "/"              ||
+        pathName === "/_not-found"    ||  // Next.js internal 404 route
+        pathName.startsWith("/auth")  ||
+        pathName.match("/checkout")   ||
         !pathsForHeader2(pathName)
     ) return null
 
@@ -85,7 +86,6 @@ export default function Header2() {
                             <Icon icon="lineicons:search-1" className="size-6 hover:text-primary-7" />
                         </button>
 
-                        {/* Dashboard link for authenticated users */}
                         {isAuthenticated && (
                             <Link
                                 href={dashboardUrl}
@@ -97,7 +97,6 @@ export default function Header2() {
                             </Link>
                         )}
 
-                        {/* Unauthenticated — show sign in + CTA */}
                         {!isAuthenticated && (
                             <>
                                 {authLinks.map(link => (
@@ -125,7 +124,6 @@ export default function Header2() {
                             </>
                         )}
 
-                        {/* Authenticated — avatar + name + sign out */}
                         {isAuthenticated && user?.id && (
                             <div className="flex items-center gap-2">
                                 <CustomAvatar id={user.id} name={user.full_name} size="size-7 ring-2!" textSize="text-base" />

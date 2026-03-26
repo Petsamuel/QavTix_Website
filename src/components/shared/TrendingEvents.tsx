@@ -50,6 +50,7 @@ export function TrendingEvents({
             endpoint:     TRENDING_EVENTS_ENDPOINT,
             initialItems: initialEvents,
             initialCount,
+            query: "",
             initialPages,
             initialNext,
         },

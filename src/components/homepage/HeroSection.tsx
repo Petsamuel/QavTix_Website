@@ -7,8 +7,10 @@ import { Icon } from "@iconify/react";
 import SlantedCardCarousel from "./SlantedCardCarousel";
 import { useRef } from "react";
 import { slides_onlyImages } from "@/components-data/auth-pages/slides";
+import { ApiCategory } from "@/actions/filters";
 
-export default function HeroSection(){
+export default function HeroSection({ categories }:{ categories: ApiCategory[] }){
+
     const mobileInfiniteScrollRef = useRef(null)
     
     const handleScrollDown = () => {
@@ -42,7 +44,7 @@ export default function HeroSection(){
                     ref={mobileInfiniteScrollRef} 
                 />
                 <div className="global-px">
-                    <EventSearchFilters />
+                    <EventSearchFilters categories={categories} />
                 </div>
             </div>
             <div className='hidden relative md:block w-[48%] bg-primary-1 py-[12vh] md:pb-0 md:pt-[22vh]'>

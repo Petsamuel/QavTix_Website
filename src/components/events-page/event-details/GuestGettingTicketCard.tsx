@@ -7,9 +7,9 @@ import { space_grotesk } from '@/lib/fonts'
 import Link from 'next/link'
 import { AUTH_ROUTES } from '@/components-data/navigation/navLinks'
 import CancelTicketPrompt from '@/components/modals/CancelTicketPrompt'
-import { userTickets } from '@/components-data/demo-data'
 import { useState } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+
 
 export default function GuestGettingTicketCard() {
 
@@ -102,13 +102,12 @@ export default function GuestGettingTicketCard() {
             </button>
 
 
-
-            <CancelTicketPrompt 
+            {/* <CancelTicketPrompt 
                 onCancel={(v) => {}}
                 open={showCancelTicketPrompt} 
                 setOpen={setShowCancelTicketPrompt} 
                 tickets={userTickets} 
-            />
+            /> */}
         </div>
     )
 }

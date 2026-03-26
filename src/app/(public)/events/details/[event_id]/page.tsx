@@ -1,6 +1,6 @@
 import { notFound }      from "next/navigation"
 import { getEventDetails } from "@/actions/getters"
-import { searchEvents }    from "@/actions/filters"
+import { getCategories, searchEvents }    from "@/actions/filters"
 import EventDetailsPageContentContainer from "@/components/events-page/EventDetailsPageContentContainer"
 
 interface Props {
@@ -15,18 +15,20 @@ export default async function EventDetailPage({ params }: Props) {
 
     const event = result.data
 
-    const categoryId = event.category ?? null
+    const category = event.category ?? null
+    
+    const categories = getCategories()
+    const foundCategoryID = (await categories).data.find(v => v.name.toLowerCase() === category.toLowerCase())?.id;
 
     const relatedEventsResult = await searchEvents(
         "",
         8,
-        categoryId ? { categories: [categoryId] } : {},
+        foundCategoryID ? { categories: [foundCategoryID] } : {},
     )
-
     return (
         <EventDetailsPageContentContainer
             event={event}
-            relatedEvents={relatedEventsResult.data ?? []}
+            relatedEvents={relatedEventsResult.data?.filter(v => v.id !== event.id) ?? []}
         />
     )
 }

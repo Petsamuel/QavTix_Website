@@ -7,16 +7,21 @@ import CarouselActionBtns from '@/components/custom-utils/buttons/CarouselAction
 import EventsCard1 from '@/components/custom-utils/cards/EventCards'
 import { fromPublicPagesEvent } from '@/components/custom-utils/cards/resources/event-card-adapter'
 
+// Autoplay needs at least this many slides to work safely
+const MIN_SLIDES_FOR_AUTOPLAY = 2
+
 export default function RelatedEventsYouMightLike({ events }: { events: PublicPagesEvent[] }) {
+    const canAutoplay = events.length >= MIN_SLIDES_FOR_AUTOPLAY
 
     const [emblaRef, emblaApi] = useEmblaCarousel(
-        { loop: true, align: 'start', dragFree: true },
-        [Autoplay({ delay: 2000, stopOnInteraction: true })]
+        { loop: canAutoplay, align: 'start', dragFree: true },
+        canAutoplay ? [Autoplay({ delay: 2000, stopOnInteraction: true })] : []
     )
 
     const getAutoplay = useCallback(() => {
+        if (!canAutoplay) return null
         return emblaApi?.plugins()?.autoplay ?? null
-    }, [emblaApi])
+    }, [emblaApi, canAutoplay])
 
     const scrollPrev = useCallback(() => {
         getAutoplay()?.stop()
@@ -35,7 +40,6 @@ export default function RelatedEventsYouMightLike({ events }: { events: PublicPa
     const play = useCallback(() => {
         const autoplay = getAutoplay()
         if (!autoplay) return
-        // embla-carousel-autoplay v8+ exposes .play(), guard it exists
         if (typeof autoplay.play === 'function') {
             autoplay.play()
         }
@@ -57,19 +61,23 @@ export default function RelatedEventsYouMightLike({ events }: { events: PublicPa
         emblaApi.on('reInit', onSelect)
     }, [emblaApi, onSelect])
 
+    if (events.length === 0) return null
+
     return (
-         <section className="w-full py-10 overflow-x-hidden!">
+        <section className="w-full py-10 overflow-x-hidden!">
             <div className="max-w-7xl mx-auto">
                 <div className="flex gap-5 items-center justify-between mb-8 px-4 md:px-10 lg:px-16">
                     <h2 className={`text-2xl sm:text-3xl md:text-[2rem] mb-6 font-bold text-secondary-9 ${space_grotesk.className}`}>
                         Related events you may like
                     </h2>
-                    <CarouselActionBtns
-                        scrollPrev={scrollPrev}
-                        scrollNext={scrollNext}
-                        canScrollPrev={canScrollPrev}
-                        canScrollNext={canScrollNext}
-                    />
+                    {canAutoplay && (
+                        <CarouselActionBtns
+                            scrollPrev={scrollPrev}
+                            scrollNext={scrollNext}
+                            canScrollPrev={canScrollPrev}
+                            canScrollNext={canScrollNext}
+                        />
+                    )}
                 </div>
 
                 <div>

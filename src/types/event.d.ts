@@ -60,7 +60,7 @@ interface PublicPagesEvent {
     event_image:      string
     host:             string
     event_status:     EventStatus
-    attendees_count:  string
+    attendees_count:  number
     event_description: string
     price:            string
 }
@@ -168,7 +168,7 @@ interface EventSocialLink {
 interface EventDetails {
     id:                     string
     title:                  string
-    category:               number
+    category:               string
     tags:                   string[]
     event_type:             string
     start_datetime:         string

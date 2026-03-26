@@ -21,10 +21,11 @@ export default function HomepagePageCW({
     featuredEvents,
     nearbyEvents,
     topLocations,
+    categories
 }: Props) {
     return (
         <main>
-            <HeroSection />
+            <HeroSection categories={categories} />
             <EventCategorySection />
             <div className="mt-10 md:mt-20">
                 <FeaturedEventsSection events={featuredEvents} />

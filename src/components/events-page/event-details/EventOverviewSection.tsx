@@ -24,7 +24,7 @@ export default function EventOverviewSection({ event, className }: Props) {
 
     const [showShare, setShowShare] = useState(false)
 
-    const { isFavourite, toggle: toggleFavourite, feedbackMsg } = useFavourite(event.id, false)
+    const { isFavourite, toggle: toggleFavourite, feedbackMsg } = useFavourite(event.id, event.is_favorite)
 
     const eventUrl    = `${process.env.NEXT_PUBLIC_APP_DOMAIN}${EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}`
     const fullAddress = [

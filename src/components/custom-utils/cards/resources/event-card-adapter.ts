@@ -14,7 +14,7 @@ export interface EventCardProps {
     price:         string | null
     originalPrice: string | null
     status:        string | null   // displayed as a badge
-    attendees?:    EventCardAttendee[]
+    attendees?:    number
     isFavourite?:   boolean,
     is_mine?:       boolean
 }
@@ -51,7 +51,7 @@ export function fromPublicPagesEvent(e: PublicPagesEvent): EventCardProps {
         price:         price,
         originalPrice: null,
         status:        e.event_status,
-        attendees:     mockAttendees
+        attendees:     e.attendees_count
     }
 }
 
@@ -63,7 +63,7 @@ export function fromIEvent(e: IEvent & {
     resolvedLocation?: string
     resolvedPrice?:    string
     resolvedOriginalPrice?: string
-    attendees?: EventCardAttendee[]
+    attendees?: number
 }): EventCardProps {
     return {
         id:            e.id,
@@ -76,7 +76,7 @@ export function fromIEvent(e: IEvent & {
         price:         e.resolvedPrice ?? null,
         originalPrice: e.resolvedOriginalPrice ?? null,
         status:        e.status ?? null,
-        attendees:     mockAttendees,
+        attendees:     e.attendees,
         isFavourite:   false,
     }
 }

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { format } from "date-fns"
+import { resolveCountryLabel, resolveStateLabel } from "@/helper-fns/resolveCountryCode"
 
 export type PublicFetchStatus = "idle" | "loading" | "loadingMore" | "error" | "empty"
 
@@ -21,47 +22,62 @@ export interface PublicEventsState {
 }
 
 interface Config {
-    endpoint:     string
+    endpoint:     string  // plain endpoint, NO query string — e.g. "public/search"
+    query:        string  // text query kept separate so we can always append it cleanly
     initialItems: PublicPagesEvent[]
     initialCount: number
     initialPages: number
     initialNext:  boolean
 }
 
-// Builds query params from public filter values
+// Builds query params from filter values.
+// Resolves ISO codes → labels for country/state before sending to API.
 const buildPublicFilterParams = (filters: Partial<FilterValues>): Record<string, string> => {
     const params: Record<string, string> = {}
-    if (filters.dateRange?.from)                                       params.start_date = format(new Date(filters.dateRange.from), 'yyyy-MM-dd')
-    if (filters.dateRange?.to)                                         params.end_date   = format(new Date(filters.dateRange.to), 'yyyy-MM-dd')
-    if (filters.priceRange?.min != null && filters.priceRange.min > 0) params.min_price  = String(filters.priceRange.min)
-    if (filters.priceRange?.max != null)                               params.max_price  = String(filters.priceRange.max)
-    if (filters.location?.state)                                       params.state       = filters.location.state
-    if (filters.location?.country)                                     params.country    = filters.location.country
+
+    if (filters.dateRange?.from) params.start_date = format(new Date(filters.dateRange.from), 'yyyy-MM-dd')
+    if (filters.dateRange?.to)   params.end_date   = format(new Date(filters.dateRange.to),   'yyyy-MM-dd')
+
+    // Only send min_price if greater than 0 — sending 0 may override API defaults
+    if (filters.priceRange?.min != null && filters.priceRange.min > 0) params.min_price = String(filters.priceRange.min)
+    if (filters.priceRange?.max != null)                                params.max_price = String(filters.priceRange.max)
+
+    if (filters.location?.country) {
+        params.country = resolveCountryLabel(filters.location.country)
+        if (filters.location.state) {
+            params.state = resolveStateLabel(filters.location.state, filters.location.country)
+        }
+    }
+
     return params
 }
 
 const hasActiveFilters = (filters: Partial<FilterValues>): boolean =>
     !!(
         filters.categories?.length ||
-        filters.dateRange?.from ||
-        filters.dateRange?.to ||
-        filters.priceRange?.min ||
-        filters.priceRange?.max ||
-        filters.location?.state ||
+        filters.dateRange?.from    ||
+        filters.dateRange?.to      ||
+        filters.priceRange?.min    ||
+        filters.priceRange?.max    ||
         filters.location?.country
     )
 
 async function fetchPublicEvents(
     endpoint:    string,
-    categories:   string[],
+    query:       string,
+    categories:  string[],
     filterParams: Record<string, string>,
     page:        number,
 ): Promise<{ results: PublicPagesEvent[]; count: number; next: boolean; total_pages: number } | null> {
     try {
-        const params = new URLSearchParams({ ...filterParams, page: String(page) })
-        categories.forEach(id => params.append("category", String(id)))
-        const res    = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${endpoint}?${params}`)
+        const base   = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "")
+        const params = new URLSearchParams({ search: query, page: String(page), ...filterParams })
+        categories.forEach(id => params.append("category", id))
 
+        const fullUrl = `${base}/${endpoint}?${params}`
+        console.log("[usePublicEvents] fetch:", fullUrl)
+
+        const res  = await fetch(fullUrl)
         if (!res.ok) {
             console.log("[usePublicEvents] fetch failed:", res.status)
             return null
@@ -71,8 +87,8 @@ async function fetchPublicEvents(
         const data = json.data ?? json
 
         return {
-            results:     data.results ?? [],
-            count:       data.count   ?? 0,
+            results:     data.results     ?? [],
+            count:       data.count       ?? 0,
             next:        !!data.next,
             total_pages: data.total_pages ?? 1,
         }
@@ -94,11 +110,12 @@ export function usePublicEvents(
     const [currentPage, setCurrentPage] = useState(1)
     const [status,      setStatus]      = useState<PublicFetchStatus>("idle")
 
-    const filtersRef       = useRef(filters)
-    filtersRef.current     = filters
-    const isFetching       = useRef(false)
-    const initialized      = useRef(false)
-    const pageRef          = useRef(1)
+    const filtersRef   = useRef(filters)
+    filtersRef.current = filters
+
+    const isFetching  = useRef(false)
+    const initialized = useRef(false)
+    const pageRef     = useRef(1)
 
     const filterKey = [
         filters.categories?.join(',')       ?? '',
@@ -106,21 +123,27 @@ export function usePublicEvents(
         filters.dateRange?.to?.toString()   ?? '',
         String(filters.priceRange?.min      ?? ''),
         String(filters.priceRange?.max      ?? ''),
-        filters.location?.state              ?? '',
+        filters.location?.state             ?? '',
         filters.location?.country           ?? '',
     ].join('|')
 
     const prevFilterKey = useRef(filterKey)
 
-    const fetchData = useRef(async (page: number, append: boolean) => {
+    // fetchData reads from filtersRef so it always has current values
+    const fetchData = useCallback(async (page: number, append: boolean) => {
         if (isFetching.current) return
         isFetching.current = true
         setStatus(append ? "loadingMore" : "loading")
 
+        const currentFilters = filtersRef.current
+        const categories     = (currentFilters.categories ?? []).map(String)
+        const filterParams   = buildPublicFilterParams(currentFilters)
+
         const result = await fetchPublicEvents(
             config.endpoint,
-            filters.categories || [],
-            buildPublicFilterParams(filtersRef.current),
+            config.query,
+            categories,
+            filterParams,
             page,
         )
 
@@ -147,16 +170,17 @@ export function usePublicEvents(
         setTotalPages(result.total_pages)
         setCurrentPage(page)
         setStatus("idle")
-    })
+    // config.endpoint and config.query are stable — passed from server component
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [config.endpoint, config.query])
 
-    // Filter changes trigger fresh fetch — same pattern as useDataDisplay
     useEffect(() => {
         if (!initialized.current) return
         if (prevFilterKey.current === filterKey) return
         prevFilterKey.current = filterKey
 
         if (!hasActiveFilters(filters)) {
-            // Restore initial server data when all filters cleared
+            // All filters cleared — restore server-rendered initial data
             setItems(config.initialItems)
             setCount(config.initialCount)
             setHasNext(config.initialNext)
@@ -168,10 +192,11 @@ export function usePublicEvents(
         }
 
         pageRef.current = 1
-        fetchData.current(1, false)
+        fetchData(1, false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterKey])
 
-    // INIT — must be last
+    // Mark as initialized after first render
     useEffect(() => {
         initialized.current = true
         return () => { initialized.current = false }
@@ -181,14 +206,14 @@ export function usePublicEvents(
         if (!hasNext || status === "loadingMore" || isFetching.current) return
         const nextPage = pageRef.current + 1
         pageRef.current = nextPage
-        fetchData.current(nextPage, true)
-    }, [hasNext, status])
+        fetchData(nextPage, true)
+    }, [hasNext, status, fetchData])
 
     const goToPage = useCallback((page: number) => {
         if (isFetching.current) return
         pageRef.current = page
-        fetchData.current(page, false)
-    }, [])
+        fetchData(page, false)
+    }, [fetchData])
 
     return {
         items, count, totalPages, hasNext, currentPage,

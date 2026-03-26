@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { countries, getStates } from "@/components-data/location";
 import { Currency } from "@/lib/redux/slices/settingsSlice";
 import { ApiCategory } from "@/actions/filters";
+import { resolveCountryLabel, resolveStateLabel } from "./resolveCountryCode";
 
 export const buildSearchResultsHeading = (filters: FilterValues, currency: Currency) => {
   const { categories, location, priceRange, dateRange } = filters;
@@ -17,9 +18,9 @@ export const buildSearchResultsHeading = (filters: FilterValues, currency: Curre
   // Location
   const locationText =
     location?.state
-      ? `in ${location.state}`
+      ? `in ${resolveStateLabel(location.state, location.country || "")}`
       : location?.country
-        ? `in ${location.country}`
+        ? `in ${resolveCountryLabel(location.country)}`
         : "";
 
   // Price range

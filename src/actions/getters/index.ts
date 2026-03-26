@@ -7,7 +7,7 @@ import {
     EVENT_DETAILS_ENDPOINT,
 } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
-import { headers } from "next/headers"
+import { cookies, headers } from "next/headers"
 
 async function publicFetch<T>(url: string): Promise<T | null> {
     try {
@@ -97,19 +97,27 @@ interface GetEventDetailsResult {
     message?: string
 }
 
-export async function getEventDetails(eventID: string): Promise<GetEventDetailsResult> {
+export async function getEventDetails(
+    eventID: string,
+): Promise<GetEventDetailsResult> {
     try {
-        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`
-        const res = await fetch(url, { next: { revalidate: 60 * 5 } })
-        const json = await res.json()
 
+        const cookiesStore = await cookies()
+        const token = cookiesStore.get("access_token")?.value;
+
+        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`
+        const res = await fetch(url, {
+            cache: "no-store",
+            headers: {
+                ...(token && { Authorization: `Bearer ${token}` }),
+            },
+        })
+        const json = await res.json()
         if (!res.ok) {
             console.log("[getEventDetails] status:", res.status, JSON.stringify(json))
             return { success: false, message: handleApiError(json) }
         }
-
         return { success: true, data: json.data ?? json }
-
     } catch (err) {
         console.log("[getEventDetails] error:", err)
         return { success: false, message: "Failed to load event details." }

@@ -12,7 +12,7 @@ import Link from 'next/link'
 import { NAV_LINKS } from '@/components-data/navigation/navLinks'
 import { useState } from 'react'
 import CancelTicketPrompt from '@/components/modals/CancelTicketPrompt'
-import { userTickets } from '@/components-data/demo-data'
+
 
 export default function AuthUserGettingTicketCard() {
 
@@ -94,12 +94,12 @@ export default function AuthUserGettingTicketCard() {
 
 
 
-            <CancelTicketPrompt 
+            {/* <CancelTicketPrompt 
                 onCancel={(v) => {}}
                 open={showCancelTicketPrompt} 
                 setOpen={setShowCancelTicketPrompt} 
                 tickets={userTickets} 
-            />
+            /> */}
         </div>
     )
 }

@@ -20,12 +20,14 @@ import { EventIconActionButton } from '@/components/shared/EventIconActionButton
 import ShareEventModal from '@/components/modals/ShareEventModal'
 import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
 import Link from 'next/link'
+import { mockAttendees } from '@/components-data/mock-attendees'
 
 export default function EventsCard(card: EventCardProps) {
 
     const { currency } = useAppSelector(store => store.settings)
     const [imageError,  setImageError]  = useState(false)
     const [showShare,   setShowShare]   = useState(false)
+    const displayCount = Math.min(card.attendees || 0, 3)
 
     const { isFavourite, toggle: toggleFavourite, feedbackMsg } = useFavourite(card.id, card.isFavourite)
 
@@ -128,9 +130,9 @@ export default function EventsCard(card: EventCardProps) {
                         </div>
 
                        <div className="flex items-center flex-wrap justify-between pt-2 gap-2">
-                            {(card.attendees?.length ?? 0) > 0 && (
+                            {(card.attendees ?? 0) > 0 && (
                                 <div className="flex -space-x-1.5 shrink-0">
-                                    {card.attendees!.slice(0, 3).map((user) => (
+                                    {mockAttendees.slice(displayCount).map((user) => (
                                         <Avatar key={user.id} className="ring-2 ring-background size-8">
                                             {user.profile_picture && <AvatarImage src={user.profile_picture} alt={user.full_name} />}
                                             <AvatarFallback className={`${getAvatarColor(user.id.toString())} text-white font-medium text-[10px]`}>
@@ -138,10 +140,10 @@ export default function EventsCard(card: EventCardProps) {
                                             </AvatarFallback>
                                         </Avatar>
                                     ))}
-                                    {card.attendees!.length > 3 && (
+                                    {card.attendees && card.attendees > 3 && (
                                         <Avatar className="ring-2 ring-background size-8">
                                             <AvatarFallback className="bg-primary-1 font-medium text-secondary-7 text-xs">
-                                                +{card.attendees!.length - 3}
+                                                +{card.attendees - 3}
                                             </AvatarFallback>
                                         </Avatar>
                                     )}
