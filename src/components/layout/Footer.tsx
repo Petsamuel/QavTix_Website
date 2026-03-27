@@ -17,6 +17,7 @@ export default function Footer() {
     const pathName = usePathname()
 
     return (
+        pathName !== "/_not-found" &&
         !pathName.match("/auth") &&
         !pathName.match("/checkout") &&
         <footer className="w-full relative bg-primary-1 px-6 lg:px-16 py-12">

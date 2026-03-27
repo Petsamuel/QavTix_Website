@@ -1,6 +1,6 @@
 const CALLBACK_URL = `${process.env.NEXT_PUBLIC_APP_DOMAIN}/auth/callback`
 
-function buildGoogleUrl(): string {
+export function buildGoogleUrl(): string {
     const params = new URLSearchParams({
         client_id:     process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
         redirect_uri:  CALLBACK_URL,
@@ -12,7 +12,7 @@ function buildGoogleUrl(): string {
     return `https://accounts.google.com/o/oauth2/v2/auth?${params}`
 }
 
-function buildFacebookUrl(): string {
+export function buildFacebookUrl(): string {
     const params = new URLSearchParams({
         client_id:     process.env.NEXT_PUBLIC_FACEBOOK_APP_ID!,
         redirect_uri:  CALLBACK_URL,
@@ -23,7 +23,7 @@ function buildFacebookUrl(): string {
     return `https://www.facebook.com/v18.0/dialog/oauth?${params}`
 }
 
-function buildAppleUrl(): string {
+export function buildAppleUrl(): string {
     const params = new URLSearchParams({
         client_id:     process.env.NEXT_PUBLIC_APPLE_CLIENT_ID!,
         redirect_uri:  CALLBACK_URL,

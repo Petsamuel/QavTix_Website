@@ -6,7 +6,7 @@ import Link from "next/link"
 export default function NotFoundPage() {
     return (
         <main
-            className="min-h-screen pt-24 flex flex-col items-center justify-center px-6 bg-white"
+            className="min-h-screen py-10 flex flex-col items-center justify-center px-6 bg-white"
             aria-labelledby="not-found-title"
         >
             <div

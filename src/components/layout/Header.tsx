@@ -36,6 +36,7 @@ export default function Header() {
     if (
         pathName.startsWith("/auth") ||
         pathName.match("/checkout") ||
+        pathName === "/_not-found"  ||  // Next.js internal 404 route
         !pathsForHeader1(pathName)
     ) return null
 

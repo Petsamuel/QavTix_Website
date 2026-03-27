@@ -1,24 +1,55 @@
-import { space_grotesk } from "@/lib/fonts";
-import Image from "next/image";
+import { space_grotesk } from "@/lib/fonts"
+import Image from "next/image"
+import { format } from "date-fns"
 
-export default function EventDetailsPreview(){
+interface Props {
+    event: EventDetails
+}
+
+export default function EventDetailsPreview({ event }: Props) {
+    const startDate = event.start_datetime
+        ? format(new Date(event.start_datetime), "MMMM d, h:mmaaa")
+        : null
+    const endDate = event.end_datetime
+        ? format(new Date(event.end_datetime), "h:mmaaa zzz")
+        : null
+
+    const dateString = startDate && endDate
+        ? `${startDate} – ${endDate}`
+        : startDate ?? ""
+
+    const imageSrc =
+        (event as any).cover_image ??
+        (event as any).banner_image ??
+        "/images/placeholders/event-placeholder.png"
+
     return (
-        <div className="flex gap-3 w-full rounded-[27px] p-2 border border-neutral-5">
-            <figure>
-                <Image 
-                    src="/images/demo-images/event-detail-img.png" 
-                    alt=""
+        <div
+            className="flex gap-3 w-full rounded-[27px] p-2 border border-neutral-5"
+            data-testid="event-details-preview"
+        >
+            <figure className="shrink-0">
+                <Image
+                    src={imageSrc}
+                    alt={event.title}
                     width={300}
                     height={300}
-                    className="rounded-3xl h-full object-cover"
+                    className="rounded-3xl h-full w-24 md:w-32 object-cover"
                 />
             </figure>
 
-            <div>
-                <h3 className={`${space_grotesk.className} text-secondary-9 leading-5.5`}>
-                    Learn to create visually appealing  and user-friendly interfaces.
+            <div className="min-w-0">
+                <h3 className={`${space_grotesk.className} text-secondary-9 leading-5.5 line-clamp-3`}>
+                    {event.title}
                 </h3>
-                <p className="text-xs mt-3 text-neutral-7">March 22, 9AM - 12PM WAT</p>
+                {dateString && (
+                    <p className="text-xs mt-3 text-neutral-7">{dateString}</p>
+                )}
+                {event.event_location?.address && (
+                    <p className="text-xs mt-1 text-neutral-5 truncate">
+                        {event.event_location.address}
+                    </p>
+                )}
             </div>
         </div>
     )
