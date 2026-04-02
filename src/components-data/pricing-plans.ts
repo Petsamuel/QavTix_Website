@@ -3,9 +3,18 @@
 // Source: QAVTIX PROJECT PRICING & RBAC document (March 2026)
 // Plan IDs match the keys used in PricingFeature — do not rename without
 // updating DesktopFeatureComparison and MobileFeatureComparison too.
-// 
+//
+// KEY CORRECTIONS vs previous version (reconciled from PDF):
+//   - Standard plan: restored 'Max ticket sales (750 tickets)' feature
+//   - Pro plan: restored 'Max ticket sales (2,500 tickets)' feature
+//   - Enterprise plan: restored 'Max ticket sales (10,000 tickets)' feature
+//   - Enterprise Discount & Promo Codes: corrected 500 → 300 (PDF feature table)
+//   - Pro features: 'Everything in Free Plan' → 'Everything in Standard Plan'
+//   - Attendee Standard plan: restored full points-based feature set from PDF p.2
+//   - Attendee feature table: restored Rewards, Perks categories from PDF p.2
+//
 
-//  Host Plans 
+// Host Plans
 
 export const hostPricingData: PricingData = {
     plans: [
@@ -20,6 +29,7 @@ export const hostPricingData: PricingData = {
                 '2 active events at a time',
                 'Single ticket type per event',
                 'Basic event setup',
+                'Max ticket sales (750 tickets)',
                 'Real-time sales insights',
                 'Downloadable attendee list (up to 250)',
                 'QR code check-in system',
@@ -38,10 +48,11 @@ export const hostPricingData: PricingData = {
             perTicketFee:  0,
             description:   'Everything you need to grow. Unlock advanced analytics, marketing tools, and team access. First 30 days FREE.',
             features: [
-                'Everything in Free Plan',
+                'Everything in Standard Plan',
                 'Unlimited event creation',
                 'Unlimited ticket categories',
                 'Advanced event setup',
+                'Max ticket sales (2,500 tickets)', 
                 'Revenue performance chart',
                 'Week-based sales analysis',
                 'Integrated marketing dashboard',
@@ -67,9 +78,10 @@ export const hostPricingData: PricingData = {
             features: [
                 'Everything in Pro Plan',
                 'Unlimited team members (3 included)',
+                'Max ticket sales (10,000 tickets)',
                 'Geographical breakdown analytics',
                 'Customer profile insights',
-                'Exclusive discount codes (up to 500)',
+                'Exclusive discount codes (up to 300)', 
                 'Sponsored email campaigns',
                 'Featured event listing (2 weeks included)',
                 'Bulk refunds (where applicable)',
@@ -86,64 +98,70 @@ export const hostPricingData: PricingData = {
     ],
 
     // Feature comparison table
-    // ✅  = true  (check icon)
-    // 🔒  = false (lock icon)
+    // true   = check icon
+    // false  = lock / unavailable icon
     // string = specific value shown as text
     features: [
-        //  Event Management 
-        { category: 'Event Management', name: 'Active Events',                 free: '2 max',       pro: 'Unlimited',     enterprise: 'Unlimited'         },
-        { category: 'Event Management', name: 'Event Setup',                   free: 'Basic',       pro: 'Advanced',      enterprise: 'Advanced'          },
-        { category: 'Event Management', name: 'Ticket Categories',             free: 'Single type', pro: 'Unlimited',     enterprise: 'Unlimited'         },
-        { category: 'Event Management', name: 'Discount & Promo Codes',        free: false,         pro: 'Up to 100',     enterprise: 'Up to 500'         },
-        { category: 'Event Management', name: 'Referral / Affiliate Program',  free: false,         pro: true,            enterprise: true                },
-        { category: 'Event Management', name: 'QR Code Check-In',             free: true,          pro: true,            enterprise: true                },
-        { category: 'Event Management', name: 'Bulk Refunds',                  free: false,         pro: false,           enterprise: 'Where applicable'  },
-        { category: 'Event Management', name: 'Ticket Resale Controls',        free: false,         pro: false,           enterprise: 'Up to +20%'        },
-        { category: 'Event Management', name: 'Group Sharing',                 free: true,          pro: true,            enterprise: true                },
+        //  Event Management
+        { category: 'Event Management', name: 'Active Events',                  standard: '2 max',       pro: 'Unlimited',    enterprise: 'Unlimited'        },
+        { category: 'Event Management', name: 'Event Setup',                    standard: 'Basic',       pro: 'Advanced',     enterprise: 'Advanced'         },
+        { category: 'Event Management', name: 'Ticket Categories',              standard: 'Single type', pro: 'Unlimited',    enterprise: 'Unlimited'        },
+        { category: 'Event Management', name: 'Max Ticket Sales',               standard: '750',         pro: '2,500',        enterprise: '10,000'           },
+        { category: 'Event Management', name: 'Discount & Promo Codes',         standard: false,         pro: 'Up to 100',    enterprise: 'Up to 300'        }, // ← corrected: was 500
+        { category: 'Event Management', name: 'Referral / Affiliate Program',   standard: false,         pro: true,           enterprise: true               },
+        { category: 'Event Management', name: 'QR Code Check-In',               standard: true,          pro: true,           enterprise: true               },
+        { category: 'Event Management', name: 'Bulk Refunds',                   standard: false,         pro: false,          enterprise: 'Where applicable' },
+        { category: 'Event Management', name: 'Ticket Resale Controls',         standard: false,         pro: false,          enterprise: 'Up to +20%'       },
+        { category: 'Event Management', name: 'Group Sharing',                  standard: true,          pro: true,           enterprise: true               },
 
         //  Team & Access
-        { category: 'Team & Access',    name: 'Team Permissions',              free: false,         pro: '1 member',      enterprise: '3 members'         },
+        { category: 'Team & Access',    name: 'Team Permissions',               standard: false,         pro: '1 member',     enterprise: '3 members'        },
 
-        //  Analytics & Reports 
-        { category: 'Analytics',        name: 'Real-Time Sales Insights',      free: true,          pro: true,            enterprise: true                },
-        { category: 'Analytics',        name: 'Revenue Performance Chart',     free: false,         pro: true,            enterprise: true                },
-        { category: 'Analytics',        name: 'Week-Based Sales Analysis',     free: false,         pro: true,            enterprise: true                },
-        { category: 'Analytics',        name: 'Geographical Breakdown',        free: false,         pro: false,           enterprise: true                },
-        { category: 'Analytics',        name: 'Customer Profile Insights',     free: false,         pro: false,           enterprise: true                },
-        { category: 'Analytics',        name: 'Attendee List Export',          free: 'Up to 250',   pro: 'Up to 1,000',   enterprise: 'Unlimited'         },
+        //  Analytics & Reports
+        { category: 'Analytics',        name: 'Real-Time Sales Insights',       standard: true,          pro: true,           enterprise: true               },
+        { category: 'Analytics',        name: 'Revenue Performance Chart',      standard: false,         pro: true,           enterprise: true               },
+        { category: 'Analytics',        name: 'Week-Based Sales Analysis',      standard: false,         pro: true,           enterprise: true               },
+        { category: 'Analytics',        name: 'Geographical Breakdown',         standard: false,         pro: false,          enterprise: true               },
+        { category: 'Analytics',        name: 'Customer Profile Insights',      standard: false,         pro: false,          enterprise: true               },
+        { category: 'Analytics',        name: 'Attendee List Export',           standard: 'Up to 250',   pro: 'Up to 1,000',  enterprise: 'Unlimited'        },
 
-        //  Marketing 
-        { category: 'Marketing',        name: 'Integrated Marketing Dashboard',free: false,         pro: true,            enterprise: true                },
-        { category: 'Marketing',        name: 'Built-in Email Campaigns',      free: false,         pro: '100/month',     enterprise: '100/month'         },
-        { category: 'Marketing',        name: 'Sponsored Email Campaign',      free: false,         pro: false,           enterprise: true                },
-        { category: 'Marketing',        name: 'Featured Event Listing',        free: false,         pro: false,           enterprise: '2 weeks free'      },
+        //  Marketing
+        { category: 'Marketing',        name: 'Integrated Marketing Dashboard', standard: false,         pro: true,           enterprise: true               },
+        { category: 'Marketing',        name: 'Built-in Email Campaigns',       standard: false,         pro: '100/month',    enterprise: '100/month'        },
+        { category: 'Marketing',        name: 'Sponsored Email Campaign',       standard: false,         pro: false,          enterprise: true               },
+        { category: 'Marketing',        name: 'Featured Event Listing',         standard: false,         pro: false,          enterprise: '2 weeks free'     },
 
         //  Support & Security
-        { category: 'Support',          name: 'Email Support',                 free: 'Standard',    pro: 'Priority',      enterprise: 'Priority'          },
-        { category: 'Support',          name: 'Dedicated Account Manager',     free: false,         pro: false,           enterprise: true                },
-        { category: 'Support',          name: 'Fraud Detection',               free: true,          pro: true,            enterprise: true                },
-        { category: 'Support',          name: 'Advanced Security Options',     free: false,         pro: false,           enterprise: true                },
+        { category: 'Support',          name: 'Email Support',                  standard: 'Standard',    pro: 'Priority',     enterprise: 'Priority'         },
+        { category: 'Support',          name: 'Dedicated Account Manager',      standard: false,         pro: false,          enterprise: true               },
+        { category: 'Support',          name: 'Fraud Detection',                standard: true,          pro: true,           enterprise: true               },
+        { category: 'Support',          name: 'Advanced Security Options',      standard: false,         pro: false,          enterprise: true               },
     ],
 }
 
-//  Attendee Plans
+// Attendee Plans
 // Attendees pay per ticket only — no monthly subscription.
-// Source: Individual Pricing Plan section of the doc.
+// Source: Individual Pricing Plan section, PDF page 2.
+//
+// NOTE: The points/rewards system is core to the attendee free tier —
+// do not strip it. It was fully documented in the original PDF.
 
 export const attendeePricingData: PricingData = {
     plans: [
         {
             id:           'standard',
-            name:         'Standard',
+            name:         'Free (Points-Based)',
             price:        0,
             currency:     '₦',
             perTicketFee: 0,
-            description:  'Discover and attend free events with no cost. Enjoy basic ticketing and event discovery.',
+            description:  'Discover and attend free events with no cost. Earn rewards on every ticket purchase.',
             features: [
                 'Browse all public events',
                 'Ticket purchase & QR code delivery',
+                'Earn 1 point per ₦100 spent',
+                'Redeem points for ticket discounts (10–15% limit)',
+                'Standard affiliate referral rewards',
                 'Group ticket sharing',
-                'Basic event reminders',
                 'Standard customer support',
             ],
             buttonText:    'Get started free',
@@ -155,14 +173,18 @@ export const attendeePricingData: PricingData = {
             price:         2500,
             currency:      '₦',
             perTicketFee:  0,
-            description:   'Unlock ticket resale, group savings, and early access. Built for frequent event-goers.',
+            description:   'Unlock ticket resale, boosted rewards, early access, and exclusive deals. Built for frequent event-goers.',
             features: [
                 'Everything in Free',
+                'Earn 2 points per ₦100 spent',
+                'Higher points redemption limits',
                 'Ticket resale marketplace access',
-                'Early bird & exclusive event access',
-                'Group sharing & split payments',
+                'Early access to popular events',
+                'Exclusive member-only deals & promo codes',
+                'Reduced or zero convenience fees',
+                'Monthly ticket credits (e.g., ₦1,000/month)',
+                'Priority / faster checkout',
                 'Priority customer support',
-                'Monthly event digest',
             ],
             buttonText:    'Upgrade to Pro',
             buttonVariant: 'primary',
@@ -190,29 +212,41 @@ export const attendeePricingData: PricingData = {
     ],
 
     features: [
-        //  Ticketing 
-        { category: 'Ticketing',        name: 'Free Event Access',             free: true,          pro: true,            enterprise: true                },
-        { category: 'Ticketing',        name: 'Paid Event Tickets',            free: true,          pro: true,            enterprise: true                },
-        { category: 'Ticketing',        name: 'QR Code Ticket Delivery',       free: true,          pro: true,            enterprise: true                },
-        { category: 'Ticketing',        name: 'Ticket Resale Access',          free: false,         pro: true,            enterprise: true                },
-        { category: 'Ticketing',        name: 'Bulk Ticket Purchasing',        free: false,         pro: false,           enterprise: true                },
+        //  Ticketing & Discovery
+        { category: 'Ticketing',        name: 'Free Event Access',              standard: true,               pro: true,                   enterprise: true               },
+        { category: 'Ticketing',        name: 'Paid Event Tickets',             standard: true,               pro: true,                   enterprise: true               },
+        { category: 'Ticketing',        name: 'QR Code Ticket Delivery',        standard: true,               pro: true,                   enterprise: true               },
+        { category: 'Ticketing',        name: 'Ticket Resale Access',           standard: false,              pro: true,                   enterprise: true               },
+        { category: 'Ticketing',        name: 'Bulk Ticket Purchasing',         standard: false,              pro: false,                  enterprise: true               },
+        { category: 'Ticketing',        name: 'Priority / Faster Checkout',     standard: false,              pro: true,                   enterprise: true               },
 
-        //  Group & Social 
-        { category: 'Group & Social',   name: 'Group Ticket Sharing',          free: true,          pro: true,            enterprise: true                },
-        { category: 'Group & Social',   name: 'Split Payments in Groups',      free: false,         pro: true,            enterprise: true                },
-        { category: 'Group & Social',   name: 'Team Accounts',                 free: false,         pro: false,           enterprise: true                },
+        //  Rewards & Points
+        { category: 'Rewards',          name: 'Earn Points on Purchases',       standard: '1 pt / ₦100',      pro: '2 pts / ₦100',         enterprise: '2 pts / ₦100'     },
+        { category: 'Rewards',          name: 'Bonus Points for Attendance',    standard: 'Standard',         pro: 'Higher bonus',         enterprise: 'Higher bonus'     },
+        { category: 'Rewards',          name: 'Redeem Points for Discounts',    standard: 'Yes',              pro: 'Yes (higher caps)',     enterprise: 'Yes (higher caps)'},
+        { category: 'Rewards',          name: 'Max Discount per Ticket',        standard: 'Limited (10–15%)', pro: 'Higher limit',         enterprise: 'Higher limit'     },
+        { category: 'Rewards',          name: 'Points Expiry',                  standard: '6–12 months',      pro: 'Longer validity',      enterprise: 'Longer validity'  },
 
-        //  Access & Perks 
-        { category: 'Access & Perks',   name: 'Early Bird / Exclusive Access', free: false,         pro: true,            enterprise: true                },
-        { category: 'Access & Perks',   name: 'Priority Access — Sponsored',   free: false,         pro: false,           enterprise: true                },
-        { category: 'Access & Perks',   name: 'Monthly Event Digest',          free: false,         pro: true,            enterprise: true                },
+        //  Perks & Savings
+        { category: 'Perks',            name: 'Affiliate Referral Rewards',     standard: 'Yes',              pro: 'Yes (boosted)',         enterprise: 'Yes (boosted)'    },
+        { category: 'Perks',            name: 'Early Access to Popular Events', standard: false,              pro: true,                   enterprise: true               },
+        { category: 'Perks',            name: 'Exclusive Member-Only Deals',    standard: false,              pro: true,                   enterprise: true               },
+        { category: 'Perks',            name: 'Eligibility for Sponsored Deals',standard: 'Limited',          pro: 'Priority',             enterprise: 'Priority'         },
+        { category: 'Perks',            name: 'Promo Code Eligibility',         standard: false,              pro: true,                   enterprise: true               },
+        { category: 'Perks',            name: 'Convenience Fee Discounts',      standard: false,              pro: 'Reduced or zero',      enterprise: 'Reduced or zero'  },
+        { category: 'Perks',            name: 'Monthly Ticket Credits',         standard: false,              pro: 'Yes (e.g. ₦1,000/mo)', enterprise: 'Custom'           },
 
-        //  Billing & Reporting 
-        { category: 'Billing',          name: 'Centralised Team Billing',      free: false,         pro: false,           enterprise: true                },
-        { category: 'Billing',          name: 'Spend Reporting & Export',      free: false,         pro: false,           enterprise: true                },
+        //  Group & Social
+        { category: 'Group & Social',   name: 'Group Ticket Sharing',           standard: true,               pro: true,                   enterprise: true               },
+        { category: 'Group & Social',   name: 'Split Payments in Groups',       standard: false,              pro: true,                   enterprise: true               },
+        { category: 'Group & Social',   name: 'Team Accounts',                  standard: false,              pro: false,                  enterprise: true               },
 
-        //  Support 
-        { category: 'Support',          name: 'Customer Support',              free: 'Standard',    pro: 'Priority',      enterprise: 'Priority'          },
-        { category: 'Support',          name: 'Dedicated Account Manager',     free: false,         pro: false,           enterprise: true                },
+        //  Billing & Reporting
+        { category: 'Billing',          name: 'Centralised Team Billing',       standard: false,              pro: false,                  enterprise: true               },
+        { category: 'Billing',          name: 'Spend Reporting & Export',       standard: false,              pro: false,                  enterprise: true               },
+
+        //  Support
+        { category: 'Support',          name: 'Customer Support',               standard: 'Standard',         pro: 'Priority',             enterprise: 'Priority'         },
+        { category: 'Support',          name: 'Dedicated Account Manager',      standard: false,              pro: false,                  enterprise: true               },
     ],
 }

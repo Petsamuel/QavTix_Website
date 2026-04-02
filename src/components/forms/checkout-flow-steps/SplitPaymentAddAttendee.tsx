@@ -8,7 +8,6 @@ import FormInput2 from '@/components/custom-utils/inputs/FormInput2'
 import { useTicketUser } from '@/contexts/TicketUserProvider'
 import { AttendeeFormData } from '@/schemas/checkout-flow.schema'
 import { useSplitPayment } from '@/contexts/SplitPaymentContextProvider'
-import { mockUserGroups } from '@/components-data/demo-data'
 import { space_grotesk } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { useCheckout } from '@/contexts/CheckoutFlowProvider'
@@ -23,13 +22,14 @@ interface AttendeeCardProps {
 }
 
 export default function SplitPaymentAddAttendee({ attendee, index, canRemove, onRemove }: AttendeeCardProps) {
-    const { eventIsAgeRestricted } = useCheckout()
-    const { splitMode, updateAttendee, splitPaymentEnabled, copyFromSource } = useSplitPayment()
+    
+    const { groups, event: { age_restriction} } = useCheckout()
+    const { splitMode, updateAttendee, splitPaymentEnabled } = useSplitPayment()
     const { user } = useTicketUser()
     const [selectedGroup, setSelectedGroup] = useState<string>('')
     
     const { form } = useCheckoutAttendeeInfoForm()
-    const { register, setValue, watch, formState: { errors } } = form
+    const { register, setValue, watch, clearErrors, formState: { errors } } = form
 
     const attendeeErrors = (errors.attendees as any)?.[index]
 
@@ -38,25 +38,23 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, on
     const amountValue = watch(`attendees.${index}.amount`) ?? 0
 
     const handleCopyFrom = (source: string) => {
-        if (source === 'myself' && user) {
-            const data = { name: user.full_name, email: user.email, phone: user.phone || '' }
-            setValue(`attendees.${index}.name`, data.name)
-            setValue(`attendees.${index}.email`, data.email)
-            setValue(`attendees.${index}.phone`, data.phone)
-            copyFromSource(attendee.attendeeID, 'myself')
-        } else if (source.startsWith('group-')) {
-            setSelectedGroup(source)
-        }
+        if (!source) return
+
+        const groupId = source.startsWith('group-') ? source.replace(/^group-/, '') : source
+        setSelectedGroup(groupId)
+        clearErrors(`attendees.${index}`)
     }
 
+    const membersInSelectedGroup = groups.find(g => g.id === selectedGroup)?.members ?? []
+    const filteredMembers = membersInSelectedGroup.filter(m => m.email !== user?.email)
+
     const handleMemberSelect = (memberId: string) => {
-        const group = mockUserGroups.find(g => g.id === selectedGroup)
-        const member = group?.members[parseInt(memberId)]
+        const member = filteredMembers[parseInt(memberId)]
         if (member) {
-            setValue(`attendees.${index}.name`, member.name)
+            setValue(`attendees.${index}.name`, member.email)
             setValue(`attendees.${index}.email`, member.email)
-            setValue(`attendees.${index}.phone`, member.phone)
-            updateAttendee(attendee.attendeeID, { name: member.name, email: member.email, phone: member.phone })
+            setValue(`attendees.${index}.phone`, member.email)
+            updateAttendee(attendee.attendeeID, { name: member.email, email: member.email, phone: member.email })
         }
     }
 
@@ -65,7 +63,7 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, on
             <div className="flex items-center justify-between">
                 <div className="flex items-center justify-between w-full gap-3">
                     <h3 className={`${space_grotesk.className} font-medium md:text-lg text-secondary-9`}>
-                        Attendee {index + 1}
+                        Attendee {index + 2}
                     </h3>
                     
                     {splitPaymentEnabled && (
@@ -78,9 +76,9 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, on
                                 value={amountValue} 
                                 onChange={(e) => {
                                     const val = parseFloat(e.target.value) || 0
-                                    // 1. Update RHF state
+                                    // Update RHF state
                                     setValue(`attendees.${index}.amount`, val, { shouldValidate: true })
-                                    // 2. Update SplitPayment Context
+                                    // Update SplitPayment Context
                                     updateAttendee(attendee.attendeeID, { amount: val })
                                 }}
                                 disabled={splitMode === 'equal'}
@@ -110,8 +108,7 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, on
                         <SelectValue placeholder="Copy details from" />
                     </SelectTrigger>
                     <SelectContent>
-                        {user && <SelectItem value="myself" className='text-xs'>Myself</SelectItem>}
-                        {mockUserGroups.map(group => (
+                        {groups.map(group => (
                             <SelectItem key={group.id} value={group.id} className='text-xs hover:bg-accent-3!'>{group.name}</SelectItem>
                         ))}
                     </SelectContent>
@@ -123,8 +120,8 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, on
                             <SelectValue placeholder="Select member" />
                         </SelectTrigger>
                         <SelectContent>
-                            {mockUserGroups.find(g => g.id === selectedGroup)?.members.map((m, idx) => (
-                                <SelectItem key={idx} value={idx.toString()} className='text-xs hover:bg-accent-3!'>{m.name}</SelectItem>
+                            {filteredMembers.map((m, idx) => (
+                                <SelectItem key={m.email} value={idx.toString()} className='text-xs hover:bg-accent-3!'>{m.email}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
@@ -132,7 +129,7 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, on
             </div>
 
             <div className="space-y-4">
-                <div className={cn("grid gap-4", eventIsAgeRestricted ? "md:grid-cols-2" : "grid-cols-1")}>
+                <div className={cn("grid gap-4", age_restriction ? "md:grid-cols-2" : "grid-cols-1")}>
                     <FormInput2
                         label="Attendee name"
                         placeholder="e.g. Jon"
@@ -140,7 +137,7 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, on
                         error={attendeeErrors?.name?.message}
                         required
                     />
-                    {eventIsAgeRestricted && (
+                    {age_restriction && (
                         <FormInput2
                             label="Date of birth"
                             placeholder="DD/MM/YY"

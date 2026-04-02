@@ -1,7 +1,18 @@
 import { accessCookieOptions } from "@/components-data/cookie-keys"
 import { LOGIN_ENDPOINT } from "@/endpoints"
-import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { NextRequest, NextResponse } from "next/server"
+
+const STATUS_MESSAGES: Record<number, string> = {
+    400: "Invalid credentials. Please check your email and password.",
+    401: "Unauthorized. Please check your credentials.",
+    403: "Access denied. You do not have permission to perform this action.",
+    404: "Account not found. Please check your email address.",
+    422: "Invalid input. Please check the information you entered.",
+    429: "Too many attempts. Please wait a moment and try again.",
+    500: "Server error. Please try again later.",
+    502: "Service temporarily unavailable. Please try again later.",
+    503: "Service temporarily unavailable. Please try again later.",
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -18,10 +29,12 @@ export async function POST(req: NextRequest) {
         if (!res.ok) {
             console.log("[login] status:", res.status)
             console.log("[login] raw json:", JSON.stringify(json, null, 2))
-            return NextResponse.json(
-                { message: handleApiError(json) },
-                { status: res.status }
-            )
+
+            const message =
+                STATUS_MESSAGES[res.status] ??
+                `Something went wrong (${res.status}). Please try again.`
+
+            return NextResponse.json({ message }, { status: res.status })
         }
 
         const { user, tokens } = json.data

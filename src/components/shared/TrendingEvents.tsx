@@ -19,7 +19,6 @@ import { usePublicEvents } from '@/lib/custom-hooks/UsePublicEvents'
 import EventCardLoaderContainer from '../loaders/EventCardLoader'
 import { ApiCategory } from '@/actions/filters'
 import { deriveCategories } from '@/helper-fns/deriveCategories'
-import { useAppSelector } from '@/lib/redux/hooks'
 
 interface Props {
     className?:     string
@@ -62,8 +61,6 @@ export function TrendingEvents({
 
     const pageSize   = showAll ? 12 : 8
     const displayed  = showAll ? items : items.slice(0, pageSize)
-
-    const { currency } = useAppSelector(store => store.settings)
 
     
     const availableCategories = useMemo(
@@ -110,7 +107,7 @@ export function TrendingEvents({
             <div>
                 <div className="flex items-center justify-between gap-8">
                     <h2 className={`text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
-                        {buildTrendingEventsHeading(filters, categories, currency)}
+                        {buildTrendingEventsHeading(filters, categories)}
                     </h2>
                     {!showAll && items.length > pageSize && (
                         <button onClick={() => setShowAll(true)} className="text-sm font-medium text-primary-6 hover:underline">
@@ -138,7 +135,7 @@ export function TrendingEvents({
                 )}
 
                 {!isLoading && !isError && !isEmpty && (
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(14em,1fr))] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[repeat(auto-fill,minmax(16em,1fr))] gap-6 lg:gap-8 mt-10 justify-items-center md:justify-items-start">
+                    <div className="flex flex-wrap gap-6 lg:gap-8 md:grid grid-cols-3 lg:grid-cols-4 2xl:flex mt-10">
                         {displayed.map(event => (
                             <EventsCard1
                                 key={event.id}

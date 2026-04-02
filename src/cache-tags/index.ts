@@ -11,4 +11,5 @@ export const CACHE_TAGS = {
     AFFILIATE_PERFORMANCE_YEAR:  "affiliate-performance-year",
     HOSTS:  "hosts",
     HOST_DETAILS:  "host-details",
+    EVENT_DETAILS:  "event-details",
 } as const

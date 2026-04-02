@@ -4,8 +4,8 @@ import { TicketCard } from "@/components/custom-utils/cards/TicketCard"
 import { useCheckout } from "@/contexts/CheckoutFlowProvider"
 
 export default function TicketPreviewStep() {
-    
-    const { tickets, event } = useCheckout()
+
+    const { tickets } = useCheckout()
 
     if (tickets.length === 0) {
         return (
@@ -27,7 +27,7 @@ export default function TicketPreviewStep() {
                 <TicketCard
                     key={ticket._key}
                     ticketKey={ticket._key}
-                    data-testid={`ticket-card-${ticket._key}`}
+                    data-testid={`ticket-card-${ticket.id}`}
                 />
             ))}
         </div>

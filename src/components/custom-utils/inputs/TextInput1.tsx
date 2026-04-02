@@ -4,12 +4,13 @@ import ErrorPara from '../ErrorPara';
 interface ITextInput1Props {
     type?: 'text' | 'email' | 'tel';
     placeholder?: string;
-    icon?: string
+    icon?: string;
     error?: string;
-    showLabel?: boolean
+    showLabel?: boolean;
     value?: string;
-    required?: boolean
+    required?: boolean;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    errorDataTestId?: string;
     [key: string]: any;
 }
 
@@ -23,6 +24,7 @@ export default function TextInput1({
     required = false,
     value,
     onChange,
+    errorDataTestId,
     ...props 
 }: ITextInput1Props) {
     return (
@@ -64,7 +66,7 @@ export default function TextInput1({
                 )}
             </div>
             {error && (
-                <ErrorPara error={error} />
+                <ErrorPara error={error} data-testid={errorDataTestId} />
             )}
         </div>
     )

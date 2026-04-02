@@ -114,7 +114,7 @@ export default function ResetPasswordPage() {
 
     return (
         <AuthPageFlexWrapper>
-            <main>
+            <main className="max-w-xl mx-auto w-full">
                 <h1 className={`${space_grotesk.className} text-secondary-9 text-2xl md:text-3xl font-bold mt-4 mb-2`}>
                     {step === "new-password" ? "Create new password" : "Password reset"}
                 </h1>

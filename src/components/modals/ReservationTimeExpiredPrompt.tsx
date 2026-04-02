@@ -1,16 +1,35 @@
 import { useRouter } from 'next/navigation'
-import { Dialog, DialogContent, DialogHeader, DialogOverlay, DialogTitle } from '@/components/ui/dialog'
+import { DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { space_grotesk } from '@/lib/fonts'
 import { CustomIcons } from '@/components/Svg-Icons'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
 import { AnimatedDialogForPrompt } from '../custom-utils/AnimatedDialogForPrompts'
+import { canRestartCheckout } from '@/actions/checkout'
+import { useCheckout } from '@/contexts/CheckoutFlowProvider'
+import ActionButton1 from '../custom-utils/buttons/ActionButton1'
 
 
-export default function ReservationTimeExpiredPrompt({ open, setOpen }:{ open: boolean, setOpen?: Dispatch<SetStateAction<boolean>> }) {
+export default function ReservationTimeExpiredPrompt({ open }:{ open: boolean, setOpen?: Dispatch<SetStateAction<boolean>> }) {
     
     const router = useRouter()
+    const { event, resetCheckout } = useCheckout()
+    const [isChecking, setIsChecking] = useState(false)
+
+    const handleCanRestartPurchase = async() => {
+        setIsChecking(true)
+        const result = await canRestartCheckout(event.id)
+
+        if (result) {
+            resetCheckout()
+        }
+        else {
+            router.push(EVENT_ROUTES.EVENTS.href)
+        }
+
+        setIsChecking(false)
+    }
 
     return (
         <AnimatedDialogForPrompt open={open} >
@@ -38,12 +57,13 @@ export default function ReservationTimeExpiredPrompt({ open, setOpen }:{ open: b
                     >
                         Cancel
                     </Button>
-                    <Button
-                        onClick={() => {}}
-                        className="h-14 flex-1 px-6 py-3 rounded-[30px] bg-primary hover:bg-primary-7 active:bg-primary-8 hover:shadow-md active:scale-[0.98] disabled:bg-neutral-5 disabled:cursor-not-allowed disabled:opacity-60 text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150 flex items-center justify-center gap-2"
-                    >
-                        Restart Purchase
-                    </Button>
+
+                    <ActionButton1 
+                        buttonText='Restart Purchase'
+                        action={() => handleCanRestartPurchase()}
+                        isLoading={isChecking}
+                        className='h-14 text-sm! whitespace-nowrap flex-1 rounded-[30px]'
+                    />
                 </div>
             </div>
         </AnimatedDialogForPrompt>

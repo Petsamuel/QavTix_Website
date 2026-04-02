@@ -1,3 +1,6 @@
+'use client'
+
+import { EVENT_ROUTES } from "@/components-data/navigation/navLinks"
 import { space_grotesk } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
@@ -6,9 +9,12 @@ import Link from "next/link"
 export default function NotFoundPage() {
     return (
         <main
-            className="min-h-screen py-10 flex flex-col items-center justify-center px-6 bg-white"
+            className="fixed inset-0 z-1000 flex flex-col items-center justify-center px-6 bg-white overflow-hidden"
             aria-labelledby="not-found-title"
         >
+            {/* Optional subtle overlay to block everything behind */}
+            <div className="absolute inset-0 bg-white/95 z-[-1]" />
+
             <div
                 className="w-full max-w-sm sm:max-w-md md:max-w-lg animate-fade-in"
                 aria-hidden="true"
@@ -26,7 +32,10 @@ export default function NotFoundPage() {
             <div className="mt-6 text-center animate-slide-up">
                 <h1
                     id="not-found-title"
-                    className={cn(space_grotesk.className, "text-2xl sm:text-3xl font-bold text-secondary-9 tracking-tight")}
+                    className={cn(
+                        space_grotesk.className,
+                        "text-2xl sm:text-3xl font-bold text-secondary-9 tracking-tight"
+                    )}
                 >
                     Oops, page not found!
                 </h1>
@@ -54,7 +63,7 @@ export default function NotFoundPage() {
                 </Link>
 
                 <Link
-                    href="/events"
+                    href={EVENT_ROUTES.EVENTS.href}
                     className="
                         inline-flex items-center justify-center
                         px-8 py-4 rounded-full bg-primary text-white

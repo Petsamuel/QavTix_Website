@@ -1,18 +1,12 @@
 import { headers } from "next/headers"
 import EventsPageCW from "@/components/page-content-wrappers/EventPageCW"
-import { getFeaturedEvents, getTopLocations, getNearbyEvents, getTrendingEvents } from "@/actions/getters"
+import { getFeaturedEvents, getTopLocations, getNearbyEvents, getTrendingEvents, getUserLocation } from "@/actions/getters"
 import { getCategories } from "@/actions/filters"
 import { getTrendingHosts } from "@/actions/host"
 
-async function getUserCity(): Promise<string> {
-    const headersList = await headers()
-    const city = headersList.get("x-vercel-ip-city") ?? "Lagos"
-    return decodeURIComponent(city)
-}
-
 export default async function EventsPage() {
 
-    const city = await getUserCity()
+    const { city, country } = await getUserLocation()
 
     const [
         featuredEvents,
@@ -22,9 +16,9 @@ export default async function EventsPage() {
         categoriesResult,
         hostsResult,
     ] = await Promise.all([
-        getFeaturedEvents(),
-        getTrendingEvents(),
-        getNearbyEvents(city),
+        getFeaturedEvents(country),
+        getTrendingEvents(country),
+        getNearbyEvents(city, country),
         getTopLocations(),
         getCategories(),
         getTrendingHosts(),

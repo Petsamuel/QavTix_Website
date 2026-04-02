@@ -8,6 +8,7 @@ interface IPasswordInput1Props {
     value?: string;
     helperText?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    errorDataTestId?: string;
     [key: string]: any;
 }
 
@@ -17,6 +18,7 @@ export default function PasswordInput1({
     value,
     helperText,
     onChange,
+    errorDataTestId,
     ...props 
 }: IPasswordInput1Props) {
     
@@ -66,7 +68,7 @@ export default function PasswordInput1({
             )}
 
             {error && (
-                <ErrorPara error={error} />
+                <ErrorPara error={error} data-testid={errorDataTestId} />
             )}
         </div>
     )

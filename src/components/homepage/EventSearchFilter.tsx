@@ -163,7 +163,7 @@ export function EventSearchFilters({ initialFilters, categories = [] }: Props) {
                 <Button
                     onClick={handleSearch}
                     data-action="search-events"
-                    className="w-40 bg-primary hover:bg-primary-7 h-14 md:h-[9vh] mt-5 md:mt-[4vh] px-8 rounded-full"
+                    className="w-40 bg-primary hover:bg-primary-7 h-14 md:h-[9vh] xl:h-14 mt-5 md:mt-[4vh] px-8 rounded-full"
                 >
                     <Search className="mr-2 size-6" />
                     Search event

@@ -18,8 +18,8 @@ export default async function EventCategoryPage({ params }: Props) {
 
     const result = await getCategoryPage(categoryPath)
 
-    const { city } = await getUserLocation()
-    const nearbyEvents = await getNearbyEvents(city)
+    const { city, country } = await getUserLocation()
+    const nearbyEvents = await getNearbyEvents(city, country)
 
     const data = result.data ?? {
         name:              categoryEntry.label,

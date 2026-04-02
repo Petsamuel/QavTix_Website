@@ -50,7 +50,7 @@ export default function EventsNearYouSection({ events }: Props) {
                 </div>
             ) : (
                 <>
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(14em,1fr))] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8 mt-10 justify-items-center md:justify-items-start">
+                    <div className="flex flex-wrap gap-6 lg:gap-8 md:grid grid-cols-3 lg:grid-cols-4 2xl:flex mt-10">
                         {displayed.map(event => (
                             <EventsCard
                                 key={event.id}

@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 export default function HomePageHeroSectionSkeleton() {
     return (
         <section className="w-full min-h-[80vh] pt-20 pb-10 flex items-center bg-[#F0F4FF] global-px">
-            <div className="w-full max-w-7xl mx-auto py-12 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+            <div className="w-full max-w-8xl mx-auto py-12 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
 
                 {/* Left — title + filters + button */}
                 <div className="flex-1 w-full space-y-8">

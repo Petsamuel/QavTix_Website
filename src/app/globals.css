@@ -236,3 +236,7 @@
     @apply bg-background text-foreground box-border overflow-x-hidden;
   }
 }
+
+
+@keyframes dash { to { stroke-dashoffset: 0; } }
+@keyframes grow { from { width: 0% } to { width: 100% } }

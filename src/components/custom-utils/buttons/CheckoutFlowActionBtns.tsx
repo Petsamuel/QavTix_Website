@@ -2,7 +2,9 @@
 
 import { useCheckoutAttendeeInfoForm } from "@/contexts/CheckoutAttendeeInfoFormContext"
 import { useCheckout } from "@/contexts/CheckoutFlowProvider"
+import { useSplitPayment } from "@/contexts/SplitPaymentContextProvider"
 import { useRouter } from "next/navigation"
+import ActionButton1 from "./ActionButton1"
 
 interface IMultiStepFormButtonDuo {
     isSubmitting?: boolean
@@ -10,8 +12,10 @@ interface IMultiStepFormButtonDuo {
 
 export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormButtonDuo) {
     const router = useRouter()
-    const { currentStep, nextStep, prevStep, canProceedToCheckout, clearTickets } = useCheckout()
+    const { currentStep, nextStep, attendeeInfo, updateAttendeeInfo, isProcessing, prevStep, canProceedToCheckout, clearTickets } = useCheckout()
+    const { splitError } = useSplitPayment()
     const { form } = useCheckoutAttendeeInfoForm()
+    const buttonIsDisabled = !!isSubmitting || isProcessing || !!splitError || (attendeeInfo.shareWithGroup && !attendeeInfo.attendees?.length)
 
     const handleContinue = async () => {
         if (currentStep === 2) {
@@ -19,11 +23,26 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
             if (!isValid) {
                 const firstError = Object.keys(form.formState.errors)[0]
                 const errorElement = document.getElementById(firstError)
+                console.log("Form validation failed, cannot proceed to checkout", form.formState.errors[firstError as keyof object])
                 if (errorElement) {
                     errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
                 }
                 return
             }
+
+            // Sync form values into checkout context before proceeding
+            const values = form.getValues()
+            updateAttendeeInfo({
+                name:        values.name,
+                email:       values.email,
+                phone:       values.phone,
+                dateOfBirth: values.dateOfBirth,
+                sendUpdates: values.sendUpdates,
+                shareWithGroup: values.shareWithGroup,
+                keepInLoop: values.keepInLoop,
+                splitPayment: values.splitPayment,
+                attendees: values.attendees,
+            })
         }
         nextStep()
     }
@@ -56,6 +75,7 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
                 <button
                     type="button"
                     onClick={handleCancel}
+                    disabled={!!isSubmitting || isProcessing}
                     className="flex-1 text-secondary-8 bg-white hover:shadow flex items-center gap-2 justify-center px-6 py-3 rounded-[30px] border-2 border-secondary-4 font-medium text-sm hover:bg-neutral-2 hover:border-secondary-5 active:bg-neutral-3 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-neutral-4 focus:ring-offset-2 transition-all duration-150"
                 >
                     <span>
@@ -65,27 +85,15 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
                     </span>
                 </button>
                 
-                <button
-                    type="button"
-                    onClick={handleContinue}
-                    disabled={!!isSubmitting}
-                    className="flex-1 px-6 py-3 rounded-[30px] bg-primary hover:bg-primary-7 active:bg-primary-8 hover:shadow-md active:scale-[0.98] disabled:bg-neutral-5 disabled:cursor-not-allowed disabled:opacity-60 text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150 flex items-center justify-center gap-2"
-                >
-                    {!!isSubmitting ? (
-                        <>
-                            <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
-                            <span>Loading...</span>
-                        </>
-                    ) : (
-                        <>
-                            <span>
-                                {currentStep === 1 ? "Continue" : 
-                                 currentStep === 2 ? "Checkout" : 
-                                 currentStep === 3 ? "Make Payment" : null}
-                            </span>
-                        </>
-                    )}
-                </button>
+
+                <ActionButton1 
+                    buttonText={currentStep === 1 ? "Continue" : "Checkout"}
+                    action={() => handleContinue()}
+                    isDisabled={buttonIsDisabled}
+                    isLoading={!!isSubmitting || isProcessing}
+                    buttonType="button"
+                    className="flex-1 text-sm!"
+                />
             </div>
         </>
     )

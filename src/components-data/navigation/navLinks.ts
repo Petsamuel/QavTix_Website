@@ -19,7 +19,7 @@ export const NAV_LINKS = {
   RESET_PASSWORD: { label: 'Reset password', href: '/auth/reset-password' },
 
   // Role-based dashboard URLs — resolved at runtime using getDashboardUrl()
-  DASHBOARD: { label: 'Dashboard', href: '/dashboard', type: 'auth' as const },
+  DASHBOARD: { label: 'Dashboard', href: `${process.env.NEXT_PUBLIC_APP_DOMAIN}/dashboard`, type: 'auth' as const },
 
   SEARCH_EVENTS: { label: '', href: '/events/search' },
   EVENT_LOCATION: { label: '', href: '/events/explore/location/' },
@@ -29,6 +29,10 @@ export const NAV_LINKS = {
   EVENTS_GET_TICKETS_CHECKOUT: { label: '', href: '/events/details/[event_id]/checkout' },
 
   HOST_PROFILE: { label: '', href: '/host/profile/[host_id]' },
+
+  MARKETPLACE_EVENT_DETAILS: { label: '', href: '/events/marketplace/[event_id]' },
+  MARKETPLACE_CHECKOUT: { label: '', href: '/events/marketplace/[ticket_id]/checkout' },
+  DASHBOARD_MARKETPLACE: { label: '', href: `${process.env.NEXT_PUBLIC_APP_DOMAIN}/dashboard/marketplace` },
 
   SEARCH_PAGE: { label: '', href: '/search' },
 } as const satisfies Record<string, NavLink>
@@ -80,7 +84,14 @@ export const EVENT_ROUTES = {
   EVENTS: NAV_LINKS.EVENTS,
   SEARCH_EVENTS: NAV_LINKS.SEARCH_EVENTS,
   EVENTS_DETAILS: NAV_LINKS.EVENTS_DETAILS,
-  CHECKOUT: NAV_LINKS.EVENTS_GET_TICKETS_CHECKOUT
+  CHECKOUT: NAV_LINKS.EVENTS_GET_TICKETS_CHECKOUT,
+} as const
+
+
+export const MARKETPLACE_ROUTES = {
+  EVENT_DETAILS: NAV_LINKS.MARKETPLACE_EVENT_DETAILS,
+  DASHBOARD_MARKETPLACE: NAV_LINKS.DASHBOARD_MARKETPLACE,
+  CHECKOUT: NAV_LINKS.MARKETPLACE_CHECKOUT
 } as const
 
 

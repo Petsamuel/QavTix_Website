@@ -8,7 +8,7 @@ export function CheckoutFormStepIndicator() {
     const steps = [
         { number: 1, label: 'Ticket' },
         { number: 2, label: 'Ticket Information' },
-        { number: 3, label: 'Payment Method' }
+        { number: 3, label: 'Checkout' }
     ]
     
     return (

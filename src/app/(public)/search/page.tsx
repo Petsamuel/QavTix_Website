@@ -10,7 +10,6 @@ import { NAV_LINKS } from "@/components-data/navigation/navLinks"
 import { fromPublicPagesEvent } from "@/components/custom-utils/cards/resources/event-card-adapter"
 import { formatEventDate } from "@/helper-fns/date-utils"
 import { formatPrice, parsePrice } from "@/helper-fns/formatPrice"
-import { useAppSelector } from "@/lib/redux/hooks"
 import { resolveSearchIntent } from "@/components-data/search-intelligence"
 import { searchEvents } from "@/actions/filters"
 
@@ -18,8 +17,6 @@ export default function SearchPage() {
 
     const searchParams           = useSearchParams()
     const router                 = useRouter()
-    const { currency }           = useAppSelector(s => s.settings)
-    const [isPending, startTransition] = useTransition()
 
     const [query,       setQuery]       = useState(searchParams.get("q") || "")
     const [intent,      setIntent]      = useState<SearchResult | null>(null)
@@ -212,7 +209,7 @@ export default function SearchPage() {
                                     <div className="text-right shrink-0">
                                         {card.price && parsePrice(card.price) != null && (
                                             <p className={`${space_grotesk.className} text-sm font-semibold text-secondary-9`}>
-                                                {formatPrice(parsePrice(card.price)!, currency)}
+                                                {formatPrice(parsePrice(card.price)!, card.currency || 'NGN')}
                                             </p>
                                         )}
                                     </div>

@@ -18,7 +18,6 @@ import { usePublicEvents } from "@/lib/custom-hooks/UsePublicEvents"
 import { SEARCH_EVENTS_ENDPOINT } from "@/endpoints"
 import { ApiCategory } from "@/actions/filters"
 import { deriveCategories } from "@/helper-fns/deriveCategories"
-import { useAppSelector } from "@/lib/redux/hooks"
 import { NAV_LINKS } from "@/components-data/navigation/navLinks"
 
 const PAGE_SIZE = 12
@@ -41,7 +40,6 @@ export function SearchResultSection({
     paginationClassName = '',
 }: Props) {
 
-    const { currency } = useAppSelector(s => s.settings)
     const [filters, setFilters] = useState<Partial<FilterValues>>(initialFilters)
 
     const {
@@ -108,7 +106,7 @@ export function SearchResultSection({
             {/* Heading */}
             {hasActiveSearch && !isLoading && (
                 <h2 className={`max-w-xl text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 mb-10 ${space_grotesk.className}`}>
-                    {buildSearchResultsHeading(filters as FilterValues, currency)}
+                    {buildSearchResultsHeading(filters as FilterValues)}
                     {query && (
                         <span className="text-primary-6 ml-2">
                             &ldquo;{query}&rdquo;

@@ -22,7 +22,6 @@ const MIN_FOR_LOOP = 6
 
 export default function EventsNearYouSection2({ events }: Props) {
 
-    const router   = useRouter()
     const isMobile = !useMediaQuery("(min-width: 768px)")
 
     const shouldCarousel = isMobile || events.length >= MIN_FOR_LOOP
@@ -103,7 +102,7 @@ export default function EventsNearYouSection2({ events }: Props) {
             </div>
 
             {!shouldCarousel ? (
-                <div className="flex flex-wrap gap-6 px-3">
+                <div className="flex flex-wrap gap-6 lg:gap-8 md:grid grid-cols-3 lg:grid-cols-4 2xl:flex mt-10">
                     {displayEvents.map(event => (
                         <EventsCard
                             key={event._key}

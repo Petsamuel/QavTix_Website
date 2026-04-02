@@ -20,20 +20,25 @@ interface SplitPaymentContextType {
     calculateEqualSplit: () => void
     getTotalAssignedAmount: () => number
     getRemainingAmount: () => number
+    splitError: string | null
+    isSplitValid: boolean
 }
 
 const SplitPaymentContext = createContext<SplitPaymentContextType | undefined>(undefined)
 
 export function SplitPaymentProvider({ children }: { children: ReactNode }) {
-    const { selectedTickets, total } = useCheckout()
+    const { selectedTickets, total, event } = useCheckout()
     const { user } = useTicketUser()
     const [splitMode, setSplitMode] = useState<SplitMode>('equal')
     const [splitPaymentEnabled, setSplitPaymentEnabled] = useState(false)
     const [attendees, setAttendees] = useState<AttendeeFormData[]>([])
 
     const totalAmount = total
-    const canAddMoreAttendees = attendees.length < selectedTickets.reduce((v,c) => v+c.quantity,0)
+    const totalTicketsSelected = selectedTickets.reduce((sum, ticket) => sum + ticket.quantity, 0)
+    const canAddMoreAttendees = attendees.length < (totalTicketsSelected - 1) // initiator takes 1 slot
     const [nextAttendeeId, setNextAttendeeId] = useState(1)
+
+    const isAgeRestricted = event.age_restriction
 
     const addAttendee = useCallback(() => {
         const newAttendee: AttendeeFormData = {
@@ -41,11 +46,12 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
             name: '',
             email: '',
             phone: '',
-            amount: 0
+            amount: splitMode === 'equal' ? totalAmount / (attendees.length + 2) : 0,
+            dateOfBirth: isAgeRestricted ? '' : '2000-01-01'
         }
         setAttendees(prev => [...prev, newAttendee])
         setNextAttendeeId(prev => prev + 1) // increment for next
-    }, [nextAttendeeId])
+    }, [nextAttendeeId, splitMode, totalAmount, attendees.length, isAgeRestricted])
 
     const removeAttendee = useCallback((id: number) => {
         setAttendees(prev => prev.filter(a => a.attendeeID !== id))
@@ -62,14 +68,14 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
             updateAttendee(attendeeID, {
                 name: user.full_name,
                 email: user.email,
-                phone: user.phone || ''
+                phone: user.phone_number || ''
             })
         }
     }, [user, attendees, updateAttendee])
 
     const calculateEqualSplit = useCallback(() => {
         if (attendees.length === 0) return
-        const amountPerAttendee = totalAmount / attendees.length
+        const amountPerAttendee = totalAmount / (attendees.length + 1) // +1 for initiator
         setAttendees(prev => prev.map(a => ({ ...a, amount: amountPerAttendee })))
     }, [attendees.length, totalAmount])
 
@@ -77,14 +83,39 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
         return attendees.reduce((sum, a) => sum + (a.amount || 0), 0)
     }, [attendees])
 
+    const [splitError, setSplitError] = useState<string | null>(null)
+
     const getRemainingAmount = useCallback(() => {
         return totalAmount - getTotalAssignedAmount()
     }, [totalAmount, getTotalAssignedAmount])
 
     useEffect(() => {
+        if (!splitPaymentEnabled || attendees.length === 0) {
+            setSplitError(null)
+            return
+        }
+
+        if (splitMode === 'manual') {
+            const assigned = getTotalAssignedAmount()
+
+            if (assigned <= 0) {
+                setSplitError('At least one group member must have a positive assigned amount.')
+            } else if (assigned >= totalAmount) {
+                setSplitError('Initiator must retain a positive remaining balance to pay.')
+            } else {
+                setSplitError(null)
+            }
+        } else {
+            setSplitError(null)
+        }
+    }, [splitPaymentEnabled, splitMode, attendees, totalAmount, getTotalAssignedAmount])
+
+    useEffect(() => {
         if (splitMode === 'equal' && attendees.length > 0) {
             calculateEqualSplit()
         }
+        // When switching to manual, the equal split values persist automatically
+        // allowing users to adjust individual amounts while keeping the equal calculation
     }, [splitMode, attendees.length, calculateEqualSplit])
 
     return (
@@ -102,7 +133,9 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
             canAddMoreAttendees,
             calculateEqualSplit,
             getTotalAssignedAmount,
-            getRemainingAmount
+            getRemainingAmount,
+            splitError,
+            isSplitValid: !splitError
         }}>
             {children}
         </SplitPaymentContext.Provider>

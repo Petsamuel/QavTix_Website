@@ -8,7 +8,6 @@ import { footerData } from '@/components-data/footer-data'
 import { usePathname } from 'next/navigation'
 import { isHighlightedSocial } from '@/helper-fns/isHighlightedSocial'
 import { cn } from '@/lib/utils'
-import CurrencySwitcher from '../settings/CurrencySwitcher'
 import RegionSwitcher from '../settings/RegionSwitcher'
 
 
@@ -173,7 +172,8 @@ export default function Footer() {
                         <RegionSwitcher />
 
                         {/* Currency Selector */}
-                        <CurrencySwitcher  />
+                        {/* Currency Switch was removed mid development */}
+                        {/* <CurrencySwitcher  /> */}
                     </div>
                 </div>
             </div>

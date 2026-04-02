@@ -6,6 +6,7 @@ export type AttendeeFormData = {
     email: string
     phone: string
     amount: number
+    dateOfBirth?: string
 }
 
 export type SplitMode = 'equal' | 'manual'
@@ -63,7 +64,13 @@ export const attendeeInformationSchema = z.object({
     agreeToTerms: z.boolean().refine(val => val === true, {
         message: 'You must agree to the terms and conditions'
     })
-})
+}).refine(
+    (data) => !data.shareWithGroup || (Array.isArray(data.attendees) && data.attendees.length >= 1),
+    {
+        message: "At least one attendee is required when sharing with a group",
+        path: ["attendees"],
+    }
+)
 
 export const paymentMethodSchema = z.object({
     method: z.enum([

@@ -1,4 +1,4 @@
-import { EVENT_ROUTES } from "@/components-data/navigation/navLinks"
+import { EVENT_ROUTES, NAV_LINKS } from "@/components-data/navigation/navLinks"
 import FollowHostBtn1 from "@/components/custom-utils/buttons/FollowHostBtn1"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -28,7 +28,7 @@ function AttendeeAvatars({ count, eventId }: { count: number; eventId: string })
             className="inline-flex focus:outline-none"
         >
             <div className="flex -space-x-1.5 shrink-0">
-                {mockAttendees.slice(displayCount).map((attendee, i) => (
+                {mockAttendees.slice(0, displayCount).map((attendee) => (
                     <Avatar key={attendee.id} className="ring-2 ring-background size-8">
                         {attendee.profile_picture && <AvatarImage src={attendee.profile_picture} alt={attendee.full_name} />}
                         <AvatarFallback className={`${getAvatarColor(attendee.id.toString())} text-white font-medium text-[10px]`}>
@@ -50,16 +50,7 @@ function AttendeeAvatars({ count, eventId }: { count: number; eventId: string })
 
 const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
 
-    const { isFollowing, toggle } = useFollowHost(event.category, event.is_following)
-
-    const socialPlatformIcon = (url: string) => {
-        if (url.includes("twitter") || url.includes("x.com"))  return "hugeicons:new-twitter"
-        if (url.includes("instagram"))                         return "hugeicons:instagram"
-        if (url.includes("facebook"))                          return "fa6-brands:facebook"
-        if (url.includes("tiktok"))                            return "ic:baseline-tiktok"
-        if (url.includes("youtube"))                           return "mynaui:youtube-solid"
-        return "humbleicons:globe"
-    }
+    const { isFollowing, toggle } = useFollowHost(event.organizer_id, event.is_following)
 
     return (
         <div className={cn(className)}>
@@ -76,11 +67,13 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                     </Avatar>
                     <div>
                         <p className="text-xs text-neutral-7">Hosted by</p>
-                        <div className="flex items-center text-secondary-9 text-sm">
-                            <strong className="font-normal whitespace-nowrap">
-                                {event.organizer_display_name}
-                            </strong>
-                        </div>
+                        <Link 
+                            className="flex items-center text-secondary-9 text-sm"
+                            href={NAV_LINKS.HOST_PROFILE.href.replace('[host_id]', event.organizer_id)}
+                            >
+                            <strong className="font-normal whitespace-nowrap capitalize">{event.organizer_display_name}</strong>
+                            <Icon icon="line-md:chevron-right" width="20" height="20" />
+                        </Link>
                     </div>
                 </div>
                 <FollowHostBtn1
@@ -89,23 +82,6 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                     className={cn("w-auto! px-4", "md:px-6")}
                 />
             </div>
-
-            {/* Social links */}
-            {event.social_links.length > 0 && (
-                <div className="flex gap-3 mt-4">
-                    {event.social_links.map((link, i) => (
-                        <Link
-                            key={i}
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-neutral-6 hover:text-secondary-9 transition-colors"
-                        >
-                            <Icon icon={socialPlatformIcon(link.url)} className="size-5" />
-                        </Link>
-                    ))}
-                </div>
-            )}
 
             {/* Attendees */}
             <h3 className={cn(space_grotesk.className, "text-secondary-9 font-medium mt-8 mb-4")}>

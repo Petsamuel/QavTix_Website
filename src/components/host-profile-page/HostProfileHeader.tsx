@@ -7,6 +7,7 @@ import { useFollowHost } from "@/lib/custom-hooks/UseFollowHost"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { getAvatarColor } from "@/helper-fns/getAvatarColor"
 import { getInitialsFromName } from "@/helper-fns/getInitialFromName"
+import Link from "next/link"
 
 
 const PLATFORM_ICONS: Record<string, string> = {
@@ -84,7 +85,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                             {socialLinks.length > 0 && (
                                 <div className="flex gap-3 mt-5">
                                     {socialLinks.map(({ platform, url }, i) => (
-                                        <a
+                                        <Link
                                             key={i}
                                             href={url}
                                             target="_blank"
@@ -95,7 +96,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                                                 icon={PLATFORM_ICONS[platform.toLowerCase()] ?? "humbleicons:globe"}
                                                 className="size-5.5"
                                             />
-                                        </a>
+                                        </Link>
                                     ))}
                                 </div>
                             )}

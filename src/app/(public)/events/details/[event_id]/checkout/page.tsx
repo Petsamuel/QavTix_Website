@@ -3,8 +3,8 @@ import { CheckoutFlowProvider } from "@/contexts/CheckoutFlowProvider"
 import { SplitPaymentProvider } from "@/contexts/SplitPaymentContextProvider"
 import { getEventDetails } from "@/actions/getters"
 import { getGroups } from "@/actions/groups"
-import { notFound } from "next/navigation"
 import CheckoutPageClient from "@/components/checkout/CheckoutPageClient"
+import EventNotFound from "@/components/events-page/EventNotFound"
 
 interface Props {
     params: Promise<{ event_id: string }>
@@ -19,7 +19,9 @@ export default async function EventTicketCheckoutPage({ params }: Props) {
     ])
 
     if (!eventResult.success || !eventResult.data) {
-        notFound()
+        return (
+            <EventNotFound />
+        )
     }
 
     const event  = eventResult.data

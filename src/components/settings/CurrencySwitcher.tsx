@@ -32,7 +32,7 @@ export default function CurrencySwitcher({ className }: { className?: string }) 
                     <SelectItem key={curr.code} value={curr.code}>
                         <span className="flex items-center gap-2">
                             <span>{curr.symbol}</span>
-                            <span>{curr.label}</span>
+                            <span>{curr.code}</span>
                         </span>
                     </SelectItem>
                 ))}

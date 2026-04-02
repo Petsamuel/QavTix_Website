@@ -33,6 +33,7 @@ export function PastEvents({ hostID, initialEvents, initialCount }: Props) {
             initialCount: initialCount,
             initialPages: Math.ceil(initialCount / PAGE_SIZE) || 1,
             initialNext:  initialCount > PAGE_SIZE,
+            query: "",
         },
         {},
     )
@@ -64,6 +65,16 @@ export function PastEvents({ hostID, initialEvents, initialCount }: Props) {
                     </div>
                 )}
 
+                {
+                    isEmpty && (
+                        <div className="flex flex-col items-center justify-center py-16 gap-3 text-center mt-6">
+                            <Icon icon="hugeicons:calendar-04" className="size-8 text-neutral-7" />
+                            <p className="text-sm font-medium text-secondary-8">No past events found</p>
+                            <p className="text-xs text-neutral-7">No result based on your criteria</p>
+                        </div>
+                    )
+                }
+
                 {hasNoEvents && (
                     <div className="flex flex-col items-center justify-center py-16 gap-3 text-center mt-6">
                         <Icon icon="hugeicons:calendar-04" className="size-8 text-neutral-7" />
@@ -73,7 +84,7 @@ export function PastEvents({ hostID, initialEvents, initialCount }: Props) {
                 )}
             
                 {!isLoading && !isError && items.length > 0 && (
-                    <div className="grid grid-cols-[repeat(auto-fit,minmax(14em,1fr))] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-[repeat(auto-fit,minmax(16em,1fr))] gap-6 lg:gap-8 mt-10 justify-items-center md:justify-items-start">
+                    <div className="flex flex-wrap gap-6 lg:gap-8 md:grid grid-cols-3 lg:grid-cols-4 2xl:flex mt-10">
                         {displayed.map(event => (
                             <EventsCard1
                                 key={event.id}

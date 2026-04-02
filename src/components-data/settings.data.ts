@@ -5,13 +5,21 @@ export const REGION_CURRENCY_MAP: Record<string, LocationData> = {
     region: { code: 'NG', label: 'Nigeria', flag: '🇳🇬' },
     currency: { code: 'NGN', label: 'Naira', symbol: '₦' }
   },
+  KE: {
+    region: { code: 'KE', label: 'Kenya', flag: '🇰🇪' },
+    currency: { code: 'KES', label: 'Kenyan Shilling', symbol: 'KSh' }
+  },
+  ZA: {
+    region: { code: 'ZA', label: 'South Africa', flag: '🇿🇦' },
+    currency: { code: 'ZAR', label: 'SA Rand', symbol: 'R' }
+  },
+  GH: {
+    region: { code: 'GH', label: 'Ghana', flag: '🇬🇭' },
+    currency: { code: 'GHS', label: 'Cedi', symbol: '₵' }
+  },
   US: {
     region: { code: 'US', label: 'United States', flag: '🇺🇸' },
-    currency: { code: 'USD', label: 'Dollar', symbol: '$' }
-  },
-  GB: {
-    region: { code: 'GB', label: 'United Kingdom', flag: '🇬🇧' },
-    currency: { code: 'GBP', label: 'Pound', symbol: '£' }
+    currency: { code: 'USD', label: 'US Dollar', symbol: '$' }
   }
 }
 

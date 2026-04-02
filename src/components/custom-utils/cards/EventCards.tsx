@@ -24,7 +24,6 @@ import { mockAttendees } from '@/components-data/mock-attendees'
 
 export default function EventsCard(card: EventCardProps) {
 
-    const { currency } = useAppSelector(store => store.settings)
     const [imageError,  setImageError]  = useState(false)
     const [showShare,   setShowShare]   = useState(false)
     const displayCount = Math.min(card.attendees || 0, 3)
@@ -46,7 +45,7 @@ export default function EventsCard(card: EventCardProps) {
         <>
             <Link 
                 href={eventUrl}
-                className="block w-full max-w-72 p-3 relative min-h-[25em] rounded-[32px] border border-neutral-6 bg-white hover:bg-secondary-1 hover:shadow-sm transition-all duration-200 focus:outline-none focus:ring-[1.5px] focus:ring-accent-5 focus:ring-offset-[1.5px] group"
+                className="block w-full max-w-72 md:max-w-70 p-3 relative min-h-[25em] rounded-[32px] border border-neutral-6 bg-white hover:bg-secondary-1 hover:shadow-sm transition-all duration-200 focus:outline-none focus:ring-[1.5px] focus:ring-accent-5 focus:ring-offset-[1.5px] group"
                 aria-label={`View event: ${card.title}`}
             >
                 <div className="flex flex-col h-full">
@@ -153,12 +152,12 @@ export default function EventsCard(card: EventCardProps) {
                             <div className="text-right shrink-0 ml-auto">
                                 {card.originalPrice && parsePrice(card.originalPrice) != null && (
                                     <p className="text-xs text-neutral-6 line-through">
-                                        {formatPrice(parsePrice(card.originalPrice)!, currency)}
+                                        {formatPrice(parsePrice(card.originalPrice)!, card.currency || 'NGN')}
                                     </p>
                                 )}
                                 {card.price && parsePrice(card.price) != null && (
                                     <p className={`${space_grotesk.className} font-semibold text-lg text-secondary-9`}>
-                                        {formatPrice(parsePrice(card.price)!, currency)}
+                                        {formatPrice(parsePrice(card.price)!, card.currency || 'NGN')}
                                     </p>
                                 )}
                             </div>

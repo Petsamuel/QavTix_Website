@@ -1,33 +1,33 @@
+"use client"
+
 import { EVENT_ROUTES } from "@/components-data/navigation/navLinks"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 import AccessDeniedModal from "../modals/AccessDeniedModal"
 import { formatPrice } from "@/helper-fns/formatPrice"
-import { useAppSelector } from "@/lib/redux/hooks"
 
 
 
 interface Props {
-    tickets?: EventTicket[]
     initialVisibleCount?: number
+    event: EventDetails
 }
 
 export default function TicketPricingSection({
-    tickets = [],
     initialVisibleCount = 4,
+    event
 }: Props) {
 
     const router    = useRouter()
     const params    = useParams<{ event_id: string }>()
-    const { currency } = useAppSelector(s => s.settings)
     const [showAll, setShowAll] = useState(false)
 
-    const visibleTickets = showAll ? tickets : tickets.slice(0, initialVisibleCount)
-    const hasMore = tickets.length > initialVisibleCount
+    const visibleTickets = showAll ? event.tickets : event.tickets.slice(0, initialVisibleCount)
+    const hasMore = event.tickets.length > initialVisibleCount
 
     return (
         <section>
-            {tickets.length > 0 && (
+            {event.tickets.length > 0 && (
                 <div className="w-full bg-accent-1 mt-12 rounded-xl p-6">
                     <div className="max-w-7xl mx-auto">
                         <div className="flex items-center flex-wrap gap-6 overflow-x-auto pb-2">
@@ -35,7 +35,7 @@ export default function TicketPricingSection({
                                 <div key={`${ticket.ticket_type}-${i}`} className="shrink-0 border-e-[1.5px] pe-3 border-accent-2">
                                     <p className="text-sm text-neutral-7 mb-2">{ticket.ticket_type}</p>
                                     <p className="text-sm font-medium text-neutral-10 tracking-[10%] md:tracking-[12%]">
-                                        {formatPrice(parseFloat(ticket.price), currency)}
+                                        {formatPrice(parseFloat(ticket.price), event.currency || 'NGN')}
                                     </p>
                                 </div>
                             ))}

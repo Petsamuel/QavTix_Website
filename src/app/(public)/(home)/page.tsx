@@ -1,15 +1,14 @@
-import { headers } from "next/headers"
 import { getFeaturedEvents, getNearbyEvents, getTopLocations, getUserLocation } from "@/actions/getters"
 import { getCategories } from "@/actions/filters"
 import HomepagePageCW from "@/components/page-content-wrappers/HomepageCw";
 
 export default async function Homepage() {
 
-  const { city } = await getUserLocation()
+  const { city, country } = await getUserLocation()
 
   const [featuredEvents, nearbyEvents, topLocations, categoriesResult] = await Promise.all([
-    getFeaturedEvents(),
-    getNearbyEvents(city),
+    getFeaturedEvents(country),
+    getNearbyEvents(city, country),
     getTopLocations(),
     getCategories(),
   ])

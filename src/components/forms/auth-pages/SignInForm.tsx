@@ -14,6 +14,7 @@ import { useAppDispatch } from "@/lib/redux/hooks"
 import { setUser } from "@/lib/redux/slices/authUserSlice"
 import { useRouter } from "next/navigation"
 import { NAV_LINKS } from "@/components-data/navigation/navLinks"
+import { GET_PROFILE_PATH, LOGIN_PATH } from "@/apiPaths"
 
 export default function SignInForm() {
 
@@ -34,9 +35,9 @@ export default function SignInForm() {
         setSubmitError(null)
 
         try {
-            await axios.post("/api/auth/login", values)
+            await axios.post(LOGIN_PATH, values)
 
-            const { data }: { data: { user: AuthUser } } = await axios.get("/api/auth/profile", {
+            const { data }: { data: { user: AuthUser } } = await axios.get(GET_PROFILE_PATH, {
                 withCredentials: true,
             })
 

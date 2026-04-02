@@ -67,5 +67,22 @@ interface ContactHostPayload {
     full_name: string
     email:     string
     message:   string
-    host:      number
+    host:      number | string
+}
+
+
+interface InitializePaymentPayload {
+    full_name:     string
+    phone_number:  string
+    is_split:      boolean
+    promo_code:    string
+    save_card:     boolean
+    event_id?: string
+    date_of_birth: string
+
+    // Regular event fields
+    tickets?:  { ticket_id: number; quantity: number }[]
+
+    // Marketplace (secondary ticket) field
+    marketplace_listing_id?: string
 }

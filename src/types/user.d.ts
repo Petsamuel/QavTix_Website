@@ -8,7 +8,10 @@ type AuthUser = {
     username: string
     role: UserRole
     email: string,
-    phone: string
+    country: string
+    city: string
+    state: string
+    dob: string | null
 }
 
 
@@ -74,4 +77,17 @@ interface HostDetails {
     is_following:    boolean
     relevant_links:  Record<string, string>[]
     description:     string
+}
+
+
+
+interface GroupMemberItem {
+    email: string
+}
+
+interface Group {
+    id:           string
+    name:         string
+    member_count: string
+    members:      GroupMemberItem[]
 }

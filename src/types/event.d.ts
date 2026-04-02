@@ -61,6 +61,7 @@ interface PublicPagesEvent {
     host:             string
     event_status:     EventStatus
     attendees_count:  number
+    currency:         string
     event_description: string
     price:            string
 }
@@ -99,6 +100,7 @@ interface IEvent {
     location_type:           EventLocationType
     short_description:       string
     full_description:        string
+    currency:                string
     organizer_display_name:  string
     organizer_description:   string
     public_email:            string
@@ -156,14 +158,28 @@ interface EventTicket {
     price:          string
     quantity:       number
     per_person_max: number
+    currency:       string
     sales_start:    string
     sales_end:      string
+    id:             number
     promo_codes:    EventTicketPromoCode[]
 }
 
 interface EventSocialLink {
     url: string
 }
+
+interface UserTicketSummary {
+    has_multiple: boolean
+    total: number
+    tickets: {
+        issued_ticket_id: number
+        ticket_type: string
+        status: "active" | "cancelled"
+        status_display: string
+    }[]
+}
+
 
 interface EventDetails {
     id:                     string
@@ -174,10 +190,17 @@ interface EventDetails {
     start_datetime:         string
     end_datetime:           string
     location_type:          string
+    event_media:            {
+        image_url: string
+        video_url: string
+        is_featured: boolean
+    }
     short_description:      string
     full_description:       string
+    currency:               string
     organizer_display_name: string
     organizer_description:  string
+    organizer_id:           string
     public_email:           string
     phone_number:           string
     event_location:         EventLocation
@@ -188,4 +211,16 @@ interface EventDetails {
     age_restriction:        boolean,
     is_following:           boolean,
     is_favorite:            boolean
+    user_ticket_summary?:   UserTicketSummary
+}
+
+
+
+interface MarketplaceEventDetails extends EventDetails {
+    resale_price: string
+    seller_name: string
+    expires_at: string
+    ticket: EventTicket
+    listing_id: string
+    listing_status: string  
 }

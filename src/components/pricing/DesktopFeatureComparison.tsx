@@ -2,6 +2,7 @@
 
 import { Icon } from "@iconify/react"
 import { cn } from "@/lib/utils"
+import { Fragment } from "react/jsx-runtime"
 
 export default function DesktopFeatureComparison({ data }: { data: PricingData }) {
 
@@ -35,7 +36,7 @@ export default function DesktopFeatureComparison({ data }: { data: PricingData }
 
                     <tbody>
                         {Object.entries(grouped).map(([category, features]) => (
-                            <>
+                            <Fragment key={category}>
                                 {/* Feature rows */}
                                 {features.map((feature, index) => (
                                     <tr
@@ -75,7 +76,7 @@ export default function DesktopFeatureComparison({ data }: { data: PricingData }
                                         })}
                                     </tr>
                                 ))}
-                            </>
+                            </Fragment>
                         ))}
                     </tbody>
                 </table>

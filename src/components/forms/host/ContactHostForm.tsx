@@ -4,7 +4,6 @@ import { contactHostSchema, ContactHostSchema } from "@/schemas/contact-host.sch
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import Link from "next/link"
-import { SOCIAL_LINKS } from "@/components-data/navigation/contact-and-socials"
 import { Icon } from "@iconify/react"
 import { space_grotesk } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
@@ -38,7 +37,7 @@ export default function ContactHostForm({ event }: Props) {
             full_name: data.fullName,
             email:     data.email,
             message:   data.message,
-            host:      event.category,
+            host:      event.organizer_id,
         })
 
         if (result.success) {
@@ -57,6 +56,15 @@ export default function ContactHostForm({ event }: Props) {
         }
     }
 
+    const socialPlatformIcon = (url: string) => {
+        if (url.includes("twitter") || url.includes("x.com")) return "hugeicons:new-twitter"
+        if (url.includes("instagram"))                         return "hugeicons:instagram"
+        if (url.includes("facebook"))                          return "fa6-brands:facebook"
+        if (url.includes("tiktok"))                            return "ic:baseline-tiktok"
+        if (url.includes("youtube"))                           return "mynaui:youtube-solid"
+        return "humbleicons:globe"
+    }
+
     return (
         <div>
             <h3 className={cn(space_grotesk.className, "text-secondary-9 font-medium mt-10 mb-4")}>
@@ -64,16 +72,18 @@ export default function ContactHostForm({ event }: Props) {
             </h3>
 
             <div className="flex gap-4 mt-6 mb-10">
-                {Object.values(SOCIAL_LINKS).map(social => (
+                {event.social_links.map(social => (
                     <Link
-                        key={social.label}
-                        href={social.href}
+                        key={social.url}
+                        href={social.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center hover:scale-110 transition-transform"
-                        aria-label={social.label}
+                        aria-label={social.url.includes("twitter") || social.url.includes("x.com") ? "Twitter" :
+                                    social.url.includes("instagram") ? "Instagram" :
+                                    social.url.includes("facebook") ? "Facebook" : "Social Media"}
                     >
-                        <Icon icon={social.icon} width="24" height="24" className="text-secondary-9 size-9" />
+                        <Icon icon={socialPlatformIcon(social.url)} width="24" height="24" className="text-secondary-9 size-9" />
                     </Link>
                 ))}
             </div>

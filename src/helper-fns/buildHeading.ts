@@ -1,12 +1,10 @@
-import { EVENT_CATEGORY_VALUES, getEventCategoryLabel } from "@/components-data/event-category";
 import { formatPrice } from "./formatPrice";
 import { format } from "date-fns";
 import { countries, getStates } from "@/components-data/location";
-import { Currency } from "@/lib/redux/slices/settingsSlice";
 import { ApiCategory } from "@/actions/filters";
 import { resolveCountryLabel, resolveStateLabel } from "./resolveCountryCode";
 
-export const buildSearchResultsHeading = (filters: FilterValues, currency: Currency) => {
+export const buildSearchResultsHeading = (filters: FilterValues) => {
   const { categories, location, priceRange, dateRange } = filters;
 
   // Categories
@@ -26,7 +24,7 @@ export const buildSearchResultsHeading = (filters: FilterValues, currency: Curre
   // Price range
   const priceText =
     priceRange
-      ? `priced between ${formatPrice(priceRange.min, currency)} and ${formatPrice(priceRange.max, currency)}`
+      ? `priced between ${formatPrice(priceRange.min)} and ${formatPrice(priceRange.max)}`
       : "";
 
   // Date range
@@ -65,7 +63,7 @@ interface FilterValues {
 
 
 
-export const buildTrendingEventsHeading = (filters: FilterValues, categories: ApiCategory[], currency: Currency): string => {
+export const buildTrendingEventsHeading = (filters: FilterValues, categories: ApiCategory[]): string => {
   const parts: string[] = ["Trending events for"]
 
   if (filters.categories && filters.categories.length > 0) {
@@ -87,8 +85,8 @@ export const buildTrendingEventsHeading = (filters: FilterValues, categories: Ap
   }
 
   if (filters.priceRange && (filters.priceRange.min > 0 || filters.priceRange.max > 0)) {
-    const min = formatPrice(filters.priceRange.min, currency)
-    const max = formatPrice(filters.priceRange.max, currency)
+    const min = formatPrice(filters.priceRange.min)
+    const max = formatPrice(filters.priceRange.max)
 
     if (filters.priceRange.min > 0 && filters.priceRange.max > 0) {
       parts.push(`priced between ${min} and ${max}`)

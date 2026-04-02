@@ -4,7 +4,6 @@ import { space_grotesk } from '@/lib/fonts'
 import { useCheckout } from '@/contexts/CheckoutFlowProvider'
 import { cn } from '@/lib/utils'
 import { Icon } from '@iconify/react'
-import { useAppSelector } from '@/lib/redux/hooks'
 import { formatPrice, parsePrice } from '@/helper-fns/formatPrice'
 
 interface TicketCardProps {
@@ -18,11 +17,11 @@ export function TicketCard({
     const { 
         tickets, 
         incrementTicket, 
+        isMarketplace,
         decrementTicket,
     } = useCheckout()
 
     const ticket  = tickets.find(v => v._key === ticketKey)
-    const { currency } = useAppSelector(store => store.settings)
 
     if (!ticket) return null;
 
@@ -48,11 +47,11 @@ export function TicketCard({
                     ) : (
                         <div className="flex items-baseline gap-2">
                             <p className={`${space_grotesk.className} font-medium text-xl text-primary-6`}>
-                                {formatPrice(parsePrice(ticket.price) || 0, currency, true)}
+                                {formatPrice(parsePrice(ticket.price) || 0, ticket.currency || 'NGN', true)}
                             </p>
                             {ticket.price && (
                                 <p className="text-sm text-neutral-6 line-through">
-                                    {formatPrice(parsePrice(ticket.price) || 0, currency, true)}
+                                    {formatPrice(parsePrice(ticket.price) || 0, ticket.currency || 'NGN', true)}
                                 </p>
                             )}
                         </div>
@@ -64,7 +63,7 @@ export function TicketCard({
                         <button
                             type="button"
                             onClick={() => decrementTicket(ticketKey)}
-                            disabled={ticket.quantity === 0}
+                            disabled={ticket.quantity === 0  || isMarketplace}
                             className="w-8 h-8 rounded-lg bg-secondary-6 text-white flex items-center justify-center hover:bg-secondary-7 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                         >
                             <Icon icon="mynaui:minus" width="24" height="24" />
@@ -75,7 +74,7 @@ export function TicketCard({
                         <button
                             type="button"
                             onClick={() => incrementTicket(ticketKey)}
-                            disabled={!ticket.available || ticket.soldOut}
+                            disabled={!ticket.available || ticket.soldOut || isMarketplace}
                             className="w-8 h-8 rounded-lg bg-secondary-6 text-white flex items-center justify-center hover:bg-secondary-7 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                         >
                             <Icon icon="mynaui:plus" width="24" height="24" />

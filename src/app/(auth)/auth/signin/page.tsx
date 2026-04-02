@@ -14,7 +14,7 @@ export default function SignInPage(){
 
     return (
         <AuthPageFlexWrapper>
-            <main className="">
+            <main className="max-w-xl w-full mx-auto">
                 <h1 className="sr-only">Sign In</h1>
                 <h2 className={`${space_grotesk.className} text-secondary-9 text-2xl md:text-3xl lg:text-[2rem] font-bold mb-2`}>Welcome back!</h2>
                 <p className="text-neutral-7 text-sm">Don’t have an account? <Link href="/auth/signup" className="font-medium text-primary-6">Sign Up</Link></p>
@@ -31,7 +31,7 @@ export default function SignInPage(){
 
                 <SignInForm />
 
-                <p className="text-sm text-neutral-8 mt-4 text-center">Forgot Password? <button onClick={() => router.push(AUTH_ROUTES.SIGN_IN.href)} className="font-medium text-accent-6">Recover</button></p>
+                <p className="text-sm text-neutral-8 mt-4 text-center">Forgot Password? <button onClick={() => router.push(AUTH_ROUTES.FORGOT_PASSWORD.href)} className="font-medium text-accent-6">Recover</button></p>
             </main>
         </AuthPageFlexWrapper>
     )

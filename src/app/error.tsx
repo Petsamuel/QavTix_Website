@@ -3,6 +3,8 @@
 import { useEffect } from "react"
 import Link from "next/link"
 import { Icon } from "@iconify/react"
+import { cn } from "@/lib/utils"
+import { space_grotesk } from "@/lib/fonts"
 
 interface Props {
     error:  Error & { digest?: string }
@@ -75,17 +77,17 @@ export default function ErrorPage({ error, reset }: Props) {
             <div className="text-center max-w-md">
                 <h1
                     id="error-title"
-                    className="text-2xl sm:text-3xl font-bold text-secondary-9 tracking-tight"
+                    className={cn("text-2xl sm:text-3xl font-bold text-secondary-9 tracking-tight", space_grotesk.className)}
                 >
                     Something went wrong
                 </h1>
 
                 {message ? (
-                    <p className="mt-3 text-sm sm:text-base text-neutral-5 leading-relaxed">
+                    <p className="mt-3 text-sm sm:text-base text-neutral-7 leading-relaxed">
                         {message}
                     </p>
                 ) : (
-                    <p className="mt-3 text-sm sm:text-base text-neutral-5 leading-relaxed">
+                    <p className="mt-3 text-sm sm:text-base text-neutral-7 leading-relaxed">
                         An unexpected error occurred. Our team has been notified.
                         <br />
                         Please try again or return to the homepage.
@@ -114,7 +116,6 @@ export default function ErrorPage({ error, reset }: Props) {
                     "
                     aria-label="Try again"
                 >
-                    <Icon icon="hugeicons:refresh" className="size-4" aria-hidden="true" />
                     Try again
                 </button>
 

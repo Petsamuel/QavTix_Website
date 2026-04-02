@@ -9,7 +9,7 @@ import ContactHostForm from "../forms/host/ContactHostForm"
 
 
 interface Props {
-    event: EventDetails
+    event: EventDetails | MarketplaceEventDetails
     relatedEvents: PublicPagesEvent[]
 }
 
@@ -49,11 +49,6 @@ export default function EventDetailsPageContentContainer({ event, relatedEvents 
                     </figure>
 
                     <EventOverviewSection event={event} />
-
-                    {/* Mobile host section */}
-                    <div className="mt-10 md:hidden">
-                        <HostNAttendeeDetailsSection event={event} />
-                    </div>
 
                     <div className="md:hidden">
                         <ContactHostForm event={event} />

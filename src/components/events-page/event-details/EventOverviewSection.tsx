@@ -10,19 +10,22 @@ import HostNAttendeeDetailsSection from "./HostNAttendeeSection"
 import TicketStatusSection from "./TicketStatusSection"
 import { statusStyles, StatusStylesRecord } from "@/components/custom-utils/cards/resources/event-status-styles"
 import { formatEventDate } from "@/helper-fns/date-utils"
-import { EVENT_ROUTES } from "@/components-data/navigation/navLinks"
+import { EVENT_ROUTES, MARKETPLACE_ROUTES } from "@/components-data/navigation/navLinks"
 import { useFavourite } from "@/lib/custom-hooks/UseFavourite"
 import ShareEventModal from "@/components/modals/ShareEventModal"
 import { useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
 
 interface Props {
-    event:      EventDetails
+    event:      EventDetails | MarketplaceEventDetails
     className?: string
 }
 
 export default function EventOverviewSection({ event, className }: Props) {
 
     const [showShare, setShowShare] = useState(false)
+    const pathName = usePathname()
+    const router = useRouter()
 
     const { isFavourite, toggle: toggleFavourite, feedbackMsg } = useFavourite(event.id, event.is_favorite)
 
@@ -52,8 +55,8 @@ export default function EventOverviewSection({ event, className }: Props) {
                     {event.title}
                 </h1>
 
-                <div className="flex items-center flex-wrap gap-8 gap-y-4 md:justify-between">
-                    <div className="mt-3 space-x-3">
+                <div className="flex items-center flex-wrap gap-8 gap-y-4 md:justify-between mt-3 md:mt-0">
+                    <div className="mt-3 flex flex-wrap w-1/2 gap-3">
                         {event.tags.map(tag => (
                             <Badge
                                 key={tag}
@@ -67,6 +70,14 @@ export default function EventOverviewSection({ event, className }: Props) {
                                 {tag}
                             </Badge>
                         ))}
+
+                        {
+                            event.age_restriction && (
+                                <Badge className={cn(space_grotesk.className, "rounded-full p-2 text-xs bg-red-500 font-medium text-white size-7")}>
+                                    18+
+                                </Badge>
+                            )
+                        }
                     </div>
 
                     <div className="flex justify-end text-secondary-9 gap-3 items-center">
@@ -119,7 +130,17 @@ export default function EventOverviewSection({ event, className }: Props) {
                 </div>
 
                 {/* Tickets */}
-                <TicketStatusSection eventId={event.id} tickets={event.tickets} />
+                {
+                    pathName.includes("/marketplace/") ? 
+                    <button
+                        onClick={() => router.push(MARKETPLACE_ROUTES.CHECKOUT.href.replace("[ticket_id]", (event as MarketplaceEventDetails).listing_id.toString()))}
+                        className="bg-primary-6 mt-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
+                    >
+                        Purchase Ticket
+                    </button>
+                    :
+                    <TicketStatusSection event={event} />
+                }
 
                 {/* Full description */}
                 <article className="mt-12">
