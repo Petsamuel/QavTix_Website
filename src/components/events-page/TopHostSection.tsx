@@ -3,103 +3,128 @@
 import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
-import Image from 'next/image'
 import { space_grotesk } from '@/lib/fonts'
 import CarouselActionBtns from '../custom-utils/buttons/CarouselActionBtns'
-import { demoHosts } from '@/components-data/demo-data'
-import FollowHostBtn1 from '../custom-utils/buttons/FollowHostBtn1'
 import TopHostCard from '../custom-utils/cards/TopHostCard'
+import { useMediaQuery } from '@/lib/custom-hooks/UseMediaQuery'
 
+interface Props {
+  hosts: TrendingHost[]
+}
 
-const dupliactedHostsData: Host[] = [...demoHosts, ...demoHosts, ...demoHosts].map((event,index) => {
-    return { ...event, id: index + 1}
-})
+const MIN_SLIDES_FOR_LOOP = 6     // minimum real slides to even consider looping
+const MIN_DUPLICATES        = 3   // at least 3 full sets → usually enough buffer
 
-export default function TopHostsSection() {
-    const [emblaRef, emblaApi] = useEmblaCarousel(
-        { 
-            loop: true,
-            align: 'start',
-            skipSnaps: false,
-            dragFree: false
-        },
-        [
-            Autoplay({ 
-                delay: 2000,
-                stopOnInteraction: true
-            })
-        ]
+export default function TopHostsSection({ hosts }: Props) {
+  const isMobile          = !useMediaQuery('(min-width: 768px)')
+  const isDesktop         = !isMobile
+
+  const hasEnoughForSmoothLoop = hosts.length >= MIN_SLIDES_FOR_LOOP
+
+  const shouldLoop     = isMobile || hasEnoughForSmoothLoop
+  const shouldAutoplay = shouldLoop
+
+  let displayHosts: (TrendingHost & { _key: string })[] = hosts.map((h, i) => ({
+    ...h,
+    _key: `${h.id}-${i}`,
+  }))
+
+  if (shouldLoop) {
+    const copiesNeeded = Math.max(MIN_DUPLICATES, Math.ceil(2.5 * (isDesktop ? 3 : 1.5))) // rough heuristic
+    const sets         = Array.from({ length: copiesNeeded }, (_, setIdx) =>
+      hosts.map((h, idx) => ({
+        ...h,
+        _key: `${h.id}-set${setIdx}-${idx}`,
+      }))
     )
 
-    const scrollPrev = useCallback(() => {
-        const autoplayPlugin = emblaApi?.plugins()?.autoplay
-        autoplayPlugin?.stop()
-        emblaApi?.scrollPrev()
-    }, [emblaApi])
+    displayHosts = sets.flat()
+  }
 
-    const scrollNext = useCallback(() => {
-        const autoplayPlugin = emblaApi?.plugins()?.autoplay
-        autoplayPlugin?.stop()
-        emblaApi?.scrollNext()
-    }, [emblaApi])
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      loop:      shouldLoop,
+      align:     'start',
+      skipSnaps: false,
+      dragFree:  false,
+      watchDrag: shouldLoop,
+      startIndex: shouldLoop ? hosts.length : 0,
+    },
+    shouldAutoplay
+      ? [Autoplay({ delay: 2000, stopOnInteraction: true, stopOnMouseEnter: true })]
+      : []
+  )
 
-    const pauseAutoPlay = useCallback(() => {
-        const autoplayPlugin = emblaApi?.plugins()?.autoplay
-        autoplayPlugin?.stop()
-    }, [emblaApi])
+  const scrollPrev = useCallback(() => {
+    emblaApi?.plugins()?.autoplay?.stop()
+    emblaApi?.scrollPrev()
+  }, [emblaApi])
 
-    const play = useCallback(() => {
-        const autoplayPlugin = emblaApi?.plugins()?.autoplay
-        autoplayPlugin?.play()
-    }, [emblaApi])
+  const scrollNext = useCallback(() => {
+    emblaApi?.plugins()?.autoplay?.stop()
+    emblaApi?.scrollNext()
+  }, [emblaApi])
 
+  const pauseAutoPlay = useCallback(() => emblaApi?.plugins()?.autoplay?.stop(), [emblaApi])
+  const playAutoPlay   = useCallback(() => emblaApi?.plugins()?.autoplay?.play(),  [emblaApi])
 
-    const [canScrollPrev, setCanScrollPrev] = useState(false)
-    const [canScrollNext, setCanScrollNext] = useState(false)
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+  const [canScrollNext, setCanScrollNext] = useState(false)
 
-    const onSelect = useCallback(() => {
-        if (!emblaApi) return
-        setCanScrollPrev(emblaApi.canScrollPrev())
-        setCanScrollNext(emblaApi.canScrollNext())
-    }, [emblaApi])
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return
+    setCanScrollPrev(emblaApi.canScrollPrev())
+    setCanScrollNext(emblaApi.canScrollNext())
+  }, [emblaApi])
 
-    useEffect(() => {
-        if (!emblaApi) return
-        onSelect()
-        emblaApi.on('select', onSelect)
-        emblaApi.on('reInit', onSelect)
-    }, [emblaApi, onSelect])
+  useEffect(() => {
+    if (!emblaApi) return
+    onSelect()
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onSelect)
+    const timer = setTimeout(() => emblaApi?.reInit(), 50)
+    return () => clearTimeout(timer)
+  }, [emblaApi, onSelect])
 
-    return (
-        <section className="w-full pt-16 md:pt-10 pb-24 px-4 md:ps-10 lg:ps-16 md:pe-0">
-            <div className="">
-                <div className="flex items-center gap-6 justify-between md:pe-16">
-                    <h2 className={`text-2xl sm:text-3xl  md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
-                        Top Hosts
-                    </h2>
-                    
-                    <CarouselActionBtns
-                        scrollPrev={scrollPrev}
-                        scrollNext={scrollNext}
-                        canScrollPrev={canScrollPrev}
-                        canScrollNext={canScrollNext}
-                    />
-                </div>
+  if (hosts.length === 0) return null
 
-                {/* Carousel */}
-                <div className="overflow-hidden mt-12 py-4" ref={emblaRef}>
-                    <div className="flex gap-6 px-3">
-                        {dupliactedHostsData.map((host) => (
-                            <TopHostCard
-                                key={host.id}
-                                host={host}
-                                onMouseOver={pauseAutoPlay}
-                                onMouseLeave={play}
-                            />
-                        ))}
-                    </div>
-                </div>
+  return (
+    <section className="w-full pt-16 md:pt-10 pb-16 px-4 md:ps-10 lg:ps-16 md:pe-0">
+      <div>
+        <div className="flex items-center gap-6 justify-between md:pe-16">
+          <h2 className={`text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
+            Top Hosts
+          </h2>
+          {shouldLoop && (
+            <CarouselActionBtns
+              scrollPrev={scrollPrev}
+              scrollNext={scrollNext}
+              canScrollPrev={canScrollPrev}
+              canScrollNext={canScrollNext}
+            />
+          )}
+        </div>
+        {!shouldLoop ? (
+          <div className="mt-12 flex flex-wrap gap-6 px-3">
+            {displayHosts.map(host => (
+              <TopHostCard key={host._key} host={host} />
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-hidden mt-12 py-4" ref={emblaRef}>
+            <div className="flex gap-6 px-3">
+              {displayHosts.map(host => (
+                <TopHostCard
+                  key={host._key}
+                  host={host}
+                  onMouseOver={pauseAutoPlay}
+                  onMouseLeave={playAutoPlay}
+                />
+              ))}
             </div>
-        </section>
-    )
+          </div>
+        )}
+      </div>
+    </section>
+  )
 }

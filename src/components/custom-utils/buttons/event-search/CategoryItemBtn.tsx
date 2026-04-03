@@ -4,9 +4,10 @@ interface ICategoryItemBtn {
     category: Category,
     handleToggle: (v: string) => void;
     isSelected: boolean
+    showCount: boolean
 }
 
-export default function CategoryItemBtn({ category, handleToggle, isSelected }: ICategoryItemBtn){
+export default function CategoryItemBtn({ category, showCount, handleToggle, isSelected }: ICategoryItemBtn){
     return (
         <button
             key={category.value}
@@ -19,16 +20,19 @@ export default function CategoryItemBtn({ category, handleToggle, isSelected }: 
             )}
         >
             <span className="font-medium">{category.label}</span>
-            <span
-                className={cn(
-                    'px-3 py-1 rounded-full text-xs font-medium min-w-9.5 text-center',
-                    isSelected
-                        ? 'bg-accent-5 text-white'
-                        : 'bg-neutral-3 text-neutral-7'
-                )}
-            >
-                {category.count}
-            </span>
+            {
+                showCount &&
+                <span
+                    className={cn(
+                        'px-3 py-1 rounded-full text-xs font-medium min-w-9.5 text-center',
+                        isSelected
+                            ? 'bg-accent-5 text-white'
+                            : 'bg-neutral-3 text-neutral-7'
+                    )}
+                >
+                    {category.count}
+                </span>
+            }
         </button>
     )
 }

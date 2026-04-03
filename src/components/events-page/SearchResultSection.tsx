@@ -1,98 +1,198 @@
 "use client"
 
-import { usePagination } from "@/lib/custom-hooks/PaginationHook"
-import PaginationControls from "../custom-utils/buttons/event-search/PaginationControl"
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import { space_grotesk } from "@/lib/fonts"
+import { Icon } from "@iconify/react"
+import Link from "next/link"
 import CategoryFilter from "../homepage/dropdowns/CategoryFilter"
 import LocationFilter from "../homepage/dropdowns/LocationFilter"
 import PriceFilter from "../homepage/dropdowns/PriceFilter"
 import DateFilter from "../homepage/dropdowns/DateFilter"
-import { countries, getStates } from "@/components-data/location"
-import { eventsMock } from "@/components-data/demo-data"
 import EventsCard1 from "../custom-utils/cards/EventCards"
-import { DateRange } from "react-day-picker"
-import { space_grotesk } from "@/lib/fonts"
+import PaginationControls from "../custom-utils/buttons/event-search/PaginationControl"
+import EventCardLoaderContainer from "../loaders/EventCardLoader"
+import { countries, getStates } from "@/components-data/location"
+import { fromPublicPagesEvent } from "../custom-utils/cards/resources/event-card-adapter"
 import { buildSearchResultsHeading } from "@/helper-fns/buildHeading"
+import { usePublicEvents } from "@/lib/custom-hooks/UsePublicEvents"
+import { SEARCH_EVENTS_ENDPOINT } from "@/endpoints"
+import { ApiCategory } from "@/actions/filters"
+import { deriveCategories } from "@/helper-fns/deriveCategories"
+import { NAV_LINKS } from "@/components-data/navigation/navLinks"
 
-interface SearchResultSectionProps {
-  data: IEvent[]
-  pageSize?: number
-  className?: string
-  searchValue: FilterValues
-  paginationClassName?: string
+const PAGE_SIZE = 12
+
+interface Props {
+    query:                string
+    initialEvents:        PublicPagesEvent[]
+    initialCount:         number
+    initialFilters:       Partial<FilterValues>
+    categories:           ApiCategory[]
+    paginationClassName?: string
 }
 
 export function SearchResultSection({
-  data,
-  searchValue,
-  paginationClassName = ''
-}: SearchResultSectionProps) {
+    query,
+    initialEvents,
+    initialCount,
+    initialFilters,
+    categories,
+    paginationClassName = '',
+}: Props) {
 
-    const pagination = usePagination(data, 12)
+    const [filters, setFilters] = useState<Partial<FilterValues>>(initialFilters)
 
-    const [filters, setFilters] = useState<FilterValues>({
-        categories: searchValue.categories,
-        location: searchValue.location,
-        dateRange: searchValue.dateRange,
-        priceRange: searchValue.priceRange
-    })
+    const {
+        items, count, totalPages, currentPage,
+        isLoading, isError,
+        goToPage,
+    } = usePublicEvents(
+        {
+            endpoint:     SEARCH_EVENTS_ENDPOINT,
+            query,
+            initialItems: initialEvents,
+            initialCount: initialCount,
+            initialPages: Math.ceil(initialCount / PAGE_SIZE) || 1,
+            initialNext:  initialCount > PAGE_SIZE,
+        },
+        filters,
+    )
 
-    const handleSearch = () => {
-        console.log('Search with filters:', filters)
-    }
+    const availableCategories = useMemo(
+        () => deriveCategories(categories, items),
+        [categories, items]
+    )
 
+    const hasActiveSearch =
+        !!query.trim() ||
+        (filters.categories?.length ?? 0) > 0 ||
+        !!filters.location?.country ||
+        !!filters.priceRange        ||
+        !!filters.dateRange?.from
+
+    const showEmpty  = !isLoading && !isError && items.length === 0 && hasActiveSearch
+    const showPrompt = !isLoading && !isError && items.length === 0 && !hasActiveSearch
 
     return (
         <section className="w-full py-8 mt-12 md:mt-20 global-px">
-            <div className='flex flex-wrap gap-4 mb-8'>
+
+            {/* Filters */}
+            <div className="flex flex-wrap gap-4 mb-8">
                 <CategoryFilter
-                    filterFor='eventPage'
+                    filterFor="eventPage"
                     value={filters.categories}
-                    onChange={(categories) => setFilters({ ...filters, categories })}
+                    categories={availableCategories}
+                    onChange={(cats) => setFilters(prev => ({ ...prev, categories: cats }))}
                 />
                 <LocationFilter
-                    filterFor='eventPage'
+                    filterFor="eventPage"
                     value={filters.location}
-                    onChange={(location) => setFilters({ ...filters, location })} 
+                    onChange={(location) => setFilters(prev => ({ ...prev, location }))}
                     countries={countries}
                     getStates={getStates}
                 />
                 <PriceFilter
-                    filterFor='eventPage'
+                    filterFor="eventPage"
                     value={filters.priceRange}
-                    onChange={(priceRange) => setFilters({ ...filters, priceRange })}
+                    onChange={(priceRange) => setFilters(prev => ({ ...prev, priceRange }))}
                 />
                 <DateFilter
-                    filterFor='eventPage'
+                    filterFor="eventPage"
                     value={filters.dateRange}
-                    onChange={(v) => setFilters({...filters, dateRange: v || { from: new Date(), to: new Date()} as DateRange})}
+                    onChange={(v) => setFilters(prev => ({ ...prev, dateRange: v }))}
                 />
             </div>
 
-            <h2 className={`max-w-xl text-2xl sm:text-3xl  md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
-                {buildSearchResultsHeading(searchValue)}
-            </h2>
+            {/* Heading */}
+            {hasActiveSearch && !isLoading && (
+                <h2 className={`max-w-xl text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 mb-10 ${space_grotesk.className}`}>
+                    {buildSearchResultsHeading(filters as FilterValues)}
+                    {query && (
+                        <span className="text-primary-6 ml-2">
+                            &ldquo;{query}&rdquo;
+                        </span>
+                    )}
+                </h2>
+            )}
 
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(14em,1fr))] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-[repeat(auto-fit,minmax(16em,1fr))] gap-6 lg:gap-8 mt-10 justify-items-center md:justify-items-start">
-                {eventsMock.map((event) => (
-                    <EventsCard1 
-                        key={event.href}
-                        {...event} 
-                    />
-                ))}
-            </div>
+            {/* Loading */}
+            {isLoading && <EventCardLoaderContainer />}
 
-            {/* Pagination Controls */}
-            {pagination.totalPages > 1 && (
+            {/* Error */}
+            {isError && (
+                <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
+                    <Icon icon="nonicons:error-16" className="size-8 text-red-400" />
+                    <p className="text-sm font-medium text-secondary-8">Something went wrong. Please try again.</p>
+                </div>
+            )}
+
+            {/* Empty — search returned nothing */}
+            {showEmpty && (
+                <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
+                    <div className="size-14 rounded-full bg-neutral-2 flex items-center justify-center">
+                        <Icon icon="hugeicons:search-remove-01" className="size-7 text-neutral-7" />
+                    </div>
+                    <div>
+                        <p className={`${space_grotesk.className} text-base font-medium text-secondary-9`}>
+                            No events found
+                            {query && <> for &ldquo;{query}&rdquo;</>}
+                        </p>
+                        <p className="text-sm text-neutral-6 mt-1">
+                            Try adjusting your filters or search for something else
+                        </p>
+                    </div>
+                    <Link
+                        href={NAV_LINKS.EVENTS.href}
+                        className="px-6 py-3 rounded-full bg-primary text-white text-sm font-medium hover:bg-primary-7 transition-colors"
+                    >
+                        Browse all events
+                    </Link>
+                </div>
+            )}
+
+            {/* Prompt — no search or filters yet */}
+            {showPrompt && (
+                <div className="flex flex-col items-center justify-center py-20 gap-3 text-center">
+                    <Icon icon="hugeicons:search-01" className="size-10 text-neutral-6" />
+                    <p className={`${space_grotesk.className} text-base font-medium text-secondary-9`}>
+                        Search for events
+                    </p>
+                    <p className="text-sm text-neutral-6">
+                        Use the search bar above or apply filters to find events
+                    </p>
+                </div>
+            )}
+
+            {/* Results */}
+            {!isLoading && !isError && items.length > 0 && (
+                <>
+                    <p className="text-xs text-neutral-7 mb-6">
+                        Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, count)} of {count} result{count !== 1 ? 's' : ''}
+                    </p>
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(14em,1fr))] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-[repeat(auto-fit,minmax(16em,1fr))] gap-6 lg:gap-8 justify-items-center md:justify-items-start">
+                        {items.map(event => (
+                            <EventsCard1
+                                key={event.id}
+                                {...fromPublicPagesEvent(event)}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && !isLoading && (
                 <div className={`mt-16 ${paginationClassName}`}>
                     <PaginationControls
-                        startIndex={pagination.startIndex}
-                        endIndex={pagination.endIndex}
-                        totalItems={pagination.totalItems}
-                        hasNextPage={pagination.hasNextPage}
-                        hasPreviousPage={pagination.hasPreviousPage}
-                        onNextPage={pagination.nextPage}
-                        onPreviousPage={pagination.previousPage}
+                        startIndex={(currentPage - 1) * PAGE_SIZE + 1}
+                        endIndex={Math.min(currentPage * PAGE_SIZE, count)}
+                        totalItems={count}
+                        hasNextPage={currentPage < totalPages}
+                        hasPreviousPage={currentPage > 1}
+                        onNextPage={() => goToPage(currentPage + 1)}
+                        onPreviousPage={() => goToPage(currentPage - 1)}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
                     />
                 </div>
             )}

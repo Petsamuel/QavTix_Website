@@ -9,6 +9,8 @@ import TicketCheckoutAttendeeInformationStep from "../forms/checkout-flow-steps/
 import LeaveCheckoutPrompt from "../modals/LeaveCheckoutPrompt"
 import CheckoutPageContentWrapper from "../forms/checkout-flow-steps/CheckoutPageContentWrapper"
 import { cn } from "@/lib/utils"
+import CheckoutSuccessMessage from "./CheckoutSuccess"
+import CheckoutSplitPaymentSuccessMessage from "./CheckoutSplitPaymentSuccess"
 
 interface ICheckoutPageContent {
     showCloseLeaveCheckoutPrompt: boolean
@@ -20,11 +22,11 @@ export default function CheckoutPageContent({
     setShowCloseLeaveCheckoutPrompt 
 }: ICheckoutPageContent) {
 
-    const { currentStep, canProceedToCheckout } = useCheckout()
+    const { currentStep, canProceedToCheckout, checkoutComplete, isSplitPayment } = useCheckout()
     const [showMobileSummary, setShowMobileSummary] = useState(false)
 
     useEffect(() => {
-        if (!canProceedToCheckout()) return
+        if (!canProceedToCheckout() || checkoutComplete) return
         
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             e.preventDefault()
@@ -32,10 +34,10 @@ export default function CheckoutPageContent({
 
         window.addEventListener('beforeunload', handleBeforeUnload)
         return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-    }, [canProceedToCheckout])
+    }, [canProceedToCheckout, checkoutComplete ])
 
     useEffect(() => {
-        if (!canProceedToCheckout() || showCloseLeaveCheckoutPrompt) return;
+        if (!canProceedToCheckout() || showCloseLeaveCheckoutPrompt || checkoutComplete ) return;
 
         const handlePopState = (e: PopStateEvent) => {
             e.preventDefault()
@@ -53,9 +55,10 @@ export default function CheckoutPageContent({
         return () => {
             window.removeEventListener('popstate', handlePopState)
         }
-    }, [canProceedToCheckout])
+    }, [canProceedToCheckout, checkoutComplete, showCloseLeaveCheckoutPrompt])
 
     return (
+        !checkoutComplete ? 
         <section className={cn("md:flex w-full min-h-screen gap-6 lg:gap-16 items-stretch pb-44 md:pb-0")}>
             <div className="md:w-[50%] lg:flex-1 lg:w-auto flex flex-col">
                 {!showMobileSummary && (
@@ -84,5 +87,7 @@ export default function CheckoutPageContent({
                 setOpen={setShowCloseLeaveCheckoutPrompt} 
             />
         </section>
+        :
+        isSplitPayment ? <CheckoutSplitPaymentSuccessMessage /> : <CheckoutSuccessMessage />
     )
 }

@@ -4,13 +4,12 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSignup } from '@/contexts/HostSignupProvider'
 import { organizationGeneralSchema, type OrganizationGeneralData } from '@/schemas/host-signup.schema'
-import { ArrowRight } from 'lucide-react'
-import FormInput2 from '@/components/custom-utils/inputs/FormInput2'
 import FormSelect1 from '@/components/custom-utils/inputs/FormSelect1'
 import FormCheckbox1 from '@/components/custom-utils/inputs/FormCheckbox1'
 import { Country, State } from 'country-state-city';
 import Link from 'next/link'
 import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepFormButtonDuo'
+import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
 
 export function OrganizationGeneralStep() {
     const { formData, updateFormData, nextStep } = useSignup()
@@ -20,7 +19,7 @@ export function OrganizationGeneralStep() {
         control,
         watch,
         handleSubmit,
-        formState: { errors, isSubmitting }
+        formState: { errors }
     } = useForm<OrganizationGeneralData>({
         resolver: zodResolver(organizationGeneralSchema),
         defaultValues: formData as Partial<OrganizationGeneralData>
@@ -48,7 +47,8 @@ export function OrganizationGeneralStep() {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="Full name"
                 placeholder="Enter contact person's full name"
                 required
@@ -56,7 +56,8 @@ export function OrganizationGeneralStep() {
                 error={errors.fullName?.message}
             />
 
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="Company email address"
                 type="email"
                 placeholder="Enter your company email address"
@@ -65,7 +66,8 @@ export function OrganizationGeneralStep() {
                 error={errors.companyEmail?.message}
             />
 
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="Phone number"
                 type="tel"
                 placeholder="Enter company phone number"
@@ -106,7 +108,8 @@ export function OrganizationGeneralStep() {
                 />
             </div>
 
-            <FormInput2
+            <TextInput1
+                showLabel
                 label="City"
                 placeholder="Enter your city"
                 required

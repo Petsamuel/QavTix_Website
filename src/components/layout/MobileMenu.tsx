@@ -10,6 +10,9 @@ import Logo from './Logo'
 import logoSrc from "@/public-assets/logo/qavtix-logo.svg"
 import { Icon } from '@iconify/react'
 import { space_grotesk } from '@/lib/fonts'
+import { useAppSelector } from '@/lib/redux/hooks'
+import CustomAvatar from '../custom-utils/avatars/CustomAvatar'
+import { useLogOut } from '@/contexts/UseLogout'
 
 export default function MobileMenu({ 
     openMobileMenu, 
@@ -21,6 +24,9 @@ export default function MobileMenu({
     const [searchQuery, setSearchQuery] = useState('')
     const pathname = usePathname()
     const router = useRouter()
+
+    const { isAuthenticated, user } = useAppSelector(store => store.auth)
+    const { handleLogOut, isLoggingOut } = useLogOut()
 
     const isActive = (href: string) => {
         if (href === '/') return pathname === href
@@ -36,6 +42,19 @@ export default function MobileMenu({
             handleClose()
         }
     },[pathname])
+
+
+    useEffect(() => {
+        if (openMobileMenu) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = ''
+        }
+
+        return () => {
+            document.body.style.overflow = ''
+        }
+    }, [openMobileMenu])
 
 
     return (
@@ -178,34 +197,57 @@ export default function MobileMenu({
                                 })}
                             </nav>
 
-                            {/* Auth Buttons */}
-                            <motion.div
-                                initial={{ y: 20, opacity: 0 }}
-                                animate={{ 
-                                    y: 0, 
-                                    opacity: 1,
-                                    transition: { delay: 0.4, duration: 0.3 }
-                                }}
-                                exit={{ 
-                                    y: 20, 
-                                    opacity: 0,
-                                    transition: { duration: 0.2 }
-                                }}
-                                className="p-4 flex items-center gap-4 border-t border-neutral-3"
-                            >
-                                <Link
-                                    href={NAV_LINKS.SIGN_IN.href}
-                                    className="font-semibold text-neutral-8 hover:text-primary transition-colors"
+
+                            {
+                                isAuthenticated && user?.id ?
+                                <div className="flex mx-3 mb-3 items-center gap-1">
+                                    <CustomAvatar id={user.id} name={user.full_name} size="size-8 ring-2!" />
+
+                                    <div className="flex flex-col gap-2">
+                                        <span className="text-xs font-medium text-neutral-8">
+                                            {user.full_name}
+                                        </span>
+                                        <button
+                                            onClick={handleLogOut}
+                                            disabled={isLoggingOut}
+                                            className="flex items-center gap-1 text-xs text-secondary-4 hover:text-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150"
+                                        >
+                                            {isLoggingOut
+                                                ? <><Icon icon="eos-icons:three-dots-loading" className="size-3" /> Signing out</>
+                                                : "Sign out"
+                                            }
+                                        </button>
+                                    </div>
+                                </div>
+                                :
+                                <motion.div
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ 
+                                        y: 0, 
+                                        opacity: 1,
+                                        transition: { delay: 0.4, duration: 0.3 }
+                                    }}
+                                    exit={{ 
+                                        y: 20, 
+                                        opacity: 0,
+                                        transition: { duration: 0.2 }
+                                    }}
+                                    className="p-4 flex items-center gap-4 border-t border-neutral-3"
                                 >
-                                    Sign in
-                                </Link>
-                                <Link
-                                    href={NAV_LINKS.SIGN_UP.href}
-                                    className="w-fit px-6 py-3 rounded-full text-center font-medium bg-primary text-white hover:bg-primary-7 active:scale-[0.98] transition-all shadow-md"
-                                >
-                                    Get started
-                                </Link>
-                            </motion.div>
+                                    <Link
+                                        href={NAV_LINKS.SIGN_IN.href}
+                                        className="font-semibold text-neutral-8 hover:text-primary transition-colors"
+                                    >
+                                        Sign in
+                                    </Link>
+                                    <Link
+                                        href={NAV_LINKS.SIGN_UP.href}
+                                        className="w-fit px-6 py-3 rounded-full text-center font-medium bg-primary text-white hover:bg-primary-7 active:scale-[0.98] transition-all shadow-md"
+                                    >
+                                        Get started
+                                    </Link>
+                                </motion.div>
+                            }
                         </div>
                     </motion.div>
                 </>

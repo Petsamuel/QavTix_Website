@@ -1,12 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit'
 import alertReducer from "./slices/alertSlice"
+import authReducer from "./slices/authUserSlice"
+import authPromptReducer from "./slices/showAuthPromptSlice"
 import settingsReducer from "./slices/settingsSlice"
+import popUpReducer from "./slices/popupAlertSlice"
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       alert: alertReducer,
-      settings: settingsReducer
+      settings: settingsReducer,
+      auth: authReducer,
+      authPrompt: authPromptReducer,
+      popupAlert: popUpReducer
     }
   })
 }

@@ -43,11 +43,13 @@ const mobileSummaryVariants = {
 
 
 export default function CheckoutSummary({ showMobileSummary, setShowMobileSummary }:{ showMobileSummary: boolean, setShowMobileSummary: Dispatch<SetStateAction<boolean>> }) {
+    
     const {
         selectedTickets,
         subtotal,
         discountAmount,
         total,
+        event,
         currentStep
     } = useCheckout()
 
@@ -63,12 +65,12 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
     const TicketsList = () => (
         <div className="space-y-4">
             {selectedTickets.map((ticket) => (
-                <div key={ticket.id} className="flex items-center justify-between text-sm">
+                <div key={ticket._key} className="flex items-center justify-between text-sm">
                     <p className="text-neutral-8">
-                        {ticket.quantity} × {ticket.name}
+                        {ticket.quantity} × {ticket.ticket_type}
                     </p>
                     <p className="text-neutral-8 font-medium">
-                        {formatPrice(ticket.price * ticket.quantity, 'NG')}
+                        {formatPrice(ticket.price * ticket.quantity, event.currency || 'NGN')}
                     </p>
                 </div>
             ))}
@@ -81,7 +83,7 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
             <div className="flex items-center justify-between">
                 <p className="text-neutral-8">Subtotal</p>
                 <p className="text-neutral-8 font-medium">
-                    {formatPrice(subtotal, 'NG')}
+                    {formatPrice(subtotal, event.currency || 'NGN')}
                 </p>
             </div>
 
@@ -113,7 +115,7 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
             <div className="flex items-center justify-between">
                 <p className="text-neutral-8">Promo discount</p>
                 <p className="text-neutral-8 font-medium">
-                    {formatPrice(discountAmount, 'NG')}
+                    {formatPrice(discountAmount, event.currency || 'NGN')}
                 </p>
             </div>
 
@@ -139,7 +141,7 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
                     )}
                 </div>
                 <p className="text-neutral-8 font-medium">
-                    {formatPrice(fixedFee, 'NG')}
+                    {formatPrice(fixedFee, event.currency || 'NGN')}
                 </p>
             </div>
         </div>
@@ -161,7 +163,7 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
                 disabled={!showChevron}
             >
                 <p className={cn('text-xl font-medium text-primary-6', space_grotesk.className)}>
-                    {formatPrice(total, 'NG')}
+                    {formatPrice(total,  event.currency || 'NGN')}
                 </p>
                 {showChevron && (
                     <Icon

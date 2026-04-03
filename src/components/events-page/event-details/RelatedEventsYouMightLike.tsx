@@ -3,47 +3,47 @@ import { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
 import { space_grotesk } from '@/lib/fonts'
-import { eventsMock } from '@/components-data/demo-data'
 import CarouselActionBtns from '@/components/custom-utils/buttons/CarouselActionBtns'
 import EventsCard1 from '@/components/custom-utils/cards/EventCards'
+import { fromPublicPagesEvent } from '@/components/custom-utils/cards/resources/event-card-adapter'
 
-export default function RelatedEventsYouMightLike() {
+// Autoplay needs at least this many slides to work safely
+const MIN_SLIDES_FOR_AUTOPLAY = 2
+
+export default function RelatedEventsYouMightLike({ events }: { events: PublicPagesEvent[] }) {
+    const canAutoplay = events.length >= MIN_SLIDES_FOR_AUTOPLAY
+
     const [emblaRef, emblaApi] = useEmblaCarousel(
-        { 
-            loop: true,
-            align: 'start',
-            skipSnaps: false,
-            dragFree: false
-        },
-        [
-            Autoplay({ 
-                delay: 2000,
-                stopOnInteraction: true
-            })
-        ]
+        { loop: canAutoplay, align: 'start', dragFree: true },
+        canAutoplay ? [Autoplay({ delay: 2000, stopOnInteraction: true })] : []
     )
 
+    const getAutoplay = useCallback(() => {
+        if (!canAutoplay) return null
+        return emblaApi?.plugins()?.autoplay ?? null
+    }, [emblaApi, canAutoplay])
+
     const scrollPrev = useCallback(() => {
-        const autoplayPlugin = emblaApi?.plugins()?.autoplay
-        autoplayPlugin?.stop()
+        getAutoplay()?.stop()
         emblaApi?.scrollPrev()
-    }, [emblaApi])
+    }, [emblaApi, getAutoplay])
 
     const scrollNext = useCallback(() => {
-        const autoplayPlugin = emblaApi?.plugins()?.autoplay
-        autoplayPlugin?.stop()
+        getAutoplay()?.stop()
         emblaApi?.scrollNext()
-    }, [emblaApi])
+    }, [emblaApi, getAutoplay])
 
     const pauseAutoPlay = useCallback(() => {
-        const autoplayPlugin = emblaApi?.plugins()?.autoplay
-        autoplayPlugin?.stop()
-    }, [emblaApi])
+        getAutoplay()?.stop()
+    }, [getAutoplay])
 
     const play = useCallback(() => {
-        const autoplayPlugin = emblaApi?.plugins()?.autoplay
-        autoplayPlugin?.play()
-    }, [emblaApi])
+        const autoplay = getAutoplay()
+        if (!autoplay) return
+        if (typeof autoplay.play === 'function') {
+            autoplay.play()
+        }
+    }, [getAutoplay])
 
     const [canScrollPrev, setCanScrollPrev] = useState(false)
     const [canScrollNext, setCanScrollNext] = useState(false)
@@ -61,37 +61,39 @@ export default function RelatedEventsYouMightLike() {
         emblaApi.on('reInit', onSelect)
     }, [emblaApi, onSelect])
 
+    if (events.length === 0) return null
+
     return (
-        <section className="w-full py-10 md:ps-10 lg:ps-16">
+        <section className="w-full py-10 overflow-x-hidden!">
             <div className="max-w-7xl mx-auto">
-                <div className="flex items-center gap-6 justify-between mb-8 md:pe-16">
-                    <h2 className={`text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
+                <div className="flex gap-5 items-center justify-between mb-8 px-4 md:px-10 lg:px-16">
+                    <h2 className={`text-2xl sm:text-3xl md:text-[2rem] mb-6 font-bold text-secondary-9 ${space_grotesk.className}`}>
                         Related events you may like
                     </h2>
-                    
-                    <CarouselActionBtns
-                        scrollPrev={scrollPrev}
-                        scrollNext={scrollNext}
-                        canScrollPrev={canScrollPrev}
-                        canScrollNext={canScrollNext}
-                    />
+                    {canAutoplay && (
+                        <CarouselActionBtns
+                            scrollPrev={scrollPrev}
+                            scrollNext={scrollNext}
+                            canScrollPrev={canScrollPrev}
+                            canScrollNext={canScrollNext}
+                        />
+                    )}
                 </div>
 
-                {/* Carousel */}
-                <div className="overflow-hidden" ref={emblaRef}>
-                    <div className="flex gap-4 md:gap-6">
-                        {eventsMock.map((event) => (
-                            <div 
-                                key={event.href}
-                                onMouseOver={() => pauseAutoPlay()}
-                                onMouseLeave={() => play()}
-                                className="flex-[0_0_calc(100%-1rem)] sm:flex-[0_0_calc(50%-0.75rem)] md:flex-[0_0_calc(33.333%-1rem)] lg:flex-[0_0_calc(25%-1.125rem)] xl:flex-[0_0_calc(20%-1.2rem)] min-w-0"
-                            >
-                                <EventsCard1 
-                                    {...event} 
-                                />
-                            </div>
-                        ))}
+                <div>
+                    <div className="pl-4 md:pl-10 lg:pl-16" ref={emblaRef}>
+                        <div className="flex gap-4 md:gap-6">
+                            {events.map((event) => (
+                                <div
+                                    key={event.id}
+                                    onMouseEnter={pauseAutoPlay}
+                                    onMouseLeave={play}
+                                    className="flex-[0_0_270px] min-w-0"
+                                >
+                                    <EventsCard1 {...fromPublicPagesEvent(event)} />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>

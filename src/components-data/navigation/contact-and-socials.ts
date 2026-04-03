@@ -49,7 +49,7 @@ export const CONTACT_LINKS = {
       text: "+234 812 345 6789",
       href: "tel:+2348123456789"
     }
-  },
+  } as const,
 
 
   ABUJA: {
@@ -76,12 +76,6 @@ export const CONTACT_LINKS = {
 
 
 } as const
-
-
-export const LEGAL_LINKS = [
-  { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Terms of Use", href: "/terms-of-use" }
-] as const;
 
 export const SUPPORT_LINKS = [
   { label: "FAQ", href: "/faq" },

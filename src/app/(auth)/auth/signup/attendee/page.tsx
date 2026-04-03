@@ -1,5 +1,6 @@
 "use client"
 
+import { NAV_LINKS } from "@/components-data/navigation/navLinks";
 import AuthPageFlexWrapper from "@/components/auth-pages/AuthPageFlexWrapper";
 import SignUpSuccessMessage from "@/components/auth-pages/SignUpSuccessMessage";
 import SocialAuthButtons from "@/components/auth-pages/SocialAuthButtons";
@@ -34,9 +35,9 @@ export default function AttendeeSignUpPage(){
                     <hr className="h-1 border-neutral-5 flex-1" />
                 </div>
 
-                <AttendeeEmailSignUpForm />
+                <AttendeeEmailSignUpForm setSuccessfulSignUp={setSuccessfulSignUp}  />
 
-                <p className="text-sm text-neutral-7 mt-6 mb-8 text-center">Already have an account?<button onClick={() => router.push("/auth/forgot-password")} className="font-medium text-accent-6 ms-1">Sign In</button></p>
+                <p className="text-sm text-neutral-7 mt-6 mb-8 text-center">Already have an account?<button onClick={() => router.push(NAV_LINKS.SIGN_IN.href)} className="font-medium text-accent-6 ms-1">Sign In</button></p>
             </main>
         </AuthPageFlexWrapper>
     )

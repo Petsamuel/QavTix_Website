@@ -1,5 +1,5 @@
-import { CONTACT_LINKS, LEGAL_LINKS, SOCIAL_LINKS, SUPPORT_LINKS } from "./navigation/contact-and-socials";
-import { NAV_LINKS } from "./navigation/navLinks";
+import { CONTACT_LINKS, SOCIAL_LINKS, SUPPORT_LINKS } from "./navigation/contact-and-socials";
+import { LEGAL_LINKS, NAV_LINKS } from "./navigation/navLinks";
 import { TICKET_LINKS } from "./navigation/ticket";
 
 export const footerData = {
@@ -25,5 +25,5 @@ export const footerData = {
     info: Object.values(CONTACT_LINKS.LAGOS)
   },
   social: Object.values(SOCIAL_LINKS), 
-  legal: Object.values(LEGAL_LINKS)
+  legal: Object.values(LEGAL_LINKS).filter(v => !v.href.includes("commission"))
 }

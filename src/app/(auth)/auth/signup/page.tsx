@@ -19,7 +19,7 @@ export default function SignUpPage(){
 
     return (
         <AuthPageFlexWrapper>
-            <main>
+            <main className="max-w-xl w-full mx-auto">
                 <h1 className="sr-only">Sign Up</h1>
                 <h2 className={`${space_grotesk.className} text-secondary-9 text-2xl md:text-3xl lg:text-[2rem] font-bold mb-2`}>Welcome to Qavtix!</h2>
                 <p className="text-neutral-7 text-sm">Choose your account type. Would you like to sign up as a attendee or host?</p> 

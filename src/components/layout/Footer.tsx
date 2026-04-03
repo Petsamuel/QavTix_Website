@@ -8,7 +8,6 @@ import { footerData } from '@/components-data/footer-data'
 import { usePathname } from 'next/navigation'
 import { isHighlightedSocial } from '@/helper-fns/isHighlightedSocial'
 import { cn } from '@/lib/utils'
-import CurrencySwitcher from '../settings/CurrencySwitcher'
 import RegionSwitcher from '../settings/RegionSwitcher'
 
 
@@ -17,6 +16,7 @@ export default function Footer() {
     const pathName = usePathname()
 
     return (
+        pathName !== "/_not-found" &&
         !pathName.match("/auth") &&
         !pathName.match("/checkout") &&
         <footer className="w-full relative bg-primary-1 px-6 lg:px-16 py-12">
@@ -153,7 +153,7 @@ export default function Footer() {
                     {/* Legal Links */}
                     <div className="flex relative order-1 md:order-[unset] z-10 items-center gap-1 text-sm font-medium">
                         {footerData.legal.map((link, index) => (
-                        <span key={link.label} className="flex items-center gap-1">
+                        <span key={link.href} className="flex items-center gap-1">
                             <Link
                                 href={link.href}
                                 className="text-neutral-8 font-bold hover:text-primary-6 transition-colors"
@@ -172,7 +172,8 @@ export default function Footer() {
                         <RegionSwitcher />
 
                         {/* Currency Selector */}
-                        <CurrencySwitcher  />
+                        {/* Currency Switch was removed mid development */}
+                        {/* <CurrencySwitcher  /> */}
                     </div>
                 </div>
             </div>

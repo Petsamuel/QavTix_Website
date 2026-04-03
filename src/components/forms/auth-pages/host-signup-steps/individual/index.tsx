@@ -17,7 +17,7 @@ export default function IndividualHostSignupSection() {
         <IndividualBusinessStep />
         :
         currentStep === 3 ?
-        <PasswordStep />
+        <PasswordStep accountType="individual" />
         :
         null
     )

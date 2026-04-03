@@ -1,23 +1,29 @@
-import FollowHostPromptDialog from "@/components/modals/FollowHostPromptDialog";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { cn } from "@/lib/utils"
 
-export default function FollowHostBtn1({ className }:{ className?: string }){
+interface Props {
+    isFollowing: boolean
+    onClick:     (e: React.MouseEvent<HTMLButtonElement>) => void
+    className?:  string
+}
 
-    const [openModal,setOpenModal] = useState(false)
+export default function FollowHostBtn1({ isFollowing, onClick, className }: Props) {
 
     return (
-        <>
-            <button onClick={() => setOpenModal(true)} className={cn(
+        <button
+            onClick={onClick}
+            className={cn(
+                "inline-flex items-center justify-center gap-1.5 rounded-3xl font-medium text-sm px-5 py-2.5 transition-all duration-200 active:scale-[0.98]",
+                isFollowing
+                    ? "bg-transparent! text-secondary-7 border-[1.5px] border-neutral-6 group"
+                    : "bg-secondary-6 text-white hover:bg-secondary-7 hover:shadow-md",
                 className,
-                "p-3 rounded-3xl bg-secondary-6 text-white font-medium text-sm w-36",
-                "hover:bg-secondary-7 hover:shadow-md hover:opacity-95"
             )}
-            >
-                Follow
-            </button>
-
-            <FollowHostPromptDialog open={openModal} setOpen={setOpenModal} />
-        </>
+        >
+            {isFollowing ? (
+                <span className="group-hover:hidden">Following</span>
+            ) : (
+                <span>Follow</span>
+            )}
+        </button>
     )
 }

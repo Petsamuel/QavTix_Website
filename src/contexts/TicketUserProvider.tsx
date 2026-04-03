@@ -1,11 +1,11 @@
 'use client'
 
-import { TicketSession } from '@/actions/get-ticket-session'
+import { hasGuestTicketForEvent, GuestTicketSession } from '@/actions/util/get-ticket-session'
 import { createContext, useContext, ReactNode } from 'react'
 
 interface TicketUserContextType {
     user: AuthUser | null
-    ticketSession: TicketSession | null
+    ticketSession: GuestTicketSession | null
     isAuthenticated: boolean
     hasTicketSession: boolean
 }
@@ -15,7 +15,7 @@ const TicketUserContext = createContext<TicketUserContextType | undefined>(undef
 interface TicketUserProviderProps {
     children: ReactNode
     user: AuthUser | null
-    ticketSession: TicketSession | null
+    ticketSession: GuestTicketSession | null
 }
 
 export function TicketUserProvider({ 
@@ -55,7 +55,11 @@ export function useTicketSession() {
     return { ticketSession, hasTicketSession }
 }
 
-export function useHasTicketForEvent(eventId: string) {
-    const { ticketSession } = useTicketUser()
-    return ticketSession?.eventId === eventId
+export function useHasTicketForEvent(eventID: string) {
+    // GUEST — CHECK SESSIONSTORAGE (CLIENT ONLY)
+    if (typeof window !== 'undefined') {
+        return hasGuestTicketForEvent(eventID)
+    }
+
+    return false
 }

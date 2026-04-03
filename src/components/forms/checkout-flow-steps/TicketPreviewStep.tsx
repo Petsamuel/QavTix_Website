@@ -1,34 +1,35 @@
 "use client"
 
-import { mockAvailableTickets } from "@/components-data/demo-data";
-import { TicketCard } from "@/components/custom-utils/cards/TicketCard";
-import { useCheckout } from "@/contexts/CheckoutFlowProvider";
-import { useEffect } from "react";
+import { TicketCard } from "@/components/custom-utils/cards/TicketCard"
+import { useCheckout } from "@/contexts/CheckoutFlowProvider"
 
-export default function TicketPreviewStep(){
+export default function TicketPreviewStep() {
 
-    const { initializeTickets, tickets } = useCheckout()
+    const { tickets } = useCheckout()
 
-    useEffect(() => {
-        if (mockAvailableTickets.length > 0 && tickets.length === 0) {
-            initializeTickets(mockAvailableTickets)
-        }
-    }, [mockAvailableTickets, tickets.length, initializeTickets])
+    if (tickets.length === 0) {
+        return (
+            <div
+                className="py-16 text-center text-neutral-5 text-sm"
+                data-testid="ticket-preview-empty"
+            >
+                No tickets are available for this event.
+            </div>
+        )
+    }
 
     return (
-        <>
-            <div className="space-y-6">
-                {
-                    tickets.map((v,i) => {
-                        return (
-                            <TicketCard 
-                                key={`${v.id}-${i}`} 
-                                id={v.id}
-                            />
-                        )
-                    })
-                }
-            </div>
-        </>
+        <div
+            className="space-y-6"
+            data-testid="ticket-preview-step"
+        >
+            {tickets.map((ticket) => (
+                <TicketCard
+                    key={ticket._key}
+                    ticketKey={ticket._key}
+                    data-testid={`ticket-card-${ticket.id}`}
+                />
+            ))}
+        </div>
     )
 }

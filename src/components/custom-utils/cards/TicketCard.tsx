@@ -4,22 +4,24 @@ import { space_grotesk } from '@/lib/fonts'
 import { useCheckout } from '@/contexts/CheckoutFlowProvider'
 import { cn } from '@/lib/utils'
 import { Icon } from '@iconify/react'
+import { formatPrice, parsePrice } from '@/helper-fns/formatPrice'
 
 interface TicketCardProps {
-    id: string
+    ticketKey: string
 }
 
 export function TicketCard({
-    id,
+    ticketKey,
 }: TicketCardProps) {
 
     const { 
         tickets, 
         incrementTicket, 
+        isMarketplace,
         decrementTicket,
     } = useCheckout()
 
-    const ticket  = tickets.find(v => v.id === id)
+    const ticket  = tickets.find(v => v._key === ticketKey)
 
     if (!ticket) return null;
 
@@ -35,7 +37,7 @@ export function TicketCard({
                     <h3
                         className={`${space_grotesk.className} text-xl text-secondary-9`}
                     >
-                        {ticket.name}
+                        {ticket.ticket_type}
                     </h3>
 
                     {ticket.price === 0 ? (
@@ -45,11 +47,11 @@ export function TicketCard({
                     ) : (
                         <div className="flex items-baseline gap-2">
                             <p className={`${space_grotesk.className} font-medium text-xl text-primary-6`}>
-                                {ticket.currency}{ticket.price.toLocaleString()}
+                                {formatPrice(parsePrice(ticket.price) || 0, ticket.currency || 'NGN', true)}
                             </p>
-                            {ticket.originalPrice && (
+                            {ticket.price && (
                                 <p className="text-sm text-neutral-6 line-through">
-                                    {ticket.currency}{ticket.originalPrice.toLocaleString()}
+                                    {formatPrice(parsePrice(ticket.price) || 0, ticket.currency || 'NGN', true)}
                                 </p>
                             )}
                         </div>
@@ -60,8 +62,8 @@ export function TicketCard({
                     <div className="flex items-center gap-3 self-start">
                         <button
                             type="button"
-                            onClick={() => decrementTicket(id)}
-                            disabled={ticket.quantity === 0}
+                            onClick={() => decrementTicket(ticketKey)}
+                            disabled={ticket.quantity === 0  || isMarketplace}
                             className="w-8 h-8 rounded-lg bg-secondary-6 text-white flex items-center justify-center hover:bg-secondary-7 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                         >
                             <Icon icon="mynaui:minus" width="24" height="24" />
@@ -71,8 +73,8 @@ export function TicketCard({
                         </span>
                         <button
                             type="button"
-                            onClick={() => incrementTicket(id)}
-                            disabled={!ticket.available || ticket.soldOut}
+                            onClick={() => incrementTicket(ticketKey)}
+                            disabled={!ticket.available || ticket.soldOut || isMarketplace}
                             className="w-8 h-8 rounded-lg bg-secondary-6 text-white flex items-center justify-center hover:bg-secondary-7 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                         >
                             <Icon icon="mynaui:plus" width="24" height="24" />
