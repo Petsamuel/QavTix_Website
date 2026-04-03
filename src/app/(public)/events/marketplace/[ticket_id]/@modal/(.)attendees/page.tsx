@@ -1,27 +1,29 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { Dialog, DialogContent, DialogHeader, DialogOverlay, DialogTitle } from '@/components/ui/dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@iconify/react'
 import { space_grotesk } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
 import { getAvatarColor } from '@/helper-fns/getAvatarColor'
 import { getInitialsFromName } from '@/helper-fns/getInitialFromName'
-import { mockAttendees } from '@/components-data/demo-data'
 import { CustomIcons } from '@/components/Svg-Icons'
 import CloseBtn from '@/components/custom-utils/buttons/event-search/CloseBtn'
 import Link from 'next/link'
+import { useAppSelector } from '@/lib/redux/hooks'
+import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
 
 export default function AttendeesModal() {
+
+    const { isAuthenticated } = useAppSelector(store => store.auth)
     const router = useRouter()
-    const [isRegistered, setIsRegistered] = useState(true)
-    const [attendees, setAttendees] = useState<Attendee[]>(mockAttendees)
+    const attendees : Attendee[] = []
+    const params = useParams()
 
     const handleGetTicket = () => {
-        router.push('/checkout')
+        router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", (params.event_id || "") as string))
     }
     
 
@@ -29,7 +31,7 @@ export default function AttendeesModal() {
         <Dialog open={true} onOpenChange={() => router.back()}>
             <DialogOverlay className='bg-black/40 z-200' />
             <DialogContent showCloseButton={false} className="z-200 w-102.5 max-h-[85vh] rounded-[2.5em] overflow-hidden flex flex-col">
-                {!isRegistered ? (
+                {!isAuthenticated ? (
                     // Unauthenticated/Unregistered View
                     <div className="py-4">
                         <div className='flex justify-between'>
