@@ -12,6 +12,7 @@ type AuthUser = {
     city: string
     state: string
     dob: string | null
+    is_completed: boolean
 }
 
 

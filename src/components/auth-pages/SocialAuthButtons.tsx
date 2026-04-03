@@ -43,7 +43,7 @@ export default function SocialAuthButtons() {
 
             <button
                 onClick={() => handleClick("apple", buildAppleUrl())}
-                disabled={!!loading}
+                disabled
                 className="flex-1 lg:flex-auto lg:basis-[30%] bg-neutral-10 flex text-sm items-center justify-center gap-2 h-14 rounded-lg text-white hover:bg-neutral-9 focus:outline-none focus:ring-2 focus:ring-neutral-8 focus:ring-offset-2 active:scale-[0.98] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
             >
                 {loading === "apple"

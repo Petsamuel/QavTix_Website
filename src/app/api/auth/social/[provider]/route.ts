@@ -10,9 +10,9 @@ const PROVIDER_ENDPOINTS: Record<string, string> = {
 
 export async function POST(
     req:     NextRequest,
-    context: { params: { provider: string } },
+    context: { params: Promise<{ provider: string }> },
 ) {
-    const provider = context.params.provider
+    const { provider } = await context.params
     const endpoint = PROVIDER_ENDPOINTS[provider]
 
     if (!endpoint) {

@@ -128,10 +128,10 @@ export default function FeaturedEventsSection({ events }: Props) {
                                                             {getInitialsFromName(event.host)}
                                                         </AvatarFallback>
                                                     </Avatar>
-                                                    {parseInt(event.attendees_count) > 1 && (
+                                                    {event.attendees_count > 1 && (
                                                         <Avatar className="ring-2 ring-white size-7">
                                                             <AvatarFallback className="bg-primary-1 text-xs font-medium">
-                                                                +{parseInt(event.attendees_count) - 1}
+                                                                +{event.attendees_count - 1}
                                                             </AvatarFallback>
                                                         </Avatar>
                                                     )}

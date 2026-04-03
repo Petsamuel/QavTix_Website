@@ -3,6 +3,7 @@ import alertReducer from "./slices/alertSlice"
 import authReducer from "./slices/authUserSlice"
 import authPromptReducer from "./slices/showAuthPromptSlice"
 import settingsReducer from "./slices/settingsSlice"
+import popUpReducer from "./slices/popupAlertSlice"
 
 export const makeStore = () => {
   return configureStore({
@@ -10,7 +11,8 @@ export const makeStore = () => {
       alert: alertReducer,
       settings: settingsReducer,
       auth: authReducer,
-      authPrompt: authPromptReducer
+      authPrompt: authPromptReducer,
+      popupAlert: popUpReducer
     }
   })
 }

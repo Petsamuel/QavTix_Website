@@ -110,3 +110,4 @@ export const FOOTER_LEGAL_LINKS = {
 
 export const HOST_CREATE_EVENT = "/dashboard/events/create"
 export const ATTENDEE_SELL_TICKET = "/dashboard"
+export const ATTENDEE_PROFILE_SETTINGS = "/dashboard/account-settings/profile"
