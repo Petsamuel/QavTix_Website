@@ -42,7 +42,7 @@ export default function PopUpMessageAlertModal() {
     const handlePrimaryAction = () => {
         if (!currentAlert) return
         if (currentAlert.navigateTo) {
-            currentAlert.navigateTo.includes("http") ? window.open(currentAlert.navigateTo, "_blank") : router.push(currentAlert.navigateTo )
+            currentAlert.navigateTo.includes("http") ? window.open(currentAlert.navigateTo) : router.push(currentAlert.navigateTo )
         }
         dispatch(closePopupAlertModal())
     }
