@@ -22,29 +22,23 @@ function AttendeeAvatars({ count, eventId }: { count: number; eventId: string })
     const displayCount = Math.min(count, 3)
 
     return (
-        <Link
-            href={`${EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", eventId)}/attendees`}
-            aria-label="View event attendees"
-            className="inline-flex focus:outline-none"
-        >
-            <div className="flex -space-x-1.5 shrink-0">
-                {mockAttendees.slice(0, displayCount).map((attendee) => (
-                    <Avatar key={attendee.id} className="ring-2 ring-background size-8">
-                        {attendee.profile_picture && <AvatarImage src={attendee.profile_picture} alt={attendee.full_name} />}
-                        <AvatarFallback className={`${getAvatarColor(attendee.id.toString())} text-white font-medium text-[10px]`}>
-                            {getInitialsFromName(attendee.full_name)}
-                        </AvatarFallback>
-                    </Avatar>
-                ))}
-                {count > 3 && (
-                    <Avatar className="ring-2 ring-background size-9">
-                        <AvatarFallback className="bg-primary-1 font-medium text-secondary-7 text-xs">
-                            +{count - 3}
-                        </AvatarFallback>
-                    </Avatar>
-                )}
-            </div>
-        </Link>
+        <div className="flex -space-x-1.5 shrink-0">
+            {mockAttendees.slice(0, displayCount).map((attendee) => (
+                <Avatar key={attendee.id} className="ring-2 ring-background size-8">
+                    {attendee.profile_picture && <AvatarImage src={attendee.profile_picture} alt={attendee.full_name} />}
+                    <AvatarFallback className={`${getAvatarColor(attendee.id.toString())} text-white font-medium text-[10px]`}>
+                        {getInitialsFromName(attendee.full_name)}
+                    </AvatarFallback>
+                </Avatar>
+            ))}
+            {count > 3 && (
+                <Avatar className="ring-2 ring-background size-9">
+                    <AvatarFallback className="bg-primary-1 font-medium text-secondary-7 text-xs">
+                        +{count - 3}
+                    </AvatarFallback>
+                </Avatar>
+            )}
+        </div>
     )
 }
 
