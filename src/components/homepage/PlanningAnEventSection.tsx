@@ -5,7 +5,7 @@ import Image from "next/image"
 import { HOST_CREATE_EVENT, NAV_LINKS } from "@/components-data/navigation/navLinks"
 import Link from "next/link"
 
-const HOST_URL = `https://host.${process.env.NEXT_PUBLIC_APP_DOMAIN}`
+const HOST_URL = `${process.env.NEXT_PUBLIC_HOST_SITE}`
 
 export default function PlanningAnEventSection() {
 

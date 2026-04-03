@@ -6,8 +6,8 @@
 export function getDashboardURL(role?: UserRole): string {
   if (!role) {
     // Default to main domain if role is undefined (shouldn't happen for authenticated users)
-    return `https://${process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'qavtix.com'}`
+    return `process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'qavtix.com'}`
   }
   const base = process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'qavtix.com'
-  return role === 'host' ? `https://host.${base}` : role === 'attendee' ? `https://attendee.${base}` : `https://admin.${base}`
+  return role === 'host' ? process.env.NEXT_PUBLIC_HOST_SITE! : role === 'attendee' ? process.env.NEXT_PUBLIC_ATTENDEE_SITE! : process.env.NEXT_PUBLIC_ADMIN_SITE!
 }

@@ -32,7 +32,7 @@ export const NAV_LINKS = {
 
   MARKETPLACE_EVENT_DETAILS: { label: '', href: '/events/marketplace/[event_id]' },
   MARKETPLACE_CHECKOUT: { label: '', href: '/events/marketplace/[ticket_id]/checkout' },
-  DASHBOARD_MARKETPLACE: { label: '', href: `${process.env.NEXT_PUBLIC_APP_DOMAIN}/dashboard/marketplace` },
+  DASHBOARD_MARKETPLACE: { label: '', href: `${process.env.NEXT_PUBLIC_ATTENDEE_SITE}/dashboard/marketplace` },
 
   SEARCH_PAGE: { label: '', href: '/search' },
 } as const satisfies Record<string, NavLink>
