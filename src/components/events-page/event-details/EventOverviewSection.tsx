@@ -121,10 +121,10 @@ export default function EventOverviewSection({ event, className }: Props) {
                             href={`https://maps.google.com/?q=${encodeURIComponent(mapQuery)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex-1 text-neutral-7 flex items-center gap-1"
+                            className="flex-1 min-w-0 text-neutral-7 flex items-center gap-1"
                         >
-                            <span className="text-sm truncate">{fullAddress}</span>
-                            <Icon icon="system-uicons:arrow-top-right" width="21" height="21" />
+                            <span className="text-sm wrap-break-words flex-1">{fullAddress}</span>
+                            <Icon icon="system-uicons:arrow-top-right" width="21" height="21" className="shrink-0" />
                         </Link>
                     </div>
                 </div>

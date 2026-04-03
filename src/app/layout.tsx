@@ -46,7 +46,8 @@ export default async function MainRootLayout({
 
       <ReduxStoreProvider>
         <TicketUserProvider user={userData} ticketSession={ticketSession}>
-          <body className={`${inter.className}`}>
+          {/* Grammerly and browser extensions causing hydtn errors */}
+          <body className={`${inter.className}`} suppressHydrationWarning>
             <AppSettings currency={locationData.currency} region={locationData.region} />
             <AuthPersistor userData={userData} />
             <CustomGlobalAlert />

@@ -121,7 +121,7 @@ export default function EventsNearYouSection2({ events }: Props) {
                         {displayEvents.map(event => (
                             <div
                                 key={event._key}
-                                className="flex-[0_0_85%] sm:flex-[0_0_45%] md:flex-[0_0_30%] xl:flex-[0_0_23%] min-w-0"
+                                className="flex-[0_0_85%] px-1 sm:flex-[0_0_45%] md:flex-[0_0_30%] xl:flex-[0_0_23%] min-w-0"
                             >
                                 <EventsCard {...fromPublicPagesEvent(event)} />
                             </div>

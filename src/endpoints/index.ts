@@ -44,7 +44,7 @@ export const VALIDATE_PROMO_CODE_ENDPOINT = "payments/promo-code/validate/"
 export const CANCEL_TICKET_ENDPOINT = "public/tickets/[ticket_id]/cancel/"
 
 export const SPLIT_PAYMENT_TOKEN_VERIFY_ENDPOINT = "payments/split/pay/[token]/"
-export const SPLIT_PAYMENT_TOKEN_CHECKOUT_ENDPOINT = "payments/split-payment/[token]/checkout/"
+export const SPLIT_PAYMENT_TOKEN_CHECKOUT_ENDPOINT = "payments/split/pay/[token]/"
 
 export const HOST_PLAN_CHECKOUT_ENDPOINT = "payments/plans/subscribe/"
 export const ATTENDEE_PLAN_CHECKOUT_ENDPOINT = "payments/attendee-plans/subscribe/"

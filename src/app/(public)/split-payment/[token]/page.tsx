@@ -1,15 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { confirmSplitPaymentToken, checkoutFromSplitPaymentToken } from "@/actions/checkout"
 import Logo from "@/components/layout/Logo"
 
 type Status = "loading" | "error" | "success"
-
-interface Props {
-    token: string
-}
 
 const STEPS = [
     "Checking split payment token...",
@@ -18,8 +14,9 @@ const STEPS = [
     "Redirecting to checkout...",
 ]
 
-export default function GroupSplitPaymentPage({ token }: Props) {
+export default function GroupSplitPaymentPage() {
 
+    const token = useParams().token || "";
     const router = useRouter()
     const [status, setStatus] = useState<Status>("loading")
     const [message, setMessage] = useState<string>(STEPS[0])
@@ -37,7 +34,7 @@ export default function GroupSplitPaymentPage({ token }: Props) {
             setStepIndex(0)
             setMessage(STEPS[0])
 
-            const validation = await confirmSplitPaymentToken(token)
+            const validation = await confirmSplitPaymentToken(token as string)
 
             setStepIndex(1)
             setMessage(STEPS[1])
@@ -51,7 +48,7 @@ export default function GroupSplitPaymentPage({ token }: Props) {
             setStepIndex(2)
             setMessage(STEPS[2])
 
-            const checkoutResult = await checkoutFromSplitPaymentToken(token)
+            const checkoutResult = await checkoutFromSplitPaymentToken(token as string)
             if (!checkoutResult.success) {
                 setStatus("error")
                 setMessage(checkoutResult.message ?? "Unable to get checkout URL")
@@ -136,10 +133,10 @@ export default function GroupSplitPaymentPage({ token }: Props) {
                                         key={i}
                                         className={`block rounded-full transition-all duration-300 ${
                                             i < stepIndex
-                                                ? "w-2 h-2 bg-primary-500"
+                                                ? "w-2 h-2 bg-primary-5"
                                                 : i === stepIndex
                                                 ? "w-4 h-2 bg-primary-500"
-                                                : "w-2 h-2 bg-neutral-6"
+                                                : "w-2 h-2 bg-neutral-7"
                                         }`}
                                     />
                                 ))}
@@ -208,7 +205,7 @@ export default function GroupSplitPaymentPage({ token }: Props) {
                             {/* Actions */}
                             <div className="flex flex-col gap-2 w-full">
                                 <button
-                                    onClick={() => router.refresh()}
+                                    onClick={() => window.location.reload()}
                                     className="w-full py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary-600 transition-colors"
                                 >
                                     Try again
