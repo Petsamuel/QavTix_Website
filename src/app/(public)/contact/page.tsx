@@ -2,6 +2,14 @@ import ContactUsForm from "@/components/forms/contact-page/ContactUsForm";
 import SectionHeading from "@/components/shared/SectionHeading";
 import OfficeLocationTabs from "@/components/tabs/OfficeLocationTabs";
 import { space_grotesk } from "@/lib/fonts";
+import { buildPageMetadata } from "@/metadata";
+import { Metadata } from "next";
+
+export const metadata: Metadata = buildPageMetadata(
+    "Contact Us",
+    "Get in touch with the QavTix support team. We're here to help with ticket issues, refunds, and event hosting enquiries.",
+    "/contact",
+)
 
 export default function ContactPage(){
     return (

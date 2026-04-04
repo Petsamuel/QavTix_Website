@@ -2,9 +2,32 @@ import { getEventDetails }  from "@/actions/getters"
 import { getCategories, searchEvents } from "@/actions/filters"
 import EventDetailsPageContentContainer from "@/components/events-page/EventDetailsPageContentContainer"
 import EventNotFound from "@/components/events-page/EventNotFound"
+import { Metadata } from "next"
+import { buildPageMetadata } from "@/metadata"
 
 interface Props {
     params: Promise<{ event_id: string }>
+}
+
+
+export async function generateMetadata(
+    { params }: { params: Promise<{ event_id: string }> }
+): Promise<Metadata> {
+    const { event_id } = await params
+    const result       = await getEventDetails(event_id)
+ 
+    if (!result.success || !result.data) {
+        return buildPageMetadata("Event Not Found", undefined, `/events/details/${event_id}`)
+    }
+ 
+    const { title, short_description, full_description, event_location } = result.data
+    const desc = short_description || full_description.slice(0, 155)
+ 
+    return buildPageMetadata(
+        title,
+        desc,
+        `/events/details/${event_id}`,
+    )
 }
 
 export default async function EventDetailPage({ params }: Props) {

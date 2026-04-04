@@ -4,9 +4,26 @@ import { getCategoryPage } from "@/actions/filters"
 import EventSectionHero from "@/components/events-page/EventSectionHero"
 import EventsNearYouSection from "@/components/shared/EventsNearYou"
 import { getNearbyEvents, getUserLocation } from "@/actions/getters"
+import { Metadata } from "next"
+import { buildPageMetadata } from "@/metadata"
 
 interface Props {
     params: Promise<{ category_name: string }>
+}
+
+export async function generateMetadata(
+    { params }: { params: Promise<{ category: string }> }
+): Promise<Metadata> {
+    const { category } = await params
+    const entry = EVENT_CATEGORIES_ARRAY.find(c => c.path === category)
+ 
+    if (!entry) return buildPageMetadata("Events", undefined, `/events/explore/category/${category}`)
+ 
+    return buildPageMetadata(
+        `${entry.label} Events`,
+        `Discover the best ${entry.label.toLowerCase()} events near you and around the world. Buy tickets on QavTix.`,
+        `/events/explore/category/${category}`,
+    )
 }
 
 export default async function EventCategoryPage({ params }: Props) {

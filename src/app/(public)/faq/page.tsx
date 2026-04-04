@@ -4,6 +4,7 @@ import FAQAccordionTab from "@/components/tabs/FAQAccordionTab";
 import { space_grotesk } from "@/lib/fonts";
 import Link from "next/link";
 
+
 export default function FAQPage(){
     return (
         <main>

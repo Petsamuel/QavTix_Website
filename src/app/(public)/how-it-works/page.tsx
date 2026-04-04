@@ -5,8 +5,16 @@ import AttendeeFeaturesSections from "@/components/how-it-works/AttendeeFeatures
 import HostFeaturesSections from "@/components/how-it-works/HostFeaturesSection";
 import SectionHeading from "@/components/shared/SectionHeading";
 import { space_grotesk } from "@/lib/fonts";
+import { buildPageMetadata } from "@/metadata";
+import { Metadata } from "next";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+
+export const metadata: Metadata = buildPageMetadata(
+    "How It Works",
+    "New to QavTix? Learn how to discover events, buy tickets, and host your own events in just a few steps.",
+    "/how-it-works",
+)
 
 export default function HowItWorksPage(){
 
