@@ -8,6 +8,8 @@ import { NAV_LINKS } from '@/components-data/navigation/navLinks'
 import { getAvatarColor } from '@/helper-fns/getAvatarColor'
 import { getInitialsFromName } from '@/helper-fns/getInitialFromName'
 import { useFollowHost } from '@/lib/custom-hooks/UseFollowHost'
+import { Icon } from '@iconify/react'
+import { cn } from '@/lib/utils'
 
 
 interface Props {
@@ -37,9 +39,21 @@ export default function TopHostCard({ host, onMouseOver, onMouseLeave, className
             </Avatar>
 
             <div>
-                <h3 className={`${space_grotesk.className} text-center text-lg font-medium text-secondary-9 mb-1`}>
-                    {host.business_name}
-                </h3>
+                <div className='flex items-center gap-2 mb-1'>
+                    <h3 className={`${space_grotesk.className} text-center text-lg font-medium text-secondary-9`}>
+                        {host.business_name}
+                    </h3>
+                    <Icon
+                        icon="ph:seal-check-fill"
+                        width="20"
+                        height="20"
+                        className={cn(
+                            "shrink-0",
+                            !host.is_subscribed && !host.is_verified && "hidden",
+                            (host.is_verified && host.is_subscribed )? "text-[#FFCC00]" : host.is_verified ? "text-primary-5" : "text-neutral-5"
+                        )}
+                    />
+                </div>
                 <div className={`${space_grotesk.className} flex gap-3 text-xs font-medium text-neutral-8 items-center justify-center`}>
                     <span>
                         <span className="text-neutral-7">{host.followers.toLocaleString()}</span> Followers
