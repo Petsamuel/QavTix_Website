@@ -50,7 +50,7 @@ export default function EventsNearYouSection({ events }: Props) {
                 </div>
             ) : (
                 <>
-                    <div className="flex flex-wrap gap-6 lg:gap-8 md:grid grid-cols-3 lg:grid-cols-4 2xl:flex mt-10">
+                    <div className="flex justify-center items-center flex-wrap gap-6 lg:gap-8 md:grid grid-cols-3 lg:grid-cols-4 2xl:flex mt-10">
                         {displayed.map(event => (
                             <EventsCard
                                 key={event.id}
