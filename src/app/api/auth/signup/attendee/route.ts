@@ -12,14 +12,19 @@ export async function POST(req: NextRequest) {
             headers: { "Content-Type": "application/json" },
             body:    JSON.stringify(body),
         })
-        
+
         const json = await res.json()
 
         if (!res.ok) {
             console.log("[register] status:", res.status)
             console.log("[register] raw json:", JSON.stringify(json, null, 2))
+
+            const message = res.status === 409
+                ? "An account with this email already exists. Please sign in instead."
+                : handleApiError(json)
+
             return NextResponse.json(
-                { message: handleApiError(json) },
+                { message },
                 { status: res.status }
             )
         }
@@ -28,7 +33,7 @@ export async function POST(req: NextRequest) {
 
         const response = NextResponse.json(
             { message: json.message },
-        { status: 201 }
+            { status: 201 }
         )
 
 
