@@ -31,7 +31,7 @@ export default async function EventsPage() {
         getCategories(),
         getTrendingHosts(),
     ])
-
+    
     return (
         <EventsPageCW
             featuredEvents={featuredEvents}

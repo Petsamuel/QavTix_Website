@@ -48,9 +48,8 @@ const teamMembers: TeamMember[] = [
 
 export default function TeamLeadersCarousel() {
     const [selectedIndex, setSelectedIndex] = useState(0)
-    const [direction, setDirection] = useState(0) // -1 for prev, 1 for next
+    const [direction, setDirection] = useState(0)
 
-    // Mobile carousel
     const [mobileEmblaRef, mobileEmblaApi] = useEmblaCarousel({
         loop: true,
         align: 'center'
@@ -78,6 +77,7 @@ export default function TeamLeadersCarousel() {
     }, [mobileEmblaApi, onMobileSelect])
 
     const currentMember = teamMembers[selectedIndex]
+    const nextMember = teamMembers[(selectedIndex + 1) % teamMembers.length]
 
     const variants = {
         enter: (direction: number) => ({
@@ -114,23 +114,22 @@ export default function TeamLeadersCarousel() {
                 {/* Mobile Layout */}
                 <div className="md:hidden overflow-x-hidden">
                     <div className="flex flex-row-reverse items-center gap-3 mb-6 global-px pe-0!">
-                        <div className="w-[27%] flex flex-row-reverse items-center justify-end overflow-hidden">
-                            <div className="flex gap-4 h-full items-center">
-                                {teamMembers.map((v, i) => (
-                                    <div key={`${v.id}-${i}`} className="relative w-[10.5em] h-[12em] my-auto aspect-3/4 rounded-3xl overflow-hidden">
-                                        <button onClick={scrollNext}>
-                                            <Image
-                                                src={teamMembers[(selectedIndex + i + 3) % teamMembers.length].image}
-                                                alt="Next member"
-                                                fill
-                                                className="object-cover opacity-90"
-                                            />
-                                        </button>
-                                    </div>
-                                ))}
+
+                        {/* Next member preview — fixed */}
+                        <div className="w-[27%] flex items-center justify-end overflow-hidden">
+                            <div className="relative w-[10.5em] h-[12em] my-auto aspect-3/4 rounded-3xl overflow-hidden">
+                                <button onClick={scrollNext} className="w-full h-full">
+                                    <Image
+                                        src={nextMember.image}
+                                        alt={nextMember.name}
+                                        fill
+                                        className="object-cover opacity-90"
+                                    />
+                                </button>
                             </div>
                         </div>
 
+                        {/* Main carousel */}
                         <div className="flex-1 overflow-hidden" ref={mobileEmblaRef}>
                             <div className="flex">
                                 {teamMembers.map((member) => (
@@ -149,6 +148,7 @@ export default function TeamLeadersCarousel() {
                         </div>
                     </div>
 
+                    {/* Member info */}
                     <div className="space-y-4 global-px">
                         <div>
                             <h3 className={`text-2xl sm:text-3xl md:text-[2rem] font-medium text-secondary-9 leading-8 ${space_grotesk.className}`}>
@@ -158,25 +158,31 @@ export default function TeamLeadersCarousel() {
                         </div>
                         <p className="text-neutral-7 text-sm leading-relaxed">{currentMember.bio}</p>
                         <div className="flex gap-3 sm:mt-8">
-                            <button onClick={scrollPrev} className="w-12 h-12 rounded-full border-2 border-neutral-4 flex items-center justify-center hover:bg-neutral-2 active:scale-95 transition-all">
+                            <button
+                                onClick={scrollPrev}
+                                className="w-12 h-12 rounded-full border-2 border-neutral-4 flex items-center justify-center hover:bg-neutral-2 active:scale-95 transition-all"
+                            >
                                 <Icon icon="si:chevron-left-line" width="24" height="24" className='text-secondary-6' />
                             </button>
-                            <button onClick={scrollNext} className="w-12 h-12 rounded-full bg-primary flex items-center justify-center hover:bg-primary-7 active:scale-95 transition-all">
+                            <button
+                                onClick={scrollNext}
+                                className="w-12 h-12 rounded-full bg-primary flex items-center justify-center hover:bg-primary-7 active:scale-95 transition-all"
+                            >
                                 <Icon icon="si:chevron-right-line" width="24" height="24" className='text-white' />
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {/* Desktop Layout - Fixed Entry/Exit Logic */}
+                {/* Desktop Layout */}
                 <div className="hidden md:block mt-20">
                     <div className="flex gap-4 lg:gap-8 items-end">
                         <div className="w-[24%] lg:w-[25%] flex items-center justify-end overflow-hidden">
                             <div className="flex gap-4 h-full items-center">
                                 {teamMembers.map((v, i) => (
-                                    <motion.div 
+                                    <motion.div
                                         layout
-                                        key={`${v.id}-${i}`} 
+                                        key={`${v.id}-${i}`}
                                         className="relative w-[10.5em] h-[12em] my-auto aspect-3/4 rounded-3xl overflow-hidden"
                                     >
                                         <Image
@@ -191,7 +197,6 @@ export default function TeamLeadersCarousel() {
                         </div>
 
                         <div className="w-[75%] lg:w-[70%] grid grid-cols-2 gap-6 lg:gap-16 items-center">
-                            {/* Large current image with Framer Motion popLayout */}
                             <div className="relative aspect-3/4 h-full min-h-[35em] overflow-hidden rounded-[40px]">
                                 <AnimatePresence initial={false} custom={direction} mode="popLayout">
                                     <motion.div

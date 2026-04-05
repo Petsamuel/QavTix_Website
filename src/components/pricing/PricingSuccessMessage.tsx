@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Icon } from "@iconify/react"
@@ -7,7 +8,6 @@ import { space_grotesk } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { usePricingCheckout } from "@/contexts/PricingCheckoutContext"
 
-// CONTENT VARIES BY ACCOUNT TYPE AND PLAN
 const SUCCESS_COPY = {
     host: {
         heading:     "You're all set!",
@@ -32,14 +32,16 @@ interface PricingSuccessMessageProps {
 export default function PricingSuccessMessage({ className }: PricingSuccessMessageProps) {
 
     const { accountType, successPlan, resetSuccess } = usePricingCheckout()
+    const ref = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        ref.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, [])
 
     const copy = SUCCESS_COPY[accountType]
 
     return (
-        <div className={cn(
-            "flex flex-col items-center justify-center text-center px-6",
-            className
-        )}>
+        <div ref={ref} className={cn("flex flex-col items-center justify-center text-center px-6", className)}>
             <Image
                 src="/images/vectors/transaction-success.svg"
                 alt="Payment successful"
@@ -56,10 +58,7 @@ export default function PricingSuccessMessage({ className }: PricingSuccessMessa
                     </span>
                 )}
 
-                <h2 className={cn(
-                    space_grotesk.className,
-                    "text-2xl font-bold text-secondary-9"
-                )}>
+                <h2 className={cn(space_grotesk.className, "text-2xl font-bold text-secondary-9")}>
                     {copy.heading}
                 </h2>
 
