@@ -189,26 +189,7 @@ export const attendeePricingData: PricingData = {
             buttonText:    'Upgrade to Pro',
             buttonVariant: 'primary',
             highlighted:   true,
-        },
-        {
-            id:            'enterprise',
-            name:          'Corporate',
-            price:         10000,
-            currency:      '₦',
-            perTicketFee:  0,
-            description:   'For companies and organisations buying tickets in bulk. Centralised billing, team accounts, and reporting.',
-            features: [
-                'Everything in Pro',
-                'Bulk ticket purchasing',
-                'Centralised team billing',
-                'Dedicated corporate account manager',
-                'Custom team access & permissions',
-                'Event spend reporting & export',
-                'Priority access to sponsored events',
-            ],
-            buttonText:    'Contact sales',
-            buttonVariant: 'secondary',
-        },
+        }
     ],
 
     features: [

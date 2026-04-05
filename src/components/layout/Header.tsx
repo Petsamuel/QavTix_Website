@@ -8,7 +8,7 @@ import { Icon } from "@iconify/react";
 import { NAV_LINKS, navLinks, navLinksAuthenticated } from "@/components-data/navigation/navLinks";
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
-import logoSrc from "@/public-assets/logo/qavtix-logo.svg"
+import logoSrc from "@/public-assets/logo/qavtix-logo.png"
 import { pathsForHeader1 } from "@/helper-fns/pathNameResolvers";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { getDashboardURL } from "@/helper-fns/getDashboardURL";

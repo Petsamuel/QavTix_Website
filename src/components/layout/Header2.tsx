@@ -7,8 +7,8 @@ import { Icon } from "@iconify/react"
 import { header2NavLinks, NAV_LINKS } from "@/components-data/navigation/navLinks"
 import { useState } from "react"
 import MobileMenu from "./MobileMenu"
-import logoSrcWhite from "@/public-assets/logo/qavtix-logo-white.svg"
-import logoSrc from "@/public-assets/logo/qavtix-logo.svg"
+import logoSrcWhite from "@/public-assets/logo/qavtix-logo-white.png"
+import logoSrc from "@/public-assets/logo/qavtix-logo.png"
 import { pathsForHeader2 } from "@/helper-fns/pathNameResolvers"
 import { useAppSelector } from "@/lib/redux/hooks"
 import { getDashboardURL } from "@/helper-fns/getDashboardURL"
@@ -56,7 +56,6 @@ export default function Header2() {
 
                     <Logo
                         logo={isLightBg ? logoSrc : logoSrcWhite}
-                        className="size-17 md:size-20"
                     />
 
                     {/* Desktop — centered nav */}
