@@ -9,7 +9,6 @@ import { attendeesFaq, hostFaqData } from "@/components-data/faq-data"
 import DesktopFeatureComparison from "./DesktopFeatureComparison"
 import PricingFAQs from "./PricingFAQs"
 import { PricingCheckoutProvider, usePricingCheckout } from "@/contexts/PricingCheckoutContext"
-import { cn } from "@/lib/utils"
 import PricingSuccessMessage from "./PricingSuccessMessage"
 import CurrencySwitcher from "../settings/CurrencySwitcher"
 
@@ -17,7 +16,7 @@ import CurrencySwitcher from "../settings/CurrencySwitcher"
 // SHARED PLAN GRID — RECEIVES THE PLANS AND RENDERS CARDS
 function PlanGrid({ plans }: { plans: PricingPlan[] }) {
     return (
-        <div className="grid grid-cols-1 gap-y-32 gap-x-10 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-y-32 gap-x-10 sm:grid-cols-2 md:grid-cols-3 justify-items-center">
             {plans.map((plan, i) => (
                 <PricingCard index={i} key={plan.id} plan={plan} />
             ))}

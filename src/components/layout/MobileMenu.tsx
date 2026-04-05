@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { NAV_LINKS, navLinksMobileMenu } from '@/components-data/navigation/navLinks'
 import SearchInput1 from '../custom-utils/inputs/event-search/SearchInput1'
 import Logo from './Logo'
-import logoSrc from "@/public-assets/logo/qavtix-logo.svg"
+import logoSrc from "@/public-assets/logo/qavtix-logo.png"
 import { Icon } from '@iconify/react'
 import { space_grotesk } from '@/lib/fonts'
 import { useAppSelector } from '@/lib/redux/hooks'
