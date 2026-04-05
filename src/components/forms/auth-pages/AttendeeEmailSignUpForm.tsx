@@ -29,6 +29,12 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp }:{ setSuc
         control,
         formState: { errors, isSubmitting },
     } = useForm<AttendeeSignUpFormValues>({
+        defaultValues: {
+            agreedToTerms: false,
+            full_name: '',
+            email: '',
+            password: '',
+        },
         resolver: zodResolver(attendeeSignUpSchema),
     })
 
@@ -36,7 +42,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp }:{ setSuc
         setSubmitError(null)
 
         try {
-            await axios.post(ATTENDEE_SIGNUP_PATH, values)
+            await axios.post(ATTENDEE_SIGNUP_PATH, {...values, agree_to_terms: values.agreedToTerms})
 
             const { data }: { data: { user: AuthUser } } = await axios.get(GET_PROFILE_PATH, {
                 withCredentials: true,

@@ -1,4 +1,3 @@
-import { ApiCategory } from '@/actions/filters'
 import { z } from 'zod'
 
 
@@ -17,8 +16,10 @@ export const individualGeneralSchema = z.object({
         .refine((file) => file.size <= 5 * 1024 * 1024, "Banner image must be less than 5MB")
         .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
                 "Banner image must be JPEG, PNG, or WEBP"),
-    agreedToTerms: z.boolean().refine((val) => val === true, {
-        message: 'You must agree to the terms',
+    agreedToTerms: z.boolean({
+    error: "You must agree to the terms",   // This shows when value is undefined/missing
+    }).refine((val) => val === true, {
+    message: 'You must agree to the terms',
     }),
 })
 
@@ -48,8 +49,10 @@ export const organizationGeneralSchema = z.object({
         .refine((file) => file.size <= 5 * 1024 * 1024, "Banner image must be less than 5MB")
         .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
                 "Banner image must be JPEG, PNG, or WEBP"),
-    agreedToTerms: z.boolean().refine((val) => val === true, {
-        message: 'You must agree to the terms',
+    agreedToTerms: z.boolean({
+    error: "You must agree to the terms",   // This shows when value is undefined/missing
+    }).refine((val) => val === true, {
+    message: 'You must agree to the terms',
     }),
 })
 

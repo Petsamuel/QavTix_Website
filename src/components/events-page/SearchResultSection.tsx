@@ -128,9 +128,9 @@ export function SearchResultSection({
 
             {/* Empty — search returned nothing */}
             {showEmpty && (
-                <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
+                <div className="flex flex-col items-center justify-center py-12 md:py-20 gap-4 text-center">
                     <div className="size-14 rounded-full bg-neutral-2 flex items-center justify-center">
-                        <Icon icon="hugeicons:search-remove-01" className="size-7 text-neutral-7" />
+                        <Icon icon="hugeicons:search-remove" className="size-7 text-neutral-7" />
                     </div>
                     <div>
                         <p className={`${space_grotesk.className} text-base font-medium text-secondary-9`}>

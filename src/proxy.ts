@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { accessCookieOptions, COOKIE_KEYS } from '@/components-data/cookie-keys'
 import { DEFAULT_LOCATION, REGION_CURRENCY_MAP } from '@/components-data/settings.data'
-import { REFRESH_TOKEN_ENDPOINT, TOKEN_VERIFY_ENDPOINT } from './endpoints';
-
+import { REFRESH_TOKEN_ENDPOINT, TOKEN_VERIFY_ENDPOINT } from '@/endpoints'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -11,7 +10,6 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export async function proxy(request: NextRequest) {
   const response = NextResponse.next()
 
-  // ── Region / Currency
   const hasRegion   = request.cookies.has(COOKIE_KEYS.USER_REGION)
   const hasCurrency = request.cookies.has(COOKIE_KEYS.USER_CURRENCY)
 
@@ -37,7 +35,6 @@ export async function proxy(request: NextRequest) {
   const accessToken  = request.cookies.get('access_token')?.value
   const refreshToken = request.cookies.get('refresh_token')?.value
 
-  // Access token exists — verify it
   if (accessToken) {
     try {
       const verifyRes = await fetch(`${API_BASE_URL}/${TOKEN_VERIFY_ENDPOINT}`, {
@@ -46,16 +43,13 @@ export async function proxy(request: NextRequest) {
         body: JSON.stringify({ token: accessToken }),
       })
 
-      // Valid — nothing to do, continue
       if (verifyRes.ok) return response
 
-      // Invalid — fall through to refresh
     } catch {
       // Network error — fall through to refresh
     }
   }
 
-  // Access token missing or invalid — try refresh
   if (refreshToken) {
     try {
       const refreshRes = await fetch(`${API_BASE_URL}/${REFRESH_TOKEN_ENDPOINT}`, {
@@ -66,16 +60,14 @@ export async function proxy(request: NextRequest) {
 
       if (refreshRes.ok) {
         const { data } = await refreshRes.json()
-        // Attach new access token and continue
         response.cookies.set('access_token', data.access, accessCookieOptions)
         return response
       }
 
-      // Refresh token expired — clear both cookies, user will need to sign in
       response.cookies.delete('access_token')
       response.cookies.delete('refresh_token')
       return response
-    }catch {
+    } catch {
       return response;
     }
   }
