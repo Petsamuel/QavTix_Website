@@ -9,6 +9,14 @@ export const individualGeneralSchema = z.object({
     country: z.string().min(1, 'Please select a country'),
     state: z.string().min(1, 'Please select a state'),
     city: z.string().min(2, 'Please enter your city'),
+    profileImage: z.instanceof(File, { message: "Profile image is required" })
+        .refine((file) => file.size <= 2 * 1024 * 1024, "Profile image must be less than 2MB")
+        .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
+                "Profile image must be JPEG, PNG, or WEBP"),
+    bannerImage: z.instanceof(File, { message: "Banner image is required" })
+        .refine((file) => file.size <= 5 * 1024 * 1024, "Banner image must be less than 5MB")
+        .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
+                "Banner image must be JPEG, PNG, or WEBP"),
     agreedToTerms: z.boolean().refine((val) => val === true, {
         message: 'You must agree to the terms',
     }),
@@ -32,6 +40,14 @@ export const organizationGeneralSchema = z.object({
     country: z.string().min(1, 'Please select a country'),
     state: z.string().min(1, 'Please select a state'),
     city: z.string().min(2, 'Please enter your city'),
+    profileImage: z.instanceof(File, { message: "Profile image is required" })
+        .refine((file) => file.size <= 2 * 1024 * 1024, "Profile image must be less than 2MB")
+        .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
+                "Profile image must be JPEG, PNG, or WEBP"),
+    bannerImage: z.instanceof(File, { message: "Banner image is required" })
+        .refine((file) => file.size <= 5 * 1024 * 1024, "Banner image must be less than 5MB")
+        .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
+                "Banner image must be JPEG, PNG, or WEBP"),
     agreedToTerms: z.boolean().refine((val) => val === true, {
         message: 'You must agree to the terms',
     }),

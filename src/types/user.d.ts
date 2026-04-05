@@ -61,7 +61,9 @@ interface TrendingHost {
     followers:      number
     events_count:   number
     trending_score: number
-    is_following:    boolean
+    is_following:   boolean
+    is_verified:    boolean,
+    is_subscribed:  boolean
 }
 
 interface HostDetails {
@@ -76,6 +78,8 @@ interface HostDetails {
     upcoming_events: PublicPagesEvent[]
     past_events:     PublicPagesEvent[]
     is_following:    boolean
+    is_verified:    boolean,
+    is_subscribed:  boolean
     relevant_links:  Record<string, string>[]
     description:     string
 }

@@ -7,15 +7,16 @@ import {
 } from "@/schemas/host-signup.schema"
 import { ApiCategory } from "@/actions/filters"
 
-export type IndividualSubmitData =
-    IndividualGeneralData &
-    IndividualBusinessData &
-    PasswordData
+// Define submit data types with images as strings (after upload)
+export type IndividualSubmitData = Omit<IndividualGeneralData, 'profileImage' | 'bannerImage'> & {
+    profileImage: string;
+    bannerImage: string;
+} & IndividualBusinessData & PasswordData
 
-export type OrganizationSubmitData =
-    OrganizationGeneralData &
-    OrganizationBusinessData &
-    PasswordData
+export type OrganizationSubmitData = Omit<OrganizationGeneralData, 'profileImage' | 'bannerImage'> & {
+    profileImage: string;
+    bannerImage: string;
+} & OrganizationBusinessData & PasswordData
 
 function resolveCategoryIds(names: string[], categories: ApiCategory[]): number[] {
     return names
@@ -37,6 +38,8 @@ export function buildIndividualPayload(
         state:          formData.state,
         city:           formData.city,
         description:    formData.description,
+        profile_image:  formData.profileImage,
+        banner_image:   formData.bannerImage,
         categories:     resolveCategoryIds(formData.eventCategories, categories),
         relevant_links: formData.relevantLinks.map(l => ({ url: l.link })),
         agree_to_terms: formData.agreedToTerms,
@@ -62,6 +65,8 @@ export function buildOrganizationPayload(
         state:               formData.state,
         city:                formData.city,
         postal_code:         formData.postalCode,
+        profile_image:       formData.profileImage,
+        banner_image:        formData.bannerImage,
         categories:          resolveCategoryIds(formData.eventCategories, categories),
         relevant_links:      formData.relevantLinks.map(l => ({ url: l.link })),
         agree_to_terms:      formData.agreedToTerms,

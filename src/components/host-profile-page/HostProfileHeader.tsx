@@ -77,9 +77,21 @@ export default function HostProfilePageHeader({ host }: Props) {
 
                     <div className="md:flex justify-between items-start gap-10">
                         <div className="flex-1 max-w-xl">
-                            <h1 className={`${space_grotesk.className} text-2xl font-medium text-secondary-9 mb-3`}>
-                                {host.host}
-                            </h1>
+                            <div className='flex items-center gap-2 mb-3'>
+                                <h1 className={`${space_grotesk.className} text-2xl font-medium text-secondary-9`}>
+                                    {host.host}
+                                </h1>
+                                <Icon
+                                    icon="ph:seal-check-fill"
+                                    width="20"
+                                    height="20"
+                                    className={cn(
+                                        "shrink-0",
+                                        !host.is_subscribed && !host.is_verified && "hidden",
+                                        (host.is_verified && host.is_subscribed )? "text-[#FFCC00]" : host.is_verified ? "text-primary-5" : "text-neutral-5"
+                                    )}
+                                />
+                            </div>
                             <p className="text-neutral-7">{host.description}</p>
 
                             {socialLinks.length > 0 && (

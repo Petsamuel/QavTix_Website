@@ -17,7 +17,6 @@ type HostSignupFormData =
   | Partial<OrganizationGeneralData>
   | Partial<OrganizationBusinessData>
   | Partial<PasswordData>
-  | Record<string, never>
 
 type SignupContextType = {
   currentStep:         number
@@ -60,7 +59,13 @@ export function HostSignupProvider({ children, categories, initialType = "indivi
     if (type === accountType) return
     setAccountTypeState(type)
     setCurrentStep(1)
-    setFormData({ state: "", country: "", agreedToTerms: false })
+    setFormData({
+      state: "",
+      country: "",
+      agreedToTerms: false,
+      profileImage: undefined,
+      bannerImage: undefined
+    })
   }
 
   useEffect(() => {
@@ -77,7 +82,13 @@ export function HostSignupProvider({ children, categories, initialType = "indivi
   const resetForm = () => {
     setCurrentStep(1)
     setSignUpSuccessful(false)
-    setFormData({})
+    setFormData({
+      state: "",
+      country: "",
+      agreedToTerms: false,
+      profileImage: undefined,
+      bannerImage: undefined
+    })
   }
 
   return (

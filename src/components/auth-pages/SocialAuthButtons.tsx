@@ -3,12 +3,15 @@
 import { useState } from "react"
 import { Icon } from "@iconify/react"
 import { buildAppleUrl, buildFacebookUrl, buildGoogleUrl } from "@/helper-fns/buildAuthUrl"
+import { useAppDispatch } from "@/lib/redux/hooks"
+import { showAlert } from "@/lib/redux/slices/alertSlice"
 
 type Provider = "google" | "facebook" | "apple"
 
 export default function SocialAuthButtons() {
 
     const [loading, setLoading] = useState<Provider | null>(null)
+    const dispatch = useAppDispatch()
 
     const handleClick = (provider: Provider, url: string) => {
         setLoading(provider)
@@ -42,8 +45,13 @@ export default function SocialAuthButtons() {
             </button>
 
             <button
-                onClick={() => handleClick("apple", buildAppleUrl())}
-                disabled
+                onClick={() => 
+                    dispatch(showAlert({
+                        title: "Method Disabled",
+                        description: "Apple authentication method is currently unavailable",
+                        variant: "default"
+                    }))
+                }
                 className="flex-1 lg:flex-auto lg:basis-[30%] bg-neutral-10 flex text-sm items-center justify-center gap-2 h-14 rounded-lg text-white hover:bg-neutral-9 focus:outline-none focus:ring-2 focus:ring-neutral-8 focus:ring-offset-2 active:scale-[0.98] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
             >
                 {loading === "apple"
