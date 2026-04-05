@@ -17,7 +17,6 @@ type HostSignupFormData =
   | Partial<OrganizationGeneralData>
   | Partial<OrganizationBusinessData>
   | Partial<PasswordData>
-  | Record<string, never>
 
 type SignupContextType = {
   currentStep:         number
@@ -50,8 +49,6 @@ export function HostSignupProvider({ children, categories, initialType = "indivi
     state:         "",
     country:       "",
     agreedToTerms: false,
-    profileImage:  null,
-    bannerImage:   null,
   })
 
   const updateFormData = (data: Partial<HostSignupFormData>) => {
@@ -66,8 +63,8 @@ export function HostSignupProvider({ children, categories, initialType = "indivi
       state: "",
       country: "",
       agreedToTerms: false,
-      profileImage: null,
-      bannerImage: null
+      profileImage: undefined,
+      bannerImage: undefined
     })
   }
 
@@ -89,8 +86,8 @@ export function HostSignupProvider({ children, categories, initialType = "indivi
       state: "",
       country: "",
       agreedToTerms: false,
-      profileImage: null,
-      bannerImage: null
+      profileImage: undefined,
+      bannerImage: undefined
     })
   }
 
