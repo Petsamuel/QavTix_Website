@@ -5,7 +5,7 @@ export const attendeeSignUpSchema = z.object({
     email:     z.email("Enter a valid email address"),
     password:  z.string().min(8, "Password must be at least 8 characters"),
     agreedToTerms: z.boolean().refine((val) => val === true, {
-        message: 'You must agree to the terms',
+        message: 'Please complete all mandatory fields',
     })
 })
 

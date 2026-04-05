@@ -18,10 +18,15 @@ export async function POST(req: NextRequest) {
         const json = await res.json()
 
         if (!res.ok) {
-            console.log("[host-register] status:", res.status)
-            console.log("[host-register] raw json:", JSON.stringify(json, null, 2))
+            console.log("[register] status:", res.status)
+            console.log("[register] raw json:", JSON.stringify(json, null, 2))
+
+            const message = res.status === 409
+                ? "An account with this email already exists. Please sign in instead."
+                : handleApiError(json)
+
             return NextResponse.json(
-                { message: handleApiError(json) },
+                { message },
                 { status: res.status }
             )
         }

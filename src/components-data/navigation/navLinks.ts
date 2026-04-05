@@ -19,7 +19,7 @@ export const NAV_LINKS = {
   RESET_PASSWORD: { label: 'Reset password', href: '/auth/reset-password' },
 
   // Role-based dashboard URLs — resolved at runtime using getDashboardUrl()
-  DASHBOARD: { label: 'Dashboard', href: `${process.env.NEXT_PUBLIC_APP_DOMAIN}/dashboard`, type: 'auth' as const },
+  DASHBOARD: { label: 'Dashboard', href: `${process.env.NEXT_PUBLIC_ATTENDEE_SITE}/dashboard`, type: 'auth' as const },
 
   SEARCH_EVENTS: { label: '', href: '/events/search' },
   EVENT_LOCATION: { label: '', href: '/events/explore/location/' },

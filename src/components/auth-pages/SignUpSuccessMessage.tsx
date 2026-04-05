@@ -32,7 +32,7 @@ export default function SignUpSuccessMessage() {
 
                 <div className="flex flex-col gap-4 mt-12 w-full md:flex-row">
                     <ActionButton2 buttonText="Go to dashboard" action={() => router.push(NAV_LINKS.DASHBOARD.href)} className="bg-white"   />
-                    <ActionButton1 buttonText="Explore Events" action={() => router.push(NAV_LINKS.EVENTS.href)} />
+                    <ActionButton1 buttonText="Explore Events" action={() => router.push(NAV_LINKS.EVENTS.href)} className="whitespace-nowrap" />
                 </div>
 
                 <button onClick={() => router.push(NAV_LINKS.FORGOT_PASSWORD.href)} className="w-fit mx-auto block font-medium text-sm mt-6 text-accent-6 text-center">Watch tutorial video</button>
