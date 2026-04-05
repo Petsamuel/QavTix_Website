@@ -12,7 +12,7 @@ import { SignInFormValues, signInSchema } from "@/schemas/signin.schema"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { useAppDispatch } from "@/lib/redux/hooks"
 import { setUser } from "@/lib/redux/slices/authUserSlice"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { NAV_LINKS } from "@/components-data/navigation/navLinks"
 import { GET_PROFILE_PATH, LOGIN_PATH } from "@/apiPaths"
 
@@ -20,8 +20,10 @@ export default function SignInForm() {
 
     const [submitError, setSubmitError] = useState<string | null>(null)
 
-    const dispatch = useAppDispatch()
-    const router   = useRouter()
+    const dispatch      = useAppDispatch()
+    const router        = useRouter()
+    const searchParams  = useSearchParams()
+    const returnTo      = searchParams.get('returnTo')
 
     const {
         register,
@@ -40,14 +42,24 @@ export default function SignInForm() {
             const { data }: { data: { user: AuthUser } } = await axios.get(GET_PROFILE_PATH, {
                 withCredentials: true,
             })
+            
+            dispatch(setUser(data.user))
 
             if (data.user.role === "host") {
-                window.location.href = `host.${process.env.NEXT_PUBLIC_APP_DOMAIN}`
+                // Hosts go to host site — honor returnTo only if it's a host site URL
+                const hostSite = process.env.NEXT_PUBLIC_HOST_SITE ?? ''
+                const destination = returnTo && returnTo?.startsWith(hostSite) ? returnTo : hostSite
+                window.location.href = destination
                 return
             }
 
-            dispatch(setUser(data.user))
-            router.push(NAV_LINKS.HOME.href)
+
+            const attendeeSite = process.env.NEXT_PUBLIC_ATTENDEE_SITE ?? ''
+            if (returnTo && returnTo.startsWith(attendeeSite)) {
+                window.location.href = returnTo
+            } else {
+                router.push(NAV_LINKS.HOME.href)
+            }
 
         } catch (error) {
             if (error instanceof AxiosError) {

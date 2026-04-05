@@ -62,7 +62,7 @@ export const attendeeInformationSchema = z.object({
     shareWithGroup: z.boolean().optional(),
     splitPayment: z.boolean().optional(),
     agreeToTerms: z.boolean().refine(val => val === true, {
-        message: 'You must agree to the terms and conditions'
+        message: 'Please complete all mandatory fields and conditions'
     })
 }).refine(
     (data) => !data.shareWithGroup || (Array.isArray(data.attendees) && data.attendees.length >= 1),

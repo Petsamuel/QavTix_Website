@@ -106,7 +106,7 @@ export default function ErrorPage({ error, reset }: Props) {
                 <button
                     onClick={reset}
                     className="
-                        inline-flex items-center justify-center gap-2
+                        inline-flex w-40 items-center justify-center gap-2
                         px-8 py-3 rounded-full bg-primary text-white
                         text-sm font-medium
                         transition-all duration-200

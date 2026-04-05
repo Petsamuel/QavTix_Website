@@ -17,9 +17,9 @@ export const individualGeneralSchema = z.object({
         .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
                 "Banner image must be JPEG, PNG, or WEBP"),
     agreedToTerms: z.boolean({
-    error: "You must agree to the terms",   // This shows when value is undefined/missing
+    error: "Please complete all mandatory fields",   // This shows when value is undefined/missing
     }).refine((val) => val === true, {
-    message: 'You must agree to the terms',
+    message: 'Please complete all mandatory fields',
     }),
 })
 
@@ -50,9 +50,9 @@ export const organizationGeneralSchema = z.object({
         .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
                 "Banner image must be JPEG, PNG, or WEBP"),
     agreedToTerms: z.boolean({
-    error: "You must agree to the terms",   // This shows when value is undefined/missing
+    error: "Please complete all mandatory fields",   // This shows when value is undefined/missing
     }).refine((val) => val === true, {
-    message: 'You must agree to the terms',
+    message: 'Please complete all mandatory fields',
     }),
 })
 
