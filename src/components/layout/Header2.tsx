@@ -56,7 +56,6 @@ export default function Header2() {
 
                     <Logo
                         logo={isLightBg ? logoSrc : logoSrcWhite}
-                        className="size-17 md:size-20"
                     />
 
                     {/* Desktop — centered nav */}
