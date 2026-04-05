@@ -1,33 +1,29 @@
 import { useState, useRef, useEffect, Dispatch, SetStateAction, KeyboardEvent, ClipboardEvent } from 'react';
 
-export default function OTPInput({ otp, setOtp }:{ otp: string[], setOtp: Dispatch<SetStateAction<string[]>> }) {
+export default function OTPInput({ otp, setOtp }: { otp: string[], setOtp: Dispatch<SetStateAction<string[]>> }) {
     const [focusedIndex, setFocusedIndex] = useState(0)
     const inputRefs = useRef<(HTMLInputElement | null)[]>([])
-    
+
     useEffect(() => {
         inputRefs.current[0]?.focus()
     }, [])
-    
+
     const handleChange = (index: number, value: string) => {
-        // Only allow single character and alphanumeric
         if (value.length > 1) return;
         if (value && !/^[a-zA-Z0-9]$/.test(value)) return;
         const newOtp = [...otp];
         newOtp[index] = value.toUpperCase()
         setOtp(newOtp)
-        // Auto-focus next input
         if (value && index < 5) {
             inputRefs.current[index + 1]?.focus()
         }
     }
-    
+
     const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Backspace') {
             if (!otp[index] && index > 0) {
-                // Move to previous input if current is empty
                 inputRefs.current[index - 1]?.focus()
             } else {
-                // Clear current input
                 const newOtp = [...otp]
                 newOtp[index] = '';
                 setOtp(newOtp)
@@ -38,48 +34,49 @@ export default function OTPInput({ otp, setOtp }:{ otp: string[], setOtp: Dispat
             inputRefs.current[index + 1]?.focus()
         }
     }
-    
-    const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+
+    const handlePaste = (index: number, e: ClipboardEvent<HTMLInputElement>) => {
         e.preventDefault()
-        const pastedData = e.clipboardData.getData('text/plain').slice(0, 6)
+        const pastedData = e.clipboardData.getData('text/plain').trim().slice(0, 6 - index)
         const newOtp = [...otp];
-        
-        for (let i = 0; i < pastedData.length && i < 6; i++) {
+
+        for (let i = 0; i < pastedData.length; i++) {
             if (/^[a-zA-Z0-9]$/.test(pastedData[i])) {
-                newOtp[i] = pastedData[i].toUpperCase()
+                newOtp[index + i] = pastedData[i].toUpperCase()
             }
         }
-        
+
         setOtp(newOtp)
-        const nextEmptyIndex = newOtp.findIndex(val => !val)
-        inputRefs.current[nextEmptyIndex !== -1 ? nextEmptyIndex : 5]?.focus()
+        const lastFilledIndex = Math.min(index + pastedData.length - 1, 5)
+        const nextEmptyIndex  = newOtp.findIndex((val, i) => i >= index && !val)
+        inputRefs.current[nextEmptyIndex !== -1 ? nextEmptyIndex : lastFilledIndex]?.focus()
     }
-    
+
     const handleFocus = (index: number) => {
         setFocusedIndex(index)
     }
-    
+
     return (
         <div className="w-full max-w-lg mx-auto px-4 sm:px-0">
             <div className="flex gap-2 sm:gap-4 justify-center">
                 {otp.map((digit, index) => (
-                <input
-                    key={index}
-                    ref={(el) => { if (el) inputRefs.current[index] = el }}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleChange(index, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(index, e)}
-                    onPaste={index === 0 ? handlePaste : undefined}
-                    onFocus={() => handleFocus(index)}
-                    className={`w-11 aspect-square sm:w-14 text-center text-2xl md:text-3xl border text-secondary-9 rounded-[13.5px] transition-all duration-200 outline-none
-                    ${digit ? 'border-primary-6' : 'border-neutral-5'}
-                    ${focusedIndex === index && !digit ? 'border-blue-400 shadow-md' : ''}
-                    focus:border-primary-5 focus:shadow-md hover:border-primary-5/80`}
-                    aria-label={`Digit ${index + 1}`}
-                />
+                    <input
+                        key={index}
+                        ref={(el) => { if (el) inputRefs.current[index] = el }}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleChange(index, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(index, e)}
+                        onPaste={(e) => handlePaste(index, e)}
+                        onFocus={() => handleFocus(index)}
+                        className={`w-11 aspect-square sm:w-14 text-center text-2xl md:text-3xl border text-secondary-9 rounded-[13.5px] transition-all duration-200 outline-none
+                        ${digit ? 'border-primary-6' : 'border-neutral-5'}
+                        ${focusedIndex === index && !digit ? 'border-blue-400 shadow-md' : ''}
+                        focus:border-primary-5 focus:shadow-md hover:border-primary-5/80`}
+                        aria-label={`Digit ${index + 1}`}
+                    />
                 ))}
             </div>
         </div>
