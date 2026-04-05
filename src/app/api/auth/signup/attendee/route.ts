@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
             headers: { "Content-Type": "application/json" },
             body:    JSON.stringify(body),
         })
-
+        
         const json = await res.json()
 
         if (!res.ok) {
@@ -24,16 +24,17 @@ export async function POST(req: NextRequest) {
             )
         }
 
-        const { user, tokens } = json.data
+        const { access, refresh }= json.data
 
         const response = NextResponse.json(
-            { message: json.message, user },
-            { status: 201 }
+            { message: json.message },
+        { status: 201 }
         )
 
-        response.cookies.set("access_token", tokens.access, accessCookieOptions)
 
-        response.cookies.set("refresh_token", tokens.refresh, {
+        response.cookies.set("access_token", access, accessCookieOptions)
+
+        response.cookies.set("refresh_token", refresh, {
             httpOnly: true,
             secure:   process.env.NODE_ENV === "production",
             sameSite: "strict",

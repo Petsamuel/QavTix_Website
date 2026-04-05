@@ -54,8 +54,8 @@ export function EventSearchFilters({ initialFilters, categories = [] }: Props) {
         }
 
         if (filters.dateRange?.from) {
-            params.set('date_from', filters.dateRange.from.toISOString())
-            if (filters.dateRange.to) params.set('date_to', filters.dateRange.to.toISOString())
+            params.set('start_date', filters.dateRange.from.toISOString())
+            if (filters.dateRange.to) params.set('end_date', filters.dateRange.to.toISOString())
         }
 
         const hasFilters =
