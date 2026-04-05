@@ -62,7 +62,7 @@ interface PublicPagesEvent {
     event_status:     EventStatus
     attendees_count:  number
     currency:         string
-    is_favourite:    boolean
+    is_favorite:    boolean
     is_mine:         boolean
     event_description: string
     price:            string
