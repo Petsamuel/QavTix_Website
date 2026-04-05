@@ -46,6 +46,8 @@ export function fromPublicPagesEvent(e: PublicPagesEvent): EventCardProps {
         status:        e.event_status,
         attendees:     e.attendees_count,
         currency:      e.currency ?? undefined,
+        isFavourite:   e.is_favorite,
+        is_mine:       e.is_mine
     }
 }
 

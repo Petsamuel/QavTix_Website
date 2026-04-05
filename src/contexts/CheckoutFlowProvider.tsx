@@ -403,7 +403,6 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                         variant: 'default',
                         duration: 6000
                     }))
-
                     setCheckoutComplete(true)
                 },
 

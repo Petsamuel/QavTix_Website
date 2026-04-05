@@ -38,6 +38,8 @@ export function TrendingEvents({
     initialNext   = false,
 }: Props) {
 
+    console.log(initialEvents)
+
     const [showAll, setShowAll] = useState(false)
     const [filters, setFilters] = useState<Partial<FilterValues>>({})
 
