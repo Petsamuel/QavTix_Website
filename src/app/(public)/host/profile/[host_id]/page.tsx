@@ -1,8 +1,8 @@
-import { notFound } from "next/navigation"
 import { getHostDetails } from "@/actions/host"
 import HostPageWrapper from "@/components/host-profile-page/HostPageWrapper"
 import { Metadata } from "next"
 import { buildPageMetadata } from "@/metadata"
+import HostNotFound from "@/components/host-profile-page/HostNotFound"
 
 interface Props {
     params: Promise<{ host_id: string }>
@@ -25,7 +25,9 @@ export default async function HostProfilePage({ params }: Props) {
 
     const result = await getHostDetails(host_id)
 
-    if (!result.success || !result.data) notFound()
+    if (!result.success || !result.data) {
+        return <HostNotFound />
+    }
 
     return <HostPageWrapper host={result.data} />
 }

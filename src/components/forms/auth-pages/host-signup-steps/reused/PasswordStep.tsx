@@ -20,6 +20,7 @@ import PasswordStrengthIndicator from '@/components/custom-utils/PasswordStrengt
 import { HOST_SIGNUP_PATH } from '@/apiPaths'
 import { useAppDispatch } from '@/lib/redux/hooks'
 import { showAlert } from '@/lib/redux/slices/alertSlice'
+import { uploadToCloudinary } from '@/lib/cloudinary'
 
 interface Props {
     accountType: HostAccountType
@@ -48,17 +49,42 @@ export function PasswordStep({ accountType }: Props) {
 
         const merged = { ...formData, ...data }
 
-        const payload = accountType === "individual"
-            ? buildIndividualPayload(merged as IndividualSubmitData, categories)
-            : buildOrganizationPayload(merged as OrganizationSubmitData, categories)
-
         try {
+            // Upload images to Cloudinary first
+            let profileImageUrl = ''
+            let bannerImageUrl = ''
+
+            const mergedWithImages = merged as any // Type assertion for image properties
+
+            if (mergedWithImages.profileImage instanceof File) {
+                const profileUpload = await uploadToCloudinary(mergedWithImages.profileImage, 'qavtix-hosts/profiles')
+                profileImageUrl = profileUpload.secure_url
+            }
+
+            if (mergedWithImages.bannerImage instanceof File) {
+                const bannerUpload = await uploadToCloudinary(mergedWithImages.bannerImage, 'qavtix-hosts/banners')
+                bannerImageUrl = bannerUpload.secure_url
+            }
+
+            // Prepare payload with uploaded image URLs
+            const payloadData = {
+                ...merged,
+                profileImage: profileImageUrl,
+                bannerImage: bannerImageUrl,
+            }
+
+            const payload = accountType === "individual"
+                ? buildIndividualPayload(payloadData as unknown as IndividualSubmitData, categories)
+                : buildOrganizationPayload(payloadData as unknown as OrganizationSubmitData, categories)
+
             await axios.post(HOST_SIGNUP_PATH, payload)
             setSignUpSuccessful(true)
         } catch (error) {
             let message = "An unexpected error occurred. Please try again.";
             if (error instanceof AxiosError) {
                message = handleApiError(error.response?.data)
+            } else if (error instanceof Error) {
+                message = error.message
             }
             setSubmitError(message)
 

@@ -1,5 +1,3 @@
-"use client"
-
 import { buildPageMetadata } from "@/metadata";
 import { Metadata } from "next";
 import HowItWorksPageCW from "@/components/page-content-wrappers/HowItWorksPageCW";

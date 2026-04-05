@@ -77,7 +77,7 @@ export default function UpcomingEvents({ events }: Props) {
                 {!shouldCarousel ? (
                     <div className="flex flex-wrap gap-6 lg:gap-8 md:grid grid-cols-3 lg:grid-cols-4 2xl:flex mt-10">
                         {displayEvents.map(event => (
-                            <div key={event._key} className="w-[calc(25%-12px)]">
+                            <div key={event._key}>
                                 <EventsCard1 {...fromPublicPagesEvent(event)} />
                             </div>
                         ))}

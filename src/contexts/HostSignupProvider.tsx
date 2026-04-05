@@ -50,6 +50,8 @@ export function HostSignupProvider({ children, categories, initialType = "indivi
     state:         "",
     country:       "",
     agreedToTerms: false,
+    profileImage:  null,
+    bannerImage:   null,
   })
 
   const updateFormData = (data: Partial<HostSignupFormData>) => {
@@ -60,7 +62,13 @@ export function HostSignupProvider({ children, categories, initialType = "indivi
     if (type === accountType) return
     setAccountTypeState(type)
     setCurrentStep(1)
-    setFormData({ state: "", country: "", agreedToTerms: false })
+    setFormData({
+      state: "",
+      country: "",
+      agreedToTerms: false,
+      profileImage: null,
+      bannerImage: null
+    })
   }
 
   useEffect(() => {
@@ -77,7 +85,13 @@ export function HostSignupProvider({ children, categories, initialType = "indivi
   const resetForm = () => {
     setCurrentStep(1)
     setSignUpSuccessful(false)
-    setFormData({})
+    setFormData({
+      state: "",
+      country: "",
+      agreedToTerms: false,
+      profileImage: null,
+      bannerImage: null
+    })
   }
 
   return (

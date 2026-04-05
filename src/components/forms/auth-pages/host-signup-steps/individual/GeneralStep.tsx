@@ -12,6 +12,7 @@ import FormCheckbox1 from '@/components/custom-utils/inputs/FormCheckbox1'
 import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepFormButtonDuo'
 import { space_grotesk } from '@/lib/fonts'
 import { LEGAL_LINKS } from '@/components-data/navigation/navLinks'
+import { ProfileImageUpload, BannerImageUpload } from '@/components/custom-utils/ImageUpload'
 
 
 export function IndividualGeneralStep() {
@@ -80,6 +81,30 @@ export function IndividualGeneralStep() {
                 {...register('phone')}
                 error={errors.phone?.message}
                 data-testid="phone"
+            />
+
+            <Controller
+                name="profileImage"
+                control={control}
+                render={({ field }) => (
+                    <ProfileImageUpload
+                        value={field.value}
+                        onChange={field.onChange}
+                        error={errors.profileImage?.message}
+                    />
+                )}
+            />
+
+            <Controller
+                name="bannerImage"
+                control={control}
+                render={({ field }) => (
+                    <BannerImageUpload
+                        value={field.value}
+                        onChange={field.onChange}
+                        error={errors.bannerImage?.message}
+                    />
+                )}
             />
 
             <div className="space-y-5">
