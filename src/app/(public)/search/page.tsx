@@ -1,4 +1,4 @@
-import PricingPageCW from "@/components/page-content-wrappers/PricingPageCW";
+import SearchPage from "@/components/page-content-wrappers/SearchPageCW";
 import { buildPageMetadata } from "@/metadata";
 import { Metadata } from "next";
 
@@ -9,5 +9,5 @@ export const metadata: Metadata = buildPageMetadata(
 )
 
 export default function PricingPage() {
-    return <PricingPageCW />
+    return <SearchPage />
 }
