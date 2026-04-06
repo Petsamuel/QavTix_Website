@@ -52,7 +52,7 @@ export default function Header() {
                 {activeNavLinks.map((link) => {
                     const active = isActive(link.href)
 
-                    if (link.href === '/dashboard') {
+                    if (link.href.includes('/dashboard')) {
                         return (
                             <Link
                                 key="dashboard"

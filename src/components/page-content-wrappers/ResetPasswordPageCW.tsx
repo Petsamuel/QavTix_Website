@@ -18,7 +18,7 @@ import { resetEmailStore } from "@/lib/local-store/reset-email-store"
 import PasswordStrengthIndicator from "@/components/custom-utils/PasswordStrengthIndicator"
 
 
-const OTP_EXPIRY_SECONDS = 298
+const OTP_EXPIRY_SECONDS = 180
 
 const resetPasswordSchema = z.object({
     password:        z.string().min(8, "Password must be at least 8 characters"),
@@ -29,7 +29,6 @@ const resetPasswordSchema = z.object({
 })
 
 type ResetPasswordValues = z.infer<typeof resetPasswordSchema>
-
 type Step = "otp" | "new-password"
 
 
@@ -44,6 +43,7 @@ export default function ResetPasswordPageCW() {
     const [resetSuccessful, setResetSuccessful] = useState(false)
     const [resending,       setResending]       = useState(false)
     const [timerKey,        setTimerKey]        = useState(0)
+    const [timerExpired,    setTimerExpired]    = useState(false)
 
     useEffect(() => {
         const stored = resetEmailStore.get()
@@ -63,6 +63,7 @@ export default function ResetPasswordPageCW() {
 
     const handleOtpSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (otpSubmitting) return
         setOtpError(null)
 
         const code = otp.join("")
@@ -90,20 +91,19 @@ export default function ResetPasswordPageCW() {
     }
 
     const handleResend = async () => {
-        if (!email || resending) return
+        if (!email || resending || !timerExpired) return
         setResending(true)
         await requestPasswordReset(email)
         setResending(false)
         setOtp(Array(6).fill(""))
         setOtpError(null)
+        setTimerExpired(false)
         setTimerKey(prev => prev + 1)
     }
 
     const onResetSubmit = async (values: ResetPasswordValues) => {
         if (!resetToken) return
-
         const result = await resetPassword(resetToken, values.password)
-
         if (result.success) {
             resetEmailStore.clear()
             setResetSuccessful(true)
@@ -124,15 +124,23 @@ export default function ResetPasswordPageCW() {
                         ? "Set your password so you can login and access QavTix"
                         : <>
                             We sent a code to {email ? maskEmail(email) : "your email"}.{" "}
-                            Didn&apos;t receive it?{" "}
-                            <button
-                                type="button"
-                                onClick={handleResend}
-                                disabled={resending}
-                                className="font-medium text-primary-6 lg:text-accent-6 mx-1 disabled:opacity-50"
-                            >
-                                {resending ? "Resending..." : "Resend"}
-                            </button>
+                            {timerExpired ? (
+                                <>
+                                    Didn&apos;t receive it?{" "}
+                                    <button
+                                        type="button"
+                                        onClick={handleResend}
+                                        disabled={resending}
+                                        className="font-medium text-primary-6 lg:text-accent-6 mx-1 disabled:opacity-50 transition-opacity"
+                                    >
+                                        {resending ? "Resending..." : "Resend code"}
+                                    </button>
+                                </>
+                            ) : (
+                                <span className="text-neutral-5 text-xs ml-1">
+                                    Resend available once the timer expires.
+                                </span>
+                            )}
                         </>
                     }
                 </p>
@@ -152,7 +160,11 @@ export default function ResetPasswordPageCW() {
                             </p>
                         )}
 
-                        <CountdownTimer key={timerKey} initialSeconds={OTP_EXPIRY_SECONDS} />
+                        <CountdownTimer
+                            key={timerKey}
+                            initialSeconds={OTP_EXPIRY_SECONDS}
+                            onExpire={() => setTimerExpired(true)}
+                        />
 
                         <ActionButton1
                             buttonText={otpSubmitting ? "Verifying..." : "Continue"}

@@ -5,7 +5,6 @@ import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { LOGOUT_PATH } from "@/apiPaths"
 import { getServerAxios } from "@/lib/axios"
 import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
 
 export const logOut = async () => {
     try {
@@ -19,8 +18,6 @@ export const logOut = async () => {
     const cookieStore = await cookies()
     cookieStore.delete("access_token")
     cookieStore.delete("refresh_token")
-
-    redirect(process.env.NEXT_PUBLIC_AUTH_URL || "/auth/signin")
 }
 
 interface ActionResult {
@@ -58,6 +55,7 @@ export async function requestPasswordReset(email: string): Promise<ActionResult>
 }
 
 export async function verifyOtp(email: string, otp: string): Promise<VerifyOtpResult> {
+
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${VERIFY_OTP_ENDPOINT}`, {
             method:  "POST",
@@ -72,7 +70,7 @@ export async function verifyOtp(email: string, otp: string): Promise<VerifyOtpRe
             return { success: false, message: handleApiError(json) }
         }
 
-        return { success: true, token: json.data?.token ?? json.token }
+        return { success: true, token: json.data?.reset_token ?? json.reset_token }
 
     } catch (err) {
         console.log("[verifyOtp] error:", err)
