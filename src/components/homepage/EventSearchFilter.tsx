@@ -2,7 +2,6 @@
 
 import { Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { DateRange } from 'react-day-picker'
 import { Country, State } from 'country-state-city'
 import LocationFilterDropdown from './dropdowns/LocationFilter'
 import DateFilter from './dropdowns/DateFilter'
@@ -14,6 +13,7 @@ import { ApiCategory } from '@/actions/filters'
 import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
 import { useRecentSearches } from '@/lib/custom-hooks/UseRecentSearch'
 import { deriveCategories } from '@/helper-fns/deriveCategories'
+import { format } from "date-fns"
 
 interface Props {
     initialFilters?: Partial<FilterValues>
@@ -54,8 +54,10 @@ export function EventSearchFilters({ initialFilters, categories = [] }: Props) {
         }
 
         if (filters.dateRange?.from) {
-            params.set('start_date', filters.dateRange.from.toISOString())
-            if (filters.dateRange.to) params.set('end_date', filters.dateRange.to.toISOString())
+            params.set('start_date', format(filters.dateRange.from, 'yyyy-MM-dd'))
+            if (filters.dateRange.to) {
+                params.set('end_date', format(filters.dateRange.to, 'yyyy-MM-dd'))
+            }
         }
 
         const hasFilters =
@@ -132,7 +134,7 @@ export function EventSearchFilters({ initialFilters, categories = [] }: Props) {
                             onChange={(v) =>
                                 setFilters({
                                     ...filters,
-                                    dateRange: v || ({ from: new Date(), to: new Date() } as DateRange),
+                                    dateRange: v ?? null,
                                 })
                             }
                         />

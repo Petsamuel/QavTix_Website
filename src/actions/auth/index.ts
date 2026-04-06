@@ -5,7 +5,6 @@ import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { LOGOUT_PATH } from "@/apiPaths"
 import { getServerAxios } from "@/lib/axios"
 import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
 
 export const logOut = async () => {
     try {
@@ -19,8 +18,6 @@ export const logOut = async () => {
     const cookieStore = await cookies()
     cookieStore.delete("access_token")
     cookieStore.delete("refresh_token")
-
-    redirect(process.env.NEXT_PUBLIC_AUTH_URL || "/auth/signin")
 }
 
 interface ActionResult {
