@@ -52,7 +52,16 @@ export default function OTPInput({ otp, setOtp }: { otp: string[], setOtp: Dispa
         inputRefs.current[nextEmptyIndex !== -1 ? nextEmptyIndex : lastFilledIndex]?.focus()
     }
 
+    // Always redirect focus to the first empty box or the last filled box
     const handleFocus = (index: number) => {
+        const firstEmpty = otp.findIndex(val => !val)
+        const target     = firstEmpty !== -1 ? firstEmpty : otp.length - 1
+
+        if (index !== target) {
+            inputRefs.current[target]?.focus()
+            return
+        }
+
         setFocusedIndex(index)
     }
 
