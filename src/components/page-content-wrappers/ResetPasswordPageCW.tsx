@@ -108,7 +108,7 @@ export default function ResetPasswordPageCW() {
             resetEmailStore.clear()
             setResetSuccessful(true)
         }
-    }
+    } 
 
     if (resetSuccessful) return <ResetPasswordSuccessMessage />
 
@@ -151,7 +151,10 @@ export default function ResetPasswordPageCW() {
                         className="mt-8 space-y-10 lg:space-y-12 flex justify-center items-center flex-col"
                         data-testid="otp-form"
                     >
-                        <OTPInput otp={otp} setOtp={setOtp} />
+                        <OTPInput otp={otp} setOtp={(v) => {
+                            setOtp(v)
+                            setOtpError(null)
+                        }} />
 
                         {otpError && (
                             <p className="flex items-center gap-1.5 text-sm text-red-500 -mt-6">
