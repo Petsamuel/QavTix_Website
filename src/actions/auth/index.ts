@@ -58,6 +58,7 @@ export async function requestPasswordReset(email: string): Promise<ActionResult>
 }
 
 export async function verifyOtp(email: string, otp: string): Promise<VerifyOtpResult> {
+
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${VERIFY_OTP_ENDPOINT}`, {
             method:  "POST",
@@ -72,7 +73,7 @@ export async function verifyOtp(email: string, otp: string): Promise<VerifyOtpRe
             return { success: false, message: handleApiError(json) }
         }
 
-        return { success: true, token: json.data?.token ?? json.token }
+        return { success: true, token: json.data?.reset_token ?? json.reset_token }
 
     } catch (err) {
         console.log("[verifyOtp] error:", err)
