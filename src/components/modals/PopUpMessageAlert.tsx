@@ -12,6 +12,8 @@ import { space_grotesk } from "@/lib/fonts"
 import { useAppSelector } from "@/lib/redux/hooks"
 import { closePopupAlertModal } from "@/lib/redux/slices/popupAlertSlice"
 import { useRouter } from "next/navigation"
+import { logOut } from "@/actions/auth"
+import { useLogOut } from "@/contexts/UseLogout"
 
 export default function PopUpMessageAlertModal() {
     const dispatch = useDispatch()
@@ -21,6 +23,7 @@ export default function PopUpMessageAlertModal() {
 
     const [currentIndex, setCurrentIndex] = useState(0)
     const [direction,    setDirection]    = useState<"left" | "right">("right")
+    const { handleLogOut, isLoggingOut } = useLogOut()
 
     useEffect(() => {
         if (isOpen) setCurrentIndex(0)
@@ -42,7 +45,9 @@ export default function PopUpMessageAlertModal() {
     const handlePrimaryAction = () => {
         if (!currentAlert) return
         if (currentAlert.navigateTo) {
-            currentAlert.navigateTo.includes("http") ? window.open(currentAlert.navigateTo) : router.push(currentAlert.navigateTo )
+            currentAlert.navigateTo.includes("http")
+                ? window.open(currentAlert.navigateTo)
+                : router.push(currentAlert.navigateTo)
         }
         dispatch(closePopupAlertModal())
     }
@@ -54,8 +59,9 @@ export default function PopUpMessageAlertModal() {
 
     if (!isOpen || alerts.length === 0 || !currentAlert || !config || !iconSrc) return null
 
-    const isFirst = currentIndex === 0
-    const isLast  = currentIndex === alerts.length - 1
+    const isFirst             = currentIndex === 0
+    const isLast              = currentIndex === alerts.length - 1
+    const isProfileIncomplete = currentAlert.type === "profile_incomplete"
 
     return (
         <Dialog open={isOpen}>
@@ -70,7 +76,7 @@ export default function PopUpMessageAlertModal() {
 
                 <button
                     onClick={handleClose}
-                    disabled={currentAlert.type === "profile_incomplete"}
+                    disabled={isProfileIncomplete}
                     className="absolute disabled:hidden right-4 size-7 flex justify-center disabled:cursor-not-allowed items-center top-4 z-50 rounded-full p-1 bg-brand-neutral-6 disabled:pointer-events-none hover:bg-brand-neutral-5 text-white transition-colors"
                 >
                     <Icon icon="iconamoon:close-duotone" width="24" height="24" className="size-7" />
@@ -130,15 +136,33 @@ export default function PopUpMessageAlertModal() {
                                 {currentAlert.description}
                             </p>
 
-                            {currentAlert.buttonText && (
-                                <Button
-                                    onClick={handlePrimaryAction}
-                                    className="text-white bg-primary-6 font-medium hover:bg-primary-7 hover:shadow-sm text-center px-8 py-3 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1"
-                                >
-                                    {currentAlert.buttonText}
-                                    <Icon icon="si:arrow-right-fill" width="24" height="24" />
-                                </Button>
-                            )}
+                            <div className={cn("flex items-center justify-center gap-3", isProfileIncomplete ? "flex-col sm:flex-row" : "")}>
+                                {currentAlert.buttonText && (
+                                    <Button
+                                        onClick={handlePrimaryAction}
+                                        className="text-white bg-primary-6 font-medium hover:bg-primary-7 hover:shadow-sm text-center px-8 py-3 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center gap-1"
+                                    >
+                                        {currentAlert.buttonText}
+                                        <Icon icon="si:arrow-right-fill" width="24" height="24" />
+                                    </Button>
+                                )}
+
+                                {isProfileIncomplete && (
+                                    <Button
+                                        onClick={() => {
+                                            handleLogOut()
+                                            dispatch(closePopupAlertModal())
+                                            router.refresh()
+                                        }}
+                                        disabled={isLoggingOut}
+                                        variant="outline"
+                                        className="border-neutral-6 text-secondary-7 hover:text-red-500 hover:bg-transparent hover:border-red-300 px-8 py-3 rounded-lg transition-colors inline-flex items-center gap-1.5 disabled:opacity-50"
+                                    >
+                                        <Icon icon="hugeicons:logout-01" width="18" height="18" />
+                                        {isLoggingOut ? "Signing out..." : "Sign out"}
+                                    </Button>
+                                )}
+                            </div>
                         </div>
 
                         {/* Pagination dots */}
