@@ -36,10 +36,10 @@ function HostPricingTab() {
 function HostPricingTabInner() {
     const { status } = usePricingCheckout()
 
-    if (status === "success") return <PricingSuccessMessage />
-
     return (
         <>
+            {status === "success" && <PricingSuccessMessage />} 
+
             <h2 className={`${space_grotesk.className} font-bold text-2xl md:text-3xl lg:text-[2.5rem] text-secondary-9`}>
                 Pricing that grows with your events
             </h2>
@@ -78,10 +78,10 @@ function AttendeePricingTab() {
 function AttendeePricingTabInner() {
     const { status } = usePricingCheckout()
 
-    if (status === "success") return <PricingSuccessMessage />
-
     return (
         <>
+            {status === "success" && <PricingSuccessMessage />}
+            
             <h2 className={`${space_grotesk.className} font-bold text-2xl md:text-3xl lg:text-[2.5rem] text-secondary-9`}>
                 Pricing that fits every experience
             </h2>

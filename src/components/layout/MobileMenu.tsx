@@ -1,8 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { NAV_LINKS, navLinksMobileMenu } from '@/components-data/navigation/navLinks'
 import SearchInput1 from '../custom-utils/inputs/event-search/SearchInput1'
@@ -12,7 +12,7 @@ import { Icon } from '@iconify/react'
 import { space_grotesk } from '@/lib/fonts'
 import { useAppSelector } from '@/lib/redux/hooks'
 import CustomAvatar from '../custom-utils/avatars/CustomAvatar'
-import { useLogOut } from '@/contexts/UseLogout'
+
 
 export default function MobileMenu({ 
     openMobileMenu, 
@@ -21,12 +21,9 @@ export default function MobileMenu({
     openMobileMenu: boolean
     setOpenMobileMenu: (v: boolean) => void 
 }) {
-    const [searchQuery, setSearchQuery] = useState('')
     const pathname = usePathname()
-    const router = useRouter()
 
     const { isAuthenticated, user } = useAppSelector(store => store.auth)
-    const { handleLogOut, isLoggingOut } = useLogOut()
 
     const isActive = (href: string) => {
         if (href === '/') return pathname === href
@@ -200,25 +197,16 @@ export default function MobileMenu({
 
                             {
                                 isAuthenticated && user?.id ?
-                                <div className="flex mx-3 mb-3 items-center gap-1">
-                                    <CustomAvatar id={user.id} name={user.full_name} size="size-8 ring-2!" />
-
-                                    <div className="flex flex-col gap-2">
-                                        <span className="text-xs font-medium text-neutral-8">
-                                            {user.full_name}
-                                        </span>
-                                        <button
-                                            onClick={handleLogOut}
-                                            disabled={isLoggingOut}
-                                            className="flex items-center gap-1 text-xs text-secondary-4 hover:text-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150"
-                                        >
-                                            {isLoggingOut
-                                                ? <><Icon icon="eos-icons:three-dots-loading" className="size-3" /> Signing out</>
-                                                : "Sign out"
-                                            }
-                                        </button>
-                                    </div>
-                                </div>
+                                <Link
+                                    href={process.env.NEXT_PUBLIC_ATTENDEE_SITE || "/"}
+                                    aria-label="Go to your dashboard"
+                                    className="flex items-center gap-1 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary transition-opacity hover:opacity-80 active:opacity-60"
+                                >
+                                    <CustomAvatar id={user.id} name={user.full_name} size="size-7 ring-2!" textSize="text-base" />
+                                    <span className="text-xs font-medium text-neutral-8">
+                                        {user.full_name}
+                                    </span>
+                                </Link>
                                 :
                                 <motion.div
                                     initial={{ y: 20, opacity: 0 }}

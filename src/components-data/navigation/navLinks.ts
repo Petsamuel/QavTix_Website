@@ -44,15 +44,15 @@ export const navLinks: NavLink[] = [
   NAV_LINKS.HOW_IT_WORKS,
   NAV_LINKS.PRICING,
   NAV_LINKS.SIGN_IN,
-  NAV_LINKS.SIGN_UP,
+  NAV_LINKS.SIGN_UP
 ]
 
 // Authenticated nav — Sign In becomes Dashboard, Get Started becomes avatar (handled in Header)
 export const navLinksAuthenticated: NavLink[] = [
   NAV_LINKS.ABOUT,
   NAV_LINKS.HOW_IT_WORKS,
+  NAV_LINKS.EVENTS,
   NAV_LINKS.PRICING,
-  NAV_LINKS.DASHBOARD,
 ]
 
 export const navLinksMobileMenu: NavLink[] = [
@@ -61,7 +61,7 @@ export const navLinksMobileMenu: NavLink[] = [
   NAV_LINKS.HOW_IT_WORKS,
   NAV_LINKS.EVENTS,
   NAV_LINKS.PRICING,
-  NAV_LINKS.FAQ
+  NAV_LINKS.FAQ,
 ]
 
 export const header2NavLinks: NavLink[] = [

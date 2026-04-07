@@ -124,24 +124,13 @@ export default function Header2() {
                         )}
 
                         {isAuthenticated && user?.id && (
-                            <div className="flex items-center gap-2">
+                            <Link
+                                href={process.env.NEXT_PUBLIC_ATTENDEE_SITE || "/"}
+                                aria-label="Go to your dashboard"
+                                className="flex items-center gap-1 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary transition-opacity hover:opacity-80 active:opacity-60"
+                            >
                                 <CustomAvatar id={user.id} name={user.full_name} size="size-7 ring-2!" textSize="text-base" />
-                                <div className="flex flex-col">
-                                    <span className="text-xs font-medium text-neutral-8">
-                                        {user.full_name}
-                                    </span>
-                                    <button
-                                        onClick={handleLogOut}
-                                        disabled={isLoggingOut}
-                                        className="flex items-center gap-1 text-xs text-neutral-6 hover:text-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150"
-                                    >
-                                        {isLoggingOut
-                                            ? <><Icon icon="eos-icons:three-dots-loading" className="size-3" /> Signing out</>
-                                            : "Sign out"
-                                        }
-                                    </button>
-                                </div>
-                            </div>
+                            </Link>
                         )}
                     </div>
 

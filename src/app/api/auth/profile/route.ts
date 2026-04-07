@@ -1,4 +1,4 @@
-import { GET_PROFILE_ENDPOINT } from "@/endpoints"
+import { GET_ATTENDEE_PROFILE_ENDPOINT, GET_HOST_PROFILE_ENDPOINT, } from "@/endpoints"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(req: NextRequest) {
@@ -12,7 +12,16 @@ export async function GET(req: NextRequest) {
             )
         }
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${GET_PROFILE_ENDPOINT}`, {
+        const role = req.nextUrl.searchParams.get("role") ?? ""
+
+        if (!role) {
+            return NextResponse.json(
+                { message: "Bad Request" },
+                { status: 400 }
+            )
+        }
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${role === "host" ? GET_HOST_PROFILE_ENDPOINT : GET_ATTENDEE_PROFILE_ENDPOINT}`, {
             method:  "GET",
             headers: {
                 "Content-Type":  "application/json",

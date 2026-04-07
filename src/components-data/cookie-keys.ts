@@ -12,5 +12,5 @@ export const accessCookieOptions = {
     sameSite: 'lax' as const,
     path:     '/',
     maxAge:   60 * 60 * 12,
-    // ...(isProd && { domain: '.qavtix.com' }),
+    ...(isProd && { domain: '.qavtix.com' }),
 }

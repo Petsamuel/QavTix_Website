@@ -18,28 +18,22 @@ export async function POST(req: NextRequest) {
         if (!res.ok) {
             console.log("[register] status:", res.status)
             console.log("[register] raw json:", JSON.stringify(json, null, 2))
-
-            const message = res.status === 409
-                ? "An account with this email already exists. Please sign in instead."
-                : handleApiError(json)
-
             return NextResponse.json(
-                { message },
+                { message: handleApiError(json) },
                 { status: res.status }
             )
         }
 
-        const { access, refresh }= json.data
+        const { user, tokens } = json.data
 
         const response = NextResponse.json(
-            { message: json.message },
+            { message: json.message, user },
             { status: 201 }
         )
 
+        response.cookies.set("access_token", tokens.access, accessCookieOptions)
 
-        response.cookies.set("access_token", access, accessCookieOptions)
-
-        response.cookies.set("refresh_token", refresh, {
+        response.cookies.set("refresh_token", tokens.refresh, {
             httpOnly: true,
             secure:   process.env.NODE_ENV === "production",
             sameSite: "strict",
