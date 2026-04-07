@@ -117,10 +117,10 @@ export default function PopUpMessageAlertModal() {
                             direction === "right" ? "slide-in-from-right-10" : "slide-in-from-left-10"
                         )}
                     >
-                        <div className="flex justify-center mt-7 mb-4">
+                        <div className="flex justify-center items-center mt-7 mb-4">
                             {
                                 currentAlert.type === "profile_incomplete" ?
-                                <Image width={100} height={100} src="/images/vectors/setup-profile.png" alt="profile-icon" className="size-24 pointer-events-none" />
+                                <Image width={80} height={100} src="/images/vectors/setup-profile.png" alt="profile-icon" className="size-20 aspect-square pointer-events-none" />
                                 :
                                 <Icon icon={iconSrc} className="size-24" strokeWidth={2} />
                             }

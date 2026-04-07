@@ -129,7 +129,7 @@ export default function Header2() {
                                 aria-label="Go to your dashboard"
                                 className="flex items-center gap-1 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary transition-opacity hover:opacity-80 active:opacity-60"
                             >
-                                <CustomAvatar id={user.id} name={user.full_name} size="size-7 ring-2!" textSize="text-base" />
+                                <CustomAvatar id={user.id} name={user.full_name} size="size-9 ring-2!" textSize="text-base" />
                             </Link>
                         )}
                     </div>
