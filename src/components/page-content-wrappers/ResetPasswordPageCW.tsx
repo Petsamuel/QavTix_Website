@@ -110,117 +110,119 @@ export default function ResetPasswordPageCW() {
         }
     } 
 
-    if (resetSuccessful) return <ResetPasswordSuccessMessage />
 
     return (
-        <AuthPageFlexWrapper>
-            <main className="max-w-xl mx-auto w-full">
-                <h1 className={`${space_grotesk.className} text-secondary-9 text-2xl md:text-3xl font-bold mt-4 mb-2`}>
-                    {step === "new-password" ? "Create new password" : "Password reset"}
-                </h1>
+        <>
+            {resetSuccessful && <ResetPasswordSuccessMessage />}
+            <AuthPageFlexWrapper>
+                <main className="max-w-xl mx-auto w-full">
+                    <h1 className={`${space_grotesk.className} text-secondary-9 text-2xl md:text-3xl font-bold mt-4 mb-2`}>
+                        {step === "new-password" ? "Create new password" : "Password reset"}
+                    </h1>
 
-                <p className="text-secondary-9 text-sm">
-                    {step === "new-password"
-                        ? "Set your password so you can login and access QavTix"
-                        : <>
-                            We sent a code to {email ? maskEmail(email) : "your email"}.{" "}
-                            {timerExpired ? (
-                                <>
-                                    Didn&apos;t receive it?{" "}
-                                    <button
-                                        type="button"
-                                        onClick={handleResend}
-                                        disabled={resending}
-                                        className="font-medium text-primary-6 lg:text-accent-6 mx-1 disabled:opacity-50 transition-opacity"
-                                    >
-                                        {resending ? "Resending..." : "Resend code"}
-                                    </button>
-                                </>
-                            ) : (
-                                <span className="text-neutral-5 text-xs ml-1">
-                                    Resend available once the timer expires.
-                                </span>
+                    <p className="text-secondary-9 text-sm">
+                        {step === "new-password"
+                            ? "Set your password so you can login and access QavTix"
+                            : <>
+                                We sent a code to {email ? maskEmail(email) : "your email"}.{" "}
+                                {timerExpired ? (
+                                    <>
+                                        Didn&apos;t receive it?{" "}
+                                        <button
+                                            type="button"
+                                            onClick={handleResend}
+                                            disabled={resending}
+                                            className="font-medium text-primary-6 lg:text-accent-6 mx-1 disabled:opacity-50 transition-opacity"
+                                        >
+                                            {resending ? "Resending..." : "Resend code"}
+                                        </button>
+                                    </>
+                                ) : (
+                                    <span className="text-neutral-5 text-xs ml-1">
+                                        Resend available once the timer expires.
+                                    </span>
+                                )}
+                            </>
+                        }
+                    </p>
+
+                    {step === "otp" && (
+                        <form
+                            onSubmit={handleOtpSubmit}
+                            className="mt-8 space-y-10 lg:space-y-12 flex justify-center items-center flex-col"
+                            data-testid="otp-form"
+                        >
+                            <OTPInput otp={otp} setOtp={(v) => {
+                                setOtp(v)
+                                setOtpError(null)
+                            }} />
+
+                            {otpError && (
+                                <p className="flex items-center gap-1.5 text-sm text-red-500 -mt-6">
+                                    <Icon icon="mage:exclamation-circle" className="size-4 shrink-0" />
+                                    {otpError}
+                                </p>
                             )}
-                        </>
-                    }
-                </p>
 
-                {step === "otp" && (
-                    <form
-                        onSubmit={handleOtpSubmit}
-                        className="mt-8 space-y-10 lg:space-y-12 flex justify-center items-center flex-col"
-                        data-testid="otp-form"
-                    >
-                        <OTPInput otp={otp} setOtp={(v) => {
-                            setOtp(v)
-                            setOtpError(null)
-                        }} />
-
-                        {otpError && (
-                            <p className="flex items-center gap-1.5 text-sm text-red-500 -mt-6">
-                                <Icon icon="mage:exclamation-circle" className="size-4 shrink-0" />
-                                {otpError}
-                            </p>
-                        )}
-
-                        <CountdownTimer
-                            key={timerKey}
-                            initialSeconds={OTP_EXPIRY_SECONDS}
-                            onExpire={() => setTimerExpired(true)}
-                        />
-
-                        <ActionButton1
-                            buttonText={otpSubmitting ? "Verifying..." : "Continue"}
-                            buttonType="submit"
-                            className="w-full"
-                            isDisabled={otpSubmitting}
-                            isLoading={otpSubmitting}
-                            data-testid="otp-submit"
-                        />
-                    </form>
-                )}
-
-                {step === "new-password" && (
-                    <form
-                        onSubmit={handleSubmit(onResetSubmit)}
-                        className="mt-8 space-y-6"
-                        data-testid="reset-password-form"
-                    >
-                        <div>
-                            <label className="text-sm font-medium text-neutral-10 mb-2 block">
-                                Password
-                            </label>
-                            <PasswordInput1
-                                {...register("password")}
-                                error={errors.password?.message}
-                                data-testid="new-password"
+                            <CountdownTimer
+                                key={timerKey}
+                                initialSeconds={OTP_EXPIRY_SECONDS}
+                                onExpire={() => setTimerExpired(true)}
                             />
-                        </div>
 
-                        <div>
-                            <label className="text-sm font-medium text-neutral-10 mb-2 block">
-                                Confirm Password
-                            </label>
-                            <PasswordInput1
-                                {...register("confirmPassword")}
-                                error={errors.confirmPassword?.message}
-                                data-testid="confirm-password"
+                            <ActionButton1
+                                buttonText={otpSubmitting ? "Verifying..." : "Continue"}
+                                buttonType="submit"
+                                className="w-full"
+                                isDisabled={otpSubmitting}
+                                isLoading={otpSubmitting}
+                                data-testid="otp-submit"
                             />
-                        </div>
+                        </form>
+                    )}
 
-                        <PasswordStrengthIndicator password={password} />
+                    {step === "new-password" && (
+                        <form
+                            onSubmit={handleSubmit(onResetSubmit)}
+                            className="mt-8 space-y-6"
+                            data-testid="reset-password-form"
+                        >
+                            <div>
+                                <label className="text-sm font-medium text-neutral-10 mb-2 block">
+                                    Password
+                                </label>
+                                <PasswordInput1
+                                    {...register("password")}
+                                    error={errors.password?.message}
+                                    data-testid="new-password"
+                                />
+                            </div>
 
-                        <ActionButton1
-                            buttonText={isSubmitting ? "Saving..." : "Create Password"}
-                            className="mt-6 lg:mt-4 w-full"
-                            buttonType="submit"
-                            isDisabled={isSubmitting}
-                            isLoading={isSubmitting}
-                            data-testid="reset-password-submit"
-                        />
-                    </form>
-                )}
-            </main>
-        </AuthPageFlexWrapper>
+                            <div>
+                                <label className="text-sm font-medium text-neutral-10 mb-2 block">
+                                    Confirm Password
+                                </label>
+                                <PasswordInput1
+                                    {...register("confirmPassword")}
+                                    error={errors.confirmPassword?.message}
+                                    data-testid="confirm-password"
+                                />
+                            </div>
+
+                            <PasswordStrengthIndicator password={password} />
+
+                            <ActionButton1
+                                buttonText={isSubmitting ? "Saving..." : "Create Password"}
+                                className="mt-6 lg:mt-4 w-full"
+                                buttonType="submit"
+                                isDisabled={isSubmitting}
+                                isLoading={isSubmitting}
+                                data-testid="reset-password-submit"
+                            />
+                        </form>
+                    )}
+                </main>
+            </AuthPageFlexWrapper>
+        </>
     )
 }

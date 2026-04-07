@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { space_grotesk } from '@/lib/fonts'
 import { Icon } from '@iconify/react'
 import { motion, AnimatePresence } from 'framer-motion'
+import LiquidBtn from '../custom-utils/buttons/LiquidButton'
 
 interface TeamMember {
     id: number
@@ -157,19 +158,13 @@ export default function TeamLeadersCarousel() {
                             <p className="text-neutral-8 text-xs">{currentMember.role}</p>
                         </div>
                         <p className="text-neutral-7 text-sm leading-relaxed">{currentMember.bio}</p>
-                        <div className="flex gap-3 sm:mt-8">
-                            <button
-                                onClick={scrollPrev}
-                                className="w-12 h-12 rounded-full border-2 border-neutral-4 flex items-center justify-center hover:bg-neutral-2 active:scale-95 transition-all"
-                            >
-                                <Icon icon="si:chevron-left-line" width="24" height="24" className='text-secondary-6' />
-                            </button>
-                            <button
-                                onClick={scrollNext}
-                                className="w-12 h-12 rounded-full bg-primary flex items-center justify-center hover:bg-primary-7 active:scale-95 transition-all"
-                            >
-                                <Icon icon="si:chevron-right-line" width="24" height="24" className='text-white' />
-                            </button>
+                        <div className="flex gap-3 mb-5 sm:mt-8">
+                            <LiquidBtn onClick={scrollPrev} variant="ghost">
+                                <Icon icon="si:chevron-left-line" width="24" height="24" className="text-primary" />
+                            </LiquidBtn>
+                            <LiquidBtn onClick={scrollNext} variant="primary">
+                                <Icon icon="si:chevron-right-line" width="24" height="24" className="text-white" />
+                            </LiquidBtn>
                         </div>
                     </div>
                 </div>
@@ -207,8 +202,10 @@ export default function TeamLeadersCarousel() {
                                         animate="center"
                                         exit="exit"
                                         transition={{
-                                            x: { type: "spring", stiffness: 260, damping: 30 },
-                                            opacity: { duration: 0.5 }
+                                            opacity: { duration: 0.6 },
+                                            scale: { type: 'spring', stiffness: 200, damping: 22 },
+                                            y: { type: 'spring', stiffness: 200, damping: 22 },
+                                            filter: { duration: 0.3 },
                                         }}
                                         className="absolute inset-0 w-full h-full"
                                     >
@@ -233,18 +230,12 @@ export default function TeamLeadersCarousel() {
                                 </div>
 
                                 <div className="flex gap-4">
-                                    <button
-                                        onClick={scrollPrev}
-                                        className="w-14 h-14 rounded-full border-2 border-neutral-4 flex items-center justify-center hover:bg-neutral-2 active:scale-95 transition-all"
-                                    >
-                                        <Icon icon="si:chevron-left-line" width="24" height="24" className='text-secondary-6' />
-                                    </button>
-                                    <button
-                                        onClick={scrollNext}
-                                        className="w-14 h-14 rounded-full bg-primary flex items-center justify-center hover:bg-primary-7 active:scale-95 transition-all"
-                                    >
-                                        <Icon icon="si:chevron-right-line" width="24" height="24" className='text-white' />
-                                    </button>
+                                    <LiquidBtn onClick={scrollPrev} variant="ghost">
+                                        <Icon icon="si:chevron-left-line" width="24" height="24" className="text-primary" />
+                                    </LiquidBtn>
+                                    <LiquidBtn onClick={scrollNext} variant="primary">
+                                        <Icon icon="si:chevron-right-line" width="24" height="24" className="text-white" />
+                                    </LiquidBtn>
                                 </div>
                             </div>
                         </div>

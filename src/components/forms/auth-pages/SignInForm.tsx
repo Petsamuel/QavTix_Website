@@ -37,18 +37,20 @@ export default function SignInForm() {
         setSubmitError(null)
 
         try {
-            await axios.post(LOGIN_PATH, values)
+            const { data: loginData } = await axios.post(LOGIN_PATH, values)
+            const role = loginData?.user?.role ?? loginData?.role ?? ""
 
             const { data }: { data: { user: AuthUser } } = await axios.get(GET_PROFILE_PATH, {
+                params: { role },
                 withCredentials: true,
             })
-            
+
             dispatch(setUser(data.user))
 
             if (data.user.role === "host") {
                 // Hosts go to host site — honor returnTo only if it's a host site URL
                 const hostSite = process.env.NEXT_PUBLIC_HOST_SITE ?? ''
-                const destination = returnTo && returnTo?.startsWith(hostSite) ? returnTo : hostSite
+                const destination = returnTo?.startsWith(hostSite) ? returnTo : hostSite
                 window.location.href = destination
                 return
             }
@@ -62,6 +64,7 @@ export default function SignInForm() {
             }
 
         } catch (error) {
+            console.log(error)
             if (error instanceof AxiosError) {
                 setSubmitError(handleApiError(error.response?.data))
             } else {
