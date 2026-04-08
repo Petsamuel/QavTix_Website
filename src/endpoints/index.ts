@@ -4,7 +4,7 @@ export const HOST_REGISTER_ENDPOINT = "auth/auth/register/host/"
 export const FORGOT_PASSWORD_ENDPOINT = "auth/password-reset/request/"
 export const VERIFY_OTP_ENDPOINT = "auth/password-reset/verify-otp/"
 export const RESET_PASSWORD_ENDPOINT = "auth/password-reset/confirm/"
-
+export const GET_PROFILE_ENDPOINT = "attendee/profile/"
 
 export const FAVOURITES_ENDPOINT = "attendee/favorite/list"
 export const ADD_FAVOURITE_ENDPOINT = "attendee/favorite/add/"

@@ -12,20 +12,20 @@ import CustomGlobalAlert from "@/components/custom-utils/alerts/CustomGlobalAler
 import { TicketUserProvider } from "@/contexts/TicketUserProvider"
 import AuthPersistor from "@/components/custom-utils/persistors/AuthPersistor"
 import { DEFAULT_LOCATION } from "@/components-data/settings.data"
-import { getServerAxios } from "@/lib/axios"
 import ModalRenderer from "@/components/modals/ModalRenderer"
 import { getGuestTicketSession } from "@/actions/util/get-ticket-session"
-import { GET_ATTENDEE_PROFILE_ENDPOINT } from "@/endpoints"
+import { getProfile } from "@/actions/profile"
+
 
 export const metadata: Metadata  = siteMetadata
 export const viewport: Viewport  = siteViewport
 
 async function getLayoutData() {
-    const axiosInstance = await getServerAxios()
+
     const [locationResult, ticketSessionResult, profileResult] = await Promise.allSettled([
         getOrDetectLocation(),
         getGuestTicketSession(),
-        axiosInstance.get(GET_ATTENDEE_PROFILE_ENDPOINT).then(r => r.data),
+        getProfile()
     ])
 
     return {
