@@ -13,7 +13,7 @@ export const NAV_LINKS = {
   PRICING: { label: 'Pricing', href: '/pricing' },
   EVENTS: { label: 'Events', href: '/events' },
 
-  SIGN_IN: { label: 'Sign in', href: '/auth/signin', type: 'auth' as const },
+  SIGN_IN: { label: 'Sign in', href: '/auth/signin', type: 'cta' as const },
   SIGN_UP: { label: 'Get Started', href: '/auth/signup', type: 'cta' as const },
   FORGOT_PASSWORD: { label: 'Forgot password', href: '/auth/forgot-password' },
   RESET_PASSWORD: { label: 'Reset password', href: '/auth/reset-password' },
@@ -43,8 +43,8 @@ export const navLinks: NavLink[] = [
   NAV_LINKS.ABOUT,
   NAV_LINKS.HOW_IT_WORKS,
   NAV_LINKS.PRICING,
-  NAV_LINKS.SIGN_IN,
-  NAV_LINKS.SIGN_UP
+  NAV_LINKS.FAQ,
+  NAV_LINKS.SIGN_IN
 ]
 
 // Authenticated nav — Sign In becomes Dashboard, Get Started becomes avatar (handled in Header)
@@ -53,6 +53,7 @@ export const navLinksAuthenticated: NavLink[] = [
   NAV_LINKS.HOW_IT_WORKS,
   NAV_LINKS.EVENTS,
   NAV_LINKS.PRICING,
+  NAV_LINKS.FAQ
 ]
 
 export const navLinksMobileMenu: NavLink[] = [

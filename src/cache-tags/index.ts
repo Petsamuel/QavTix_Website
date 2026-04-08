@@ -12,4 +12,5 @@ export const CACHE_TAGS = {
     HOSTS:  "hosts",
     HOST_DETAILS:  "host-details",
     EVENT_DETAILS:  "event-details",
+    PROFILE:     "profile",
 } as const
