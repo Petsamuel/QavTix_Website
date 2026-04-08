@@ -11,21 +11,21 @@ import { getOrDetectLocation } from "@/lib/location-utils"
 import CustomGlobalAlert from "@/components/custom-utils/alerts/CustomGlobalAlert"
 import { TicketUserProvider } from "@/contexts/TicketUserProvider"
 import AuthPersistor from "@/components/custom-utils/persistors/AuthPersistor"
+import { GET_PROFILE_ENDPOINT } from "@/endpoints"
 import { DEFAULT_LOCATION } from "@/components-data/settings.data"
+import { getServerAxios } from "@/lib/axios"
 import ModalRenderer from "@/components/modals/ModalRenderer"
 import { getGuestTicketSession } from "@/actions/util/get-ticket-session"
-import { getProfile } from "@/actions/profile"
-
 
 export const metadata: Metadata  = siteMetadata
 export const viewport: Viewport  = siteViewport
 
 async function getLayoutData() {
-
+    const axiosInstance = await getServerAxios()
     const [locationResult, ticketSessionResult, profileResult] = await Promise.allSettled([
         getOrDetectLocation(),
         getGuestTicketSession(),
-        getProfile()
+        axiosInstance.get(GET_PROFILE_ENDPOINT).then(r => r.data),
     ])
 
     return {
@@ -49,7 +49,7 @@ export default async function MainRootLayout({ children }: { children: React.Rea
             </head>
             <ReduxStoreProvider>
                 <TicketUserProvider user={userData} ticketSession={ticketSession}>
-                    <body className={`${inter.className} min-h-screen`} suppressHydrationWarning>
+                    <body className={`${inter.className} min-h-screen h-screen`} suppressHydrationWarning>
                         <AppSettings currency={locationData.currency} region={locationData.region} />
                         <AuthPersistor userData={userData} />
                         <CustomGlobalAlert />
