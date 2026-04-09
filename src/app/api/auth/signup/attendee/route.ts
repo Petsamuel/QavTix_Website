@@ -1,4 +1,4 @@
-import { accessCookieOptions } from "@/components-data/cookie-keys"
+import { accessCookieOptions, refreshCookieOptions } from "@/components-data/cookie-keys"
 import { ATTENDEE_REGISTER_ENDPOINT } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { NextRequest, NextResponse } from "next/server"
@@ -33,13 +33,7 @@ export async function POST(req: NextRequest) {
 
         response.cookies.set("access_token", tokens.access, accessCookieOptions)
 
-        response.cookies.set("refresh_token", tokens.refresh, {
-            httpOnly: true,
-            secure:   process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            path:     "/api/auth",
-            maxAge:   60 * 60 * 24 * 7,
-        })
+        response.cookies.set("refresh_token", tokens.refresh, refreshCookieOptions)
 
         return response
 

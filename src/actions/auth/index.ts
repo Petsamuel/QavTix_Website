@@ -3,17 +3,15 @@
 import { FORGOT_PASSWORD_ENDPOINT, VERIFY_OTP_ENDPOINT, RESET_PASSWORD_ENDPOINT } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { LOGOUT_PATH } from "@/apiPaths"
-import { getServerAxios } from "@/lib/axios"
 import { cookies } from "next/headers"
 
 export const logOut = async () => {
-    try {
-        const axiosInstance = await getServerAxios()
-        await axiosInstance.post(LOGOUT_PATH)
-    } catch {
-        // If the server call fails, proceed anyway — client must be logged out
-    }
-
+    await fetch(`${process.env.NEXT_PUBLIC_APP_DOMAIN}${LOGOUT_PATH}`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        // Forward cookies so the route handler can read refresh_token
+        credentials: "include",
+    })
     // Clear both auth cookies regardless of backend response
     const cookieStore = await cookies()
     cookieStore.delete("access_token")
