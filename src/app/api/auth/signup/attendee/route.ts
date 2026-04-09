@@ -24,16 +24,16 @@ export async function POST(req: NextRequest) {
             )
         }
 
-        const { user, tokens } = json.data
+        const { access, refresh, email } = json.data
 
         const response = NextResponse.json(
-            { message: json.message, user },
+            { message: json.message, user: email },
             { status: 201 }
         )
 
-        response.cookies.set("access_token", tokens.access, accessCookieOptions)
+        response.cookies.set("access_token", access, accessCookieOptions)
 
-        response.cookies.set("refresh_token", tokens.refresh, refreshCookieOptions)
+        response.cookies.set("refresh_token", refresh, refreshCookieOptions)
 
         return response
 
