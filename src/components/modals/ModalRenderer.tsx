@@ -15,7 +15,7 @@ export default function ModalRenderer(){
     const pathName = usePathname()
     
     useEffect(() => {
-        if (!user?.is_completed && isAuthenticated && !pathName.includes("account-settings")) {
+        if (!user?.is_completed && isAuthenticated && !pathName.includes("account-settings") && !pathName.includes("auth")) {
             dispatch(triggerPopupAlert(PROFILE_INCOMPLETE_ALERT))
         }
 

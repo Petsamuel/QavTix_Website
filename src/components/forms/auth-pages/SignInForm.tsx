@@ -15,6 +15,7 @@ import { setUser } from "@/lib/redux/slices/authUserSlice"
 import { useRouter, useSearchParams } from "next/navigation"
 import { NAV_LINKS } from "@/components-data/navigation/navLinks"
 import { GET_PROFILE_PATH, LOGIN_PATH } from "@/apiPaths"
+import { validateReturnTo } from "@/helper-fns/validateReturnTo"
 
 export default function SignInForm() {
 
@@ -47,18 +48,19 @@ export default function SignInForm() {
 
             dispatch(setUser(data.user))
 
+            const safeReturn = validateReturnTo(returnTo)
+
             if (data.user.role === "host") {
-                // Hosts go to host site — honor returnTo only if it's a host site URL
-                const hostSite = process.env.NEXT_PUBLIC_HOST_SITE ?? ''
-                const destination = returnTo?.startsWith(hostSite) ? returnTo : hostSite
+                const hostSite  = process.env.NEXT_PUBLIC_HOST_SITE ?? ''
+                const destination = safeReturn?.startsWith(hostSite) ? safeReturn : hostSite
                 window.location.href = destination
                 return
             }
 
-
             const attendeeSite = process.env.NEXT_PUBLIC_ATTENDEE_SITE ?? ''
-            if (returnTo && returnTo.startsWith(attendeeSite)) {
-                window.location.href = returnTo
+            
+            if (safeReturn && safeReturn?.startsWith(attendeeSite)) {
+                window.location.href = safeReturn
             } else {
                 router.push(NAV_LINKS.HOME.href)
             }

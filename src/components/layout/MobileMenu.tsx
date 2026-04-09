@@ -12,6 +12,7 @@ import { Icon } from '@iconify/react'
 import { space_grotesk } from '@/lib/fonts'
 import { useAppSelector } from '@/lib/redux/hooks'
 import CustomAvatar from '../custom-utils/avatars/CustomAvatar'
+import { useLogOut } from '@/contexts/UseLogout'
 
 
 export default function MobileMenu({ 
@@ -21,6 +22,8 @@ export default function MobileMenu({
     openMobileMenu: boolean
     setOpenMobileMenu: (v: boolean) => void 
 }) {
+
+    const { handleLogOut, isLoggingOut } = useLogOut()
     const pathname = usePathname()
 
     const { isAuthenticated, user } = useAppSelector(store => store.auth)
@@ -150,6 +153,8 @@ export default function MobileMenu({
                                 {navLinksMobileMenu.map((link, index) => {
                                     const active = isActive(link.href)
 
+                                    if (link.href.includes("dashboard") && !isAuthenticated) return null;
+
                                     return (
                                         <motion.div
                                             key={link.href}
@@ -197,16 +202,25 @@ export default function MobileMenu({
 
                             {
                                 isAuthenticated && user?.id ?
-                                <Link
-                                    href={process.env.NEXT_PUBLIC_ATTENDEE_SITE || "/"}
-                                    aria-label="Go to your dashboard"
-                                    className="flex items-center gap-1 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary transition-opacity hover:opacity-80 active:opacity-60"
-                                >
-                                    <CustomAvatar id={user.id} name={user.full_name} size="size-7 ring-2!" textSize="text-base" />
-                                    <span className="text-xs font-medium text-neutral-8">
-                                        {user.full_name}
-                                    </span>
-                                </Link>
+                                <div className="flex mx-3 mb-3 items-center gap-1">
+                                    <CustomAvatar id={user.id} name={user.full_name} size="size-8 ring-2!" />
+
+                                    <div className="flex flex-col gap-2">
+                                        <span className="text-xs font-medium text-neutral-8">
+                                            {user.full_name}
+                                        </span>
+                                        <button
+                                            onClick={handleLogOut}
+                                            disabled={isLoggingOut}
+                                            className="flex items-center gap-1 text-xs text-secondary-4 hover:text-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150"
+                                        >
+                                            {isLoggingOut
+                                                ? <><Icon icon="eos-icons:three-dots-loading" className="size-3" /> Signing out</>
+                                                : "Sign out"
+                                            }
+                                        </button>
+                                    </div>
+                                </div>
                                 :
                                 <motion.div
                                     initial={{ y: 20, opacity: 0 }}

@@ -27,6 +27,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp }:{ setSuc
         register,
         handleSubmit,
         control,
+        reset,
         formState: { errors, isSubmitting },
     } = useForm<AttendeeSignUpFormValues>({
         defaultValues: {
@@ -45,10 +46,12 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp }:{ setSuc
             await axios.post(ATTENDEE_SIGNUP_PATH, {...values, agree_to_terms: values.agreedToTerms})
 
             const { data }: { data: { user: AuthUser } } = await axios.get(GET_PROFILE_PATH, {
+                params: { role: "attendee" },
                 withCredentials: true,
             })
 
             dispatch(setUser(data.user))
+            reset()
             setSuccessfulSignUp(true)
         } catch (error) {
             if (error instanceof AxiosError) {
@@ -72,6 +75,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp }:{ setSuc
                 <TextInput1
                     placeholder="Enter your first and last name"
                     {...register("full_name")}
+                    onInput={() => setSubmitError(null)}
                     error={errors.full_name?.message}
                     data-testid="signup-name"
                 />
@@ -85,6 +89,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp }:{ setSuc
                     placeholder="Enter your email address"
                     icon="mage:email"
                     {...register("email")}
+                    onInput={() => setSubmitError(null)}
                     error={errors.email?.message}
                     data-testid="signup-email"
                 />
@@ -97,6 +102,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp }:{ setSuc
                 <PasswordInput1
                     {...register("password")}
                     error={errors.password?.message}
+                    onInput={() => setSubmitError(null)}
                     helperText="Must be at least 8 characters"
                     data-testid="signup-password"
                 />
