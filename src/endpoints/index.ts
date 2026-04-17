@@ -11,7 +11,7 @@ export const ADD_FAVOURITE_ENDPOINT = "attendee/favorite/add/"
 export const REMOVE_FAVOURITE_ENDPOINT = "attendee/favorite/remove/[event_id]/"
 
 
-export const GET_HOST_PROFILE_ENDPOINT = "attendee/profile/"
+export const GET_HOST_PROFILE_ENDPOINT = "host/profile/"
 export const GET_ATTENDEE_PROFILE_ENDPOINT = "attendee/profile/"
 export const REFRESH_TOKEN_ENDPOINT = "auth/token/refresh/"
 export const TOKEN_VERIFY_ENDPOINT = "auth/token/verify/"

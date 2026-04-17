@@ -15,7 +15,7 @@ export default function HostNotFound() {
         <main className="min-h-[60vh] flex flex-col items-center justify-center px-6 py-40 text-center">
             <div className="flex items-center justify-center size-20 rounded-full bg-primary-1 mb-6">
                 <Icon
-                    icon="hugeicons:user-remove"
+                    icon="hugeicons:user-remove-02"
                     width="36"
                     height="36"
                     className="text-primary-6"

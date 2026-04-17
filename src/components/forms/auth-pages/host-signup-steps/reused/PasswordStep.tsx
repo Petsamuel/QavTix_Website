@@ -21,13 +21,14 @@ import { HOST_SIGNUP_PATH } from '@/apiPaths'
 import { useAppDispatch } from '@/lib/redux/hooks'
 import { showAlert } from '@/lib/redux/slices/alertSlice'
 import { uploadToCloudinary } from '@/lib/cloudinary'
+import { cn } from '@/lib/utils'
 
 interface Props {
     accountType: HostAccountType
 }
 
 export function PasswordStep({ accountType }: Props) {
-    const { formData, categories, setSignUpSuccessful } = useSignup()
+    const { formData, categories, setSignUpSuccessful, signUpSuccessful } = useSignup()
     const [submitError, setSubmitError] = useState<string | null>(null)
 
     const {
@@ -79,6 +80,7 @@ export function PasswordStep({ accountType }: Props) {
 
             await axios.post(HOST_SIGNUP_PATH, payload)
             setSignUpSuccessful(true)
+
         } catch (error) {
             let message = "An unexpected error occurred. Please try again.";
             if (error instanceof AxiosError) {
@@ -109,7 +111,8 @@ export function PasswordStep({ accountType }: Props) {
                 {...register('password')}
                 error={errors.password?.message}
                 data-testid="signup-password"
-            />
+                className={cn(signUpSuccessful && "blur-3xl")}
+                />
 
             <PasswordInput2
                 label="Confirm Password"
@@ -118,6 +121,7 @@ export function PasswordStep({ accountType }: Props) {
                 {...register('confirmPassword')}
                 error={errors.confirmPassword?.message}
                 data-testid="signup-confirm-password"
+                className={cn(signUpSuccessful && "blur-3xl")}
             />
 
             <PasswordStrengthIndicator password={password} />

@@ -98,7 +98,7 @@ export function ImageUpload({
       {preview ? (
         // Image Preview
         <div className={cn(
-          'relative w-full overflow-hidden border-2 border-brand-neutral-3 bg-neutral-1',
+          'relative w-full overflow-hidden border-2 border-neutral-3 bg-neutral-1',
           aspectClasses[aspectRatio]
         )}>
           <Image
@@ -142,8 +142,8 @@ export function ImageUpload({
             'flex flex-col items-center justify-center gap-3 p-6',
             aspectClasses[aspectRatio],
             isDragging
-              ? 'border-brand-primary-5 bg-brand-primary-1'
-              : 'border-brand-secondary-5 bg-white hover:border-brand-neutral-5 hover:bg-brand-neutral-2',
+              ? 'border-primary-5 bg-primary-1'
+              : 'border-secondary-5 bg-white hover:border-neutral-5 hover:bg-neutral-2',
             error && 'border-red-400',
             isUploading && 'pointer-events-none opacity-50'
           )}
@@ -152,19 +152,19 @@ export function ImageUpload({
             icon="iconoir:cloud-upload"
             className={cn(
               'size-8',
-              isDragging ? 'text-brand-primary-6' : 'text-brand-secondary-5'
+              isDragging ? 'text-primary-6' : 'text-secondary-5'
             )}
           />
-          <div className="text-center px-4 text-brand-secondary-5">
+          <div className="text-center px-4 text-secondary-5">
             <p className="font-medium text-sm">
               {placeholder}
             </p>
             {description && (
-              <p className="mt-1 text-xs text-brand-secondary-4">
+              <p className="mt-1 text-xs text-secondary-4">
                 {description}
               </p>
             )}
-            <p className="mt-1 text-xs text-brand-secondary-4">
+            <p className="mt-1 text-xs text-secondary-4">
               Max size: {maxSize}MB • JPEG, PNG, WEBP
             </p>
           </div>
@@ -183,20 +183,6 @@ export function ImageUpload({
         <p className="text-xs text-red-500 mt-1.5 ml-1">{error}</p>
       )}
     </div>
-  )
-}
-
-// Specialized components for different use cases
-export function ProfileImageUpload(props: Omit<ImageUploadProps, 'aspectRatio' | 'label' | 'description' | 'placeholder'>) {
-  return (
-    <ImageUpload
-      {...props}
-      aspectRatio="profile"
-      label="Profile Image"
-      description="Upload a professional profile picture"
-      placeholder="Upload profile image"
-      maxSize={2}
-    />
   )
 }
 

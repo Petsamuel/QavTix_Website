@@ -1,6 +1,6 @@
 // 
 // QavTix Pricing Plans
-// Source: QAVTIX PROJECT PRICING & RBAC document (March 2026)
+// Source: QAVTIX PROJECT PRICING & RBAC document (LAST UPDATE MARCH 30 2026)
 // Plan IDs match the keys used in PricingFeature — do not rename without
 // updating DesktopFeatureComparison and MobileFeatureComparison too.
 //
@@ -71,8 +71,8 @@ export const hostPricingData: PricingData = {
         {
             id:            'enterprise',
             name:          'Enterprise Plan',
-            price:         0,
-            currency:      'Custom',
+            price:         300000,
+            currency:      '₦',
             perTicketFee:  0,
             description:   'Maximum power for large-scale organisations. Full analytics, resale controls, dedicated support, and custom pricing.',
             features: [

@@ -1,11 +1,9 @@
 "use client"
 
 import { space_grotesk } from "@/lib/fonts"
-import { useRouter } from "next/navigation"
 import { ATTENDEE_SELL_TICKET, NAV_LINKS } from "@/components-data/navigation/navLinks"
 import Link from "next/link"
 
-const ATTENDEE_URL = process.env.NEXT_PUBLIC_ATTENDEE_SITE
 
 export default function SellTicketsSection() {
 
@@ -21,7 +19,7 @@ export default function SellTicketsSection() {
 
             <div className="w-full flex items-center mt-8 justify-between sm:justify-center md:mt-14 gap-4">
                 <Link
-                    href={`${ATTENDEE_URL}`}
+                    href={ATTENDEE_SELL_TICKET}
                     target="_blank"
                     className="w-[45%] max-w-[10em] h-14 p-4 rounded-[30px] bg-primary hover:bg-primary-7 active:bg-primary-8 hover:shadow-md active:scale-[0.98] disabled:bg-neutral-5 disabled:cursor-not-allowed disabled:opacity-60 text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150 flex items-center justify-center gap-2"
                 >

@@ -16,8 +16,9 @@ import { AttendeeSignUpFormValues, attendeeSignUpSchema } from "@/schemas/attend
 import { ATTENDEE_SIGNUP_PATH, GET_PROFILE_PATH } from "@/apiPaths"
 import FormCheckbox1 from "@/components/custom-utils/inputs/FormCheckbox1"
 import Link from "next/link"
+import { cn } from "@/lib/utils"
 
-export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp }:{ setSuccessfulSignUp: Dispatch<SetStateAction<boolean>> }) {
+export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfulSignUp  }:{ successfulSignUp: boolean,  setSuccessfulSignUp: Dispatch<SetStateAction<boolean>> }) {
 
     const [submitError, setSubmitError] = useState<string | null>(null)
 
@@ -105,6 +106,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp }:{ setSuc
                     onInput={() => setSubmitError(null)}
                     helperText="Must be at least 8 characters"
                     data-testid="signup-password"
+                    className={cn(successfulSignUp && "blur-3xl")}
                 />
 
                 {submitError && (

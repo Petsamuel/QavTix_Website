@@ -12,7 +12,8 @@ import FormCheckbox1 from '@/components/custom-utils/inputs/FormCheckbox1'
 import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepFormButtonDuo'
 import { space_grotesk } from '@/lib/fonts'
 import { LEGAL_LINKS } from '@/components-data/navigation/navLinks'
-import { ProfileImageUpload, BannerImageUpload } from '@/components/custom-utils/ImageUpload'
+import { BannerImageUpload } from '@/components/custom-utils/ImageUpload'
+import ProfileImageUpload from '@/components/custom-utils/ProfileImageUpload'
 
 
 export function IndividualGeneralStep() {

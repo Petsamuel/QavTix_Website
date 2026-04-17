@@ -38,15 +38,24 @@ export async function POST(req: NextRequest) {
         }
 
         const { user, tokens } = json.data
+        const role = user?.role ?? ""
 
         const response = NextResponse.json(
             { message: json.message, user },
             { status: 200 }
         )
 
-        response.cookies.set("access_token", tokens.access, accessCookieOptions)
-
-        response.cookies.set("refresh_token", tokens.refresh, refreshCookieOptions)
+        if (role === "host") {
+            // Host tokens live in their own separate cookies.
+            // The public website never reads these, so hosts are
+            // never treated as authenticated attendees.
+            response.cookies.set("host_access_token",  tokens.access,  accessCookieOptions)
+            response.cookies.set("host_refresh_token", tokens.refresh, refreshCookieOptions)
+        } else {
+            // Attendee tokens
+            response.cookies.set("access_token",  tokens.access,  accessCookieOptions)
+            response.cookies.set("refresh_token", tokens.refresh, refreshCookieOptions)
+        }
 
         return response
 

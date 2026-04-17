@@ -42,7 +42,7 @@ export const PROFILE_INCOMPLETE_ALERT: PopUpMessageAlert = {
     subtitle:    "You're almost there!",
     description: "Your profile is incomplete. Add your details so you can seamlessly access all features and enjoy a personalized experience.",
     buttonText:  "Update Profile",
-    navigateTo:  `${process.env.NEXT_PUBLIC_ATTENDEE_SITE}${ATTENDEE_PROFILE_SETTINGS}`,
+    navigateTo:  ATTENDEE_PROFILE_SETTINGS,
 }
 
 export type AlertType = keyof typeof POPUP_MESSAGE_ALERT_CONFIG;
