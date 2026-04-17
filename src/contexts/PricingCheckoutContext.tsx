@@ -102,23 +102,6 @@ export function PricingCheckoutProvider({ children, accountType }: Props) {
             return
         }
 
-        // ENTERPRISE — OPEN PRE-FILLED EMAIL TO SALES
-        if (plan.currency === "Custom") {
-            const subject = "Inquiry for Custom Enterprise Plan"
-            const body =
-                `Hello QavTix Team,\n\nI am interested in your Custom Enterprise plan.\n\nMy details:\n- Name: ${user?.full_name || "[Your Full Name]"}\n- Email: ${user?.email || "[Your Email]"}\n- Organization: [Your Organization Name]\n- Number of users/attendees: [Approximate number]\n\nPlease contact me to discuss a custom plan.\n\nThank you.`
-            window.open(
-                `mailto:${CONTACT_LINKS.LAGOS.EMAIL.href}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`,
-                "_blank"
-            )
-            dispatch(showAlert({
-                title:       "Contact Sales Team",
-                description: "We've opened your email client with a pre-filled message.",
-                variant:     "default",
-            }))
-            return
-        }
-
         // MARK ONLY THIS PLAN AS PROCESSING — ALL OTHERS BECOME DISABLED
         setStatus("processing")
         setProcessingPlanId(plan.id)

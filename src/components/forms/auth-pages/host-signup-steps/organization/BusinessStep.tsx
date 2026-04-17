@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X, Plus } from 'lucide-react'
 import { Icon } from '@iconify/react'
@@ -68,13 +68,22 @@ export function OrganizationBusinessStep() {
                 data-testid="business-name"
             />
 
-            <FormSelect1
-                label="Business type"
-                required
-                options={BUSINESS_TYPES}
-                {...register('businessType')}
-                error={errors.businessType?.message}
-                data-testid="business-type"
+            <Controller 
+                name='businessType'
+                control={control}
+                render={({ field }) => {
+                    return (                     
+                        <FormSelect1
+                            label="Business type"
+                            required
+                            options={BUSINESS_TYPES}
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            error={errors.businessType?.message}
+                            data-testid="business-type"
+                        />
+                    )
+                }}
             />
 
             <div className="grid grid-cols-2 gap-4">

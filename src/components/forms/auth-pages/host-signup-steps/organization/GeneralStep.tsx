@@ -10,7 +10,8 @@ import { Country, State } from 'country-state-city';
 import Link from 'next/link'
 import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepFormButtonDuo'
 import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
-import { ProfileImageUpload, BannerImageUpload } from '@/components/custom-utils/ImageUpload'
+import { BannerImageUpload } from '@/components/custom-utils/ImageUpload'
+import ProfileImageUpload from '@/components/custom-utils/ProfileImageUpload'
 
 export function OrganizationGeneralStep() {
     const { formData, updateFormData, nextStep } = useSignup()

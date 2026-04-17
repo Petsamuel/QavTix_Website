@@ -40,6 +40,14 @@ export default function SignInForm() {
         try {
             const { data: loginData } = await axios.post(LOGIN_PATH, values)
             const role = loginData?.user?.role ?? loginData?.role ?? ""
+            const safeReturn = validateReturnTo(returnTo)
+
+            if (role === "host"){
+                const hostSite  = process.env.NEXT_PUBLIC_HOST_SITE ?? ''
+                const destination = safeReturn?.startsWith(hostSite) ? safeReturn : hostSite
+                window.location.href = destination
+                return
+            }
 
             const { data }: { data: { user: AuthUser } } = await axios.get(GET_PROFILE_PATH, {
                 params: { role },
@@ -47,15 +55,6 @@ export default function SignInForm() {
             })
 
             dispatch(setUser(data.user))
-
-            const safeReturn = validateReturnTo(returnTo)
-
-            if (data.user.role === "host") {
-                const hostSite  = process.env.NEXT_PUBLIC_HOST_SITE ?? ''
-                const destination = safeReturn?.startsWith(hostSite) ? safeReturn : hostSite
-                window.location.href = destination
-                return
-            }
 
             const attendeeSite = process.env.NEXT_PUBLIC_ATTENDEE_SITE ?? ''
             

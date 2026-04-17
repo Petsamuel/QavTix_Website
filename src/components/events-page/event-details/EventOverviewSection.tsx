@@ -40,12 +40,7 @@ export default function EventOverviewSection({ event, className }: Props) {
     const mapQuery = `${event.event_location.venue_name}, ${event.event_location.city}, ${event.event_location.country}`
 
     const handleShare = () => {
-        if (typeof navigator?.share === 'function') {
-            navigator.share({ title: event.title, text: `Check out ${event.title}! 🎉`, url: eventUrl })
-                .catch(() => setShowShare(true))
-        } else {
-            setShowShare(true)
-        }
+        setShowShare(true)
     }
 
     return (

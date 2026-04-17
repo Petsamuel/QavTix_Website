@@ -30,12 +30,7 @@ export default function GuestGettingTicketCard({ event }: { event: EventDetails 
     if (!session) return null
 
     const handleShare = () => {
-        if (typeof navigator?.share === 'function') {
-            navigator.share({ title: event.title, text: `Check out ${event.title}! 🎉`, url: eventUrl })
-                .catch(() => setShowShare(true))
-        } else {
-            setShowShare(true)
-        }
+        setShowShare(true)
     }
 
     return (
