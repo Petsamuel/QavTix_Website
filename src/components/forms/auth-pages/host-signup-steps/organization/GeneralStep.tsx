@@ -24,7 +24,11 @@ export function OrganizationGeneralStep() {
         formState: { errors }
     } = useForm<OrganizationGeneralData>({
         resolver: zodResolver(organizationGeneralSchema),
-        defaultValues: formData as Partial<OrganizationGeneralData>
+        defaultValues: {
+            ...(formData as Partial<OrganizationGeneralData>),
+            profileImage: (formData as Partial<OrganizationGeneralData>).profileImage,
+            bannerImage:  (formData as Partial<OrganizationGeneralData>).bannerImage,
+        },
     })
 
     const onSubmit : SubmitHandler<OrganizationGeneralData> = (data) => {
@@ -84,7 +88,10 @@ export function OrganizationGeneralStep() {
                 render={({ field }) => (
                     <ProfileImageUpload
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={(file) => {
+                            field.onChange(file)
+                            updateFormData({ profileImage: file ?? undefined })
+                        }}
                         error={errors.profileImage?.message}
                     />
                 )}
@@ -96,7 +103,10 @@ export function OrganizationGeneralStep() {
                 render={({ field }) => (
                     <BannerImageUpload
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={(file) => {
+                            field.onChange(file)
+                            updateFormData({ bannerImage: file ?? undefined })
+                        }}
                         error={errors.bannerImage?.message}
                     />
                 )}

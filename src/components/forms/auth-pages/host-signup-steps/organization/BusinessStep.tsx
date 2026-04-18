@@ -30,7 +30,11 @@ export function OrganizationBusinessStep() {
         formState: { errors },
     } = useForm<OrganizationBusinessData>({
         resolver:      zodResolver(organizationBusinessSchema),
-        defaultValues: formData as Partial<OrganizationBusinessData>,
+        defaultValues: {
+            ...(formData as Partial<OrganizationBusinessData>),
+            eventCategories: (formData as Partial<OrganizationBusinessData>).eventCategories ?? [],
+            relevantLinks:   (formData as Partial<OrganizationBusinessData>).relevantLinks   ?? [],
+        },
     })
 
     const { fields, append, remove } = useFieldArray<OrganizationBusinessData, "relevantLinks", "id">({

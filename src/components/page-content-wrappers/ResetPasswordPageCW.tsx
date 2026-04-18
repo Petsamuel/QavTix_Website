@@ -194,6 +194,7 @@ export default function ResetPasswordPageCW() {
                                 <PasswordInput1
                                     {...register("password")}
                                     error={errors.password?.message}
+                                    autoComplete="new-password"
                                     data-testid="new-password"
                                 />
                             </div>
@@ -205,6 +206,7 @@ export default function ResetPasswordPageCW() {
                                 <PasswordInput1
                                     {...register("confirmPassword")}
                                     error={errors.confirmPassword?.message}
+                                    autoComplete="new-password"
                                     data-testid="confirm-password"
                                 />
                             </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
@@ -10,7 +10,7 @@ interface ImageUploadProps {
   onChange: (file: File | null) => void
   error?: string
   accept?: string
-  maxSize?: number // in MB
+  maxSize?: number
   className?: string
   aspectRatio?: 'square' | 'banner' | 'profile'
   label?: string
@@ -30,46 +30,48 @@ export function ImageUpload({
   description,
   placeholder = 'Click or drag file to this area to upload'
 }: ImageUploadProps) {
-  const [preview, setPreview] = useState<string | null>(
-    typeof value === 'string' ? value : null
-  )
+  const [preview, setPreview] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  useEffect(() => {
+    if (!value) {
+      setPreview(null)
+      return
+    }
+    if (typeof value === 'string') {
+      setPreview(value)
+      return
+    }
+    if (value instanceof File) {
+      const reader = new FileReader()
+      reader.onload = (e) => setPreview(e.target?.result as string)
+      reader.readAsDataURL(value)
+    }
+  }, [value])
+
   const aspectClasses = {
-    square: 'aspect-square',
-    banner: 'aspect-video',
-    profile: 'aspect-square rounded-full'
+    square:  'aspect-square',
+    banner:  'aspect-video',
+    profile: 'aspect-square rounded-full',
   }
 
   const handleFile = (file: File) => {
-    // Validate file size
     if (file.size > maxSize * 1024 * 1024) {
       alert(`File size must be less than ${maxSize}MB`)
       return
     }
-
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       alert('Please upload an image file')
       return
     }
-
-    // Create preview
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      setPreview(e.target?.result as string)
-    }
-    reader.readAsDataURL(file)
-
     onChange(file)
+    // Preview is handled by the useEffect above reacting to value change
   }
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(false)
-
     const file = e.dataTransfer.files[0]
     if (file) handleFile(file)
   }
@@ -82,9 +84,7 @@ export function ImageUpload({
   const handleRemove = () => {
     setPreview(null)
     onChange(null)
-    if (inputRef.current) {
-      inputRef.current.value = ''
-    }
+    if (inputRef.current) inputRef.current.value = ''
   }
 
   return (
@@ -96,7 +96,6 @@ export function ImageUpload({
       )}
 
       {preview ? (
-        // Image Preview
         <div className={cn(
           'relative w-full overflow-hidden border-2 border-neutral-3 bg-neutral-1',
           aspectClasses[aspectRatio]
@@ -105,35 +104,19 @@ export function ImageUpload({
             src={preview}
             alt="Upload preview"
             fill
-            className={cn(
-              'object-cover',
-              aspectRatio === 'profile' && 'rounded-full'
-            )}
+            className={cn('object-cover', aspectRatio === 'profile' && 'rounded-full')}
           />
           <button
             type="button"
             onClick={handleRemove}
-            disabled={isUploading}
-            className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors shadow-lg disabled:opacity-50"
+            className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors shadow-lg"
           >
             <Icon icon="lucide:x" className="w-4 h-4" />
           </button>
-          {isUploading && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <div className="flex items-center gap-2 text-white">
-                <Icon icon="lucide:loader-2" className="w-5 h-5 animate-spin" />
-                <span className="text-sm">Uploading...</span>
-              </div>
-            </div>
-          )}
         </div>
       ) : (
-        // Upload Area
         <div
-          onDragOver={(e) => {
-            e.preventDefault()
-            setIsDragging(true)
-          }}
+          onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
           onDragLeave={() => setIsDragging(false)}
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
@@ -145,43 +128,28 @@ export function ImageUpload({
               ? 'border-primary-5 bg-primary-1'
               : 'border-secondary-5 bg-white hover:border-neutral-5 hover:bg-neutral-2',
             error && 'border-red-400',
-            isUploading && 'pointer-events-none opacity-50'
           )}
         >
           <Icon
             icon="iconoir:cloud-upload"
-            className={cn(
-              'size-8',
-              isDragging ? 'text-primary-6' : 'text-secondary-5'
-            )}
+            className={cn('size-8', isDragging ? 'text-primary-6' : 'text-secondary-5')}
           />
           <div className="text-center px-4 text-secondary-5">
-            <p className="font-medium text-sm">
-              {placeholder}
-            </p>
-            {description && (
-              <p className="mt-1 text-xs text-secondary-4">
-                {description}
-              </p>
-            )}
-            <p className="mt-1 text-xs text-secondary-4">
-              Max size: {maxSize}MB • JPEG, PNG, WEBP
-            </p>
+            <p className="font-medium text-sm">{placeholder}</p>
+            {description && <p className="mt-1 text-xs text-secondary-4">{description}</p>}
+            <p className="mt-1 text-xs text-secondary-4">Max size: {maxSize}MB • JPEG, PNG, WEBP</p>
           </div>
           <input
             ref={inputRef}
             type="file"
             accept={accept}
             onChange={handleChange}
-            disabled={isUploading}
             className="hidden"
           />
         </div>
       )}
 
-      {error && (
-        <p className="text-xs text-red-500 mt-1.5 ml-1">{error}</p>
-      )}
+      {error && <p className="text-xs text-red-500 mt-1.5 ml-1">{error}</p>}
     </div>
   )
 }
