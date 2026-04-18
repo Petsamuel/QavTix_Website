@@ -10,6 +10,7 @@ interface IPasswordInput1Props {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     errorDataTestId?: string;
     [key: string]: any;
+    autoComplete?: string
 }
 
 export default function PasswordInput1({ 
@@ -18,6 +19,7 @@ export default function PasswordInput1({
     value,
     helperText,
     onChange,
+    autoComplete = "new-password",
     errorDataTestId,
     ...props 
 }: IPasswordInput1Props) {
@@ -44,6 +46,7 @@ export default function PasswordInput1({
                     placeholder={placeholder}
                     className="flex-1 outline-none text-sm text-neutral-9 placeholder:text-neutral-7 bg-transparent peer"
                     {...props}
+                    autoComplete={autoComplete}
                 />
                 
                 <button

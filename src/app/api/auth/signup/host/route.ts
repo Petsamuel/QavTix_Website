@@ -15,15 +15,20 @@ export async function POST(req: NextRequest) {
             body:    JSON.stringify(body),
         })
 
-        const json = await res.json()
+        // Safely parse — the API might return an HTML error page on 5xx
+        const contentType = res.headers.get("content-type") ?? ""
+        const isJson      = contentType.includes("application/json")
+        const json        = isJson ? await res.json() : null
+
+        console.log("[host-register] status:", res.status)
+        console.log("[host-register] raw json:", JSON.stringify(json, null, 2))
 
         if (!res.ok) {
-            console.log("[host-register] status:", res.status)
-            console.log("[host-register] raw json:", JSON.stringify(json, null, 2))
-
             const message = res.status === 409
                 ? "An account with this email already exists. Please sign in instead."
-                : handleApiError(json)
+                : json
+                    ? handleApiError(json)
+                    : `Server error (${res.status}). Please try again.`
 
             return NextResponse.json({ message }, { status: res.status })
         }
@@ -35,8 +40,6 @@ export async function POST(req: NextRequest) {
             { status: 201 }
         )
 
-        // Host tokens are namespaced separately so the public
-        // website's proxy never picks them up as attendee sessions.
         response.cookies.set("host_access_token",  access,  accessCookieOptions)
         response.cookies.set("host_refresh_token", refresh, refreshCookieOptions)
 

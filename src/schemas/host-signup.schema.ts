@@ -65,7 +65,7 @@ export const organizationBusinessSchema = z.object({
     description: z.string().min(10, 'Description must be at least 10 characters'),
     relevantLinks: z.array(
         z.object({
-            link: z.string().trim().url({ message: 'Invalid URL' })
+            link: z.url({ message: 'Invalid URL' })
         })
     ),
     eventCategories: z.array(z.string()).min(1, 'Select at least one category'),

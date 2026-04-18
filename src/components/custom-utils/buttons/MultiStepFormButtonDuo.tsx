@@ -27,6 +27,7 @@ export default function MultiStepFormButtonDuo({ isSubmitting }: Props) {
             <button
                 type="button"
                 onClick={handleBack}
+                disabled={!!isSubmitting}
                 className="flex-1 text-secondary-8 bg-white hover:shadow flex items-center gap-2 justify-center px-6 py-3 rounded-[30px] border-2 border-secondary-3 font-medium text-sm hover:bg-neutral-2 hover:border-secondary-5 active:bg-neutral-3 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-neutral-4 focus:ring-offset-2 transition-all duration-150"
             >
                 {currentStep > 1 && <Icon icon="lets-icons:arrow-left" width="24" height="24" />}

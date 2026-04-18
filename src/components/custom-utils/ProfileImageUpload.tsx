@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
@@ -19,11 +19,25 @@ export default function ProfileImageUpload({
     disabled = false,
 }: ProfileImageUploadProps) {
 
-    const [preview, setPreview] = useState<string | null>(
-        typeof value === 'string' ? value : null
-    )
-    const [isDragging, setIsDragging] = useState(false)
-    const inputRef = useRef<HTMLInputElement>(null)
+  const [preview, setPreview] = useState<string | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (!value) {
+      setPreview(null)
+      return
+    }
+    if (typeof value === 'string') {
+      setPreview(value)
+      return
+    }
+    if (value instanceof File) {
+      const reader = new FileReader()
+      reader.onload = (e) => setPreview(e.target?.result as string)
+      reader.readAsDataURL(value)
+    }
+  }, [value])
 
     const handleFile = (file: File) => {
         if (file.size > 2 * 1024 * 1024) {

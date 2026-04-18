@@ -7,6 +7,7 @@ interface PasswordInput2Props extends React.InputHTMLAttributes<HTMLInputElement
     label: string
     error?: string
     required?: boolean
+    autoComplete?: string
 }
 
 const PasswordInput2 = forwardRef<HTMLInputElement, PasswordInput2Props>(
@@ -39,6 +40,7 @@ const PasswordInput2 = forwardRef<HTMLInputElement, PasswordInput2Props>(
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                         {...props}
+                        autoComplete={props.autoComplete || 'current-password'}
                     />
 
                     <button

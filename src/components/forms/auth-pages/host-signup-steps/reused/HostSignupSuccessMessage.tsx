@@ -7,7 +7,7 @@ import ActionButton1 from "@/components/custom-utils/buttons/ActionButton1"
 import { useRouter } from "next/navigation"
 import { AnimatedDialog } from "@/components/custom-utils/AnimatedDialog"
 import { DialogDescription, DialogTitle } from "@/components/ui/dialog"
-import { NAV_LINKS } from "@/components-data/navigation/navLinks"
+import { HOST_DASHBOARD, NAV_LINKS } from "@/components-data/navigation/navLinks"
 
 
 export default function HostSignUpSuccessMessage() {
@@ -47,7 +47,7 @@ export default function HostSignUpSuccessMessage() {
                     <div className="flex flex-col gap-3 mt-8 sm:flex-row">
                         <ActionButton2
                             buttonText="Go to dashboard"
-                            action={() => router.push(NAV_LINKS.DASHBOARD.href)}
+                            action={() => router.push(HOST_DASHBOARD)}
                             className="bg-white w-1/2!"
                         />
                         <ActionButton1

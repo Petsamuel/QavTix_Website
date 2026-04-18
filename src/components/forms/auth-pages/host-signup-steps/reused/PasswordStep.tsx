@@ -111,6 +111,7 @@ export function PasswordStep({ accountType }: Props) {
                 {...register('password')}
                 error={errors.password?.message}
                 data-testid="signup-password"
+                autoComplete="new-password"
                 className={cn(signUpSuccessful && "blur-3xl")}
                 />
 
@@ -119,6 +120,7 @@ export function PasswordStep({ accountType }: Props) {
                 placeholder="Confirm your password"
                 required
                 {...register('confirmPassword')}
+                autoComplete="new-password"
                 error={errors.confirmPassword?.message}
                 data-testid="signup-confirm-password"
                 className={cn(signUpSuccessful && "blur-3xl")}

@@ -90,6 +90,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfu
                     placeholder="Enter your email address"
                     icon="mage:email"
                     {...register("email")}
+                    autoComplete="new-password"
                     onInput={() => setSubmitError(null)}
                     error={errors.email?.message}
                     data-testid="signup-email"
@@ -103,6 +104,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfu
                 <PasswordInput1
                     {...register("password")}
                     error={errors.password?.message}
+                    autoComplete="new-password"
                     onInput={() => setSubmitError(null)}
                     helperText="Must be at least 8 characters"
                     data-testid="signup-password"

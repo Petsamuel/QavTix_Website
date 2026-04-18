@@ -23,8 +23,12 @@ export function IndividualBusinessStep() {
         watch,
         formState: { errors },
     } = useForm<IndividualBusinessData>({
-        resolver:      zodResolver(individualBusinessSchema),
-        defaultValues: formData as Partial<IndividualBusinessData>,
+        resolver:   zodResolver(individualBusinessSchema),
+        defaultValues: {
+            ...(formData as Partial<IndividualBusinessData>),
+            eventCategories: (formData as Partial<IndividualBusinessData>).eventCategories ?? [],
+            relevantLinks:   (formData as Partial<IndividualBusinessData>).relevantLinks   ?? [],
+        },
     })
 
     const { fields, append, remove } = useFieldArray<IndividualBusinessData, "relevantLinks", "id">({
@@ -124,7 +128,7 @@ export function IndividualBusinessStep() {
                 {categories.length === 0 ? (
                     <div className="flex items-center gap-2 text-neutral-5 text-sm py-4">
                         <Icon icon="eos-icons:three-dots-loading" className="size-6 text-primary" />
-                        Loading categories...
+                        Error Loading Categories...Please refresh page
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 gap-5">

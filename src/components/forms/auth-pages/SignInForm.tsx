@@ -101,6 +101,7 @@ export default function SignInForm() {
                     {...register("password")}
                     error={errors.password?.message}
                     data-testid="signin-password"
+                    autoComplete="current-password"
                 />
 
                 {submitError && (

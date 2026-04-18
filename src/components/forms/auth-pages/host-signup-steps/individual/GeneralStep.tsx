@@ -26,8 +26,12 @@ export function IndividualGeneralStep() {
         control,
         formState: { errors },
     } = useForm<IndividualGeneralData>({
-        resolver:      zodResolver(individualGeneralSchema),
-        defaultValues: formData as Partial<IndividualGeneralData>,
+        resolver: zodResolver(individualGeneralSchema),
+        defaultValues: {
+            ...(formData as Partial<IndividualGeneralData>),
+            profileImage: (formData as Partial<IndividualGeneralData>).profileImage,
+            bannerImage:  (formData as Partial<IndividualGeneralData>).bannerImage,
+        },
     })
 
     const selectedCountry = watch('country')
@@ -90,7 +94,10 @@ export function IndividualGeneralStep() {
                 render={({ field }) => (
                     <ProfileImageUpload
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={(file) => {
+                            field.onChange(file)
+                            updateFormData({ profileImage: file ?? undefined })
+                        }}
                         error={errors.profileImage?.message}
                     />
                 )}
@@ -102,7 +109,10 @@ export function IndividualGeneralStep() {
                 render={({ field }) => (
                     <BannerImageUpload
                         value={field.value}
-                        onChange={field.onChange}
+                        onChange={(file) => {
+                            field.onChange(file)
+                            updateFormData({ bannerImage: file ?? undefined })
+                        }}
                         error={errors.bannerImage?.message}
                     />
                 )}
