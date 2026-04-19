@@ -42,8 +42,8 @@ export default function FeaturedEventsSection({ events }: Props) {
         emblaApi?.scrollNext()
     }, [emblaApi])
 
-    const pauseAutoPlay = useCallback(() => emblaApi?.plugins()?.autoplay?.stop(), [emblaApi])
-    const play          = useCallback(() => emblaApi?.plugins()?.autoplay?.play(), [emblaApi])
+    const pauseAutoPlay = useCallback(() => emblaApi?.plugins()?.autoplay?.stop(),  [emblaApi])
+    const play          = useCallback(() => emblaApi?.plugins()?.autoplay?.reset(), [emblaApi])
 
     const [canScrollPrev, setCanScrollPrev] = useState(false)
     const [canScrollNext, setCanScrollNext] = useState(false)

@@ -9,8 +9,9 @@ interface IPasswordInput1Props {
     helperText?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     errorDataTestId?: string;
-    [key: string]: any;
+    className?: string;
     autoComplete?: string
+    [key: string]: any;
 }
 
 export default function PasswordInput1({ 
@@ -21,6 +22,7 @@ export default function PasswordInput1({
     onChange,
     autoComplete = "new-password",
     errorDataTestId,
+    className = '',
     ...props 
 }: IPasswordInput1Props) {
     
@@ -30,9 +32,10 @@ export default function PasswordInput1({
         <div className="w-full">
             <div 
                 className={`
+                    ${className}
                     relative flex items-center gap-3 px-4 py-3.5 
                     rounded-[6px] border h-14 text-sm transition-all duration-200
-                    bg-white
+                    outline-none bg-white
                     ${error 
                         ? 'border-red-400 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500' 
                         : 'border-neutral-5 focus-within:border-primary-6 focus-within:shadow-sm'

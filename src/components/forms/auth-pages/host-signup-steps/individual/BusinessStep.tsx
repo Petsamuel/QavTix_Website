@@ -26,7 +26,7 @@ export function IndividualBusinessStep() {
         resolver:   zodResolver(individualBusinessSchema),
         defaultValues: {
             ...(formData as Partial<IndividualBusinessData>),
-            eventCategories: (formData as Partial<IndividualBusinessData>).eventCategories ?? [],
+            eventCategories: (formData as Partial<IndividualBusinessData>).eventCategories ?? ["Music"],
             relevantLinks:   (formData as Partial<IndividualBusinessData>).relevantLinks   ?? [],
         },
     })
