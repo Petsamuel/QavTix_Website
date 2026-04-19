@@ -11,7 +11,7 @@ interface PasswordInput2Props extends React.InputHTMLAttributes<HTMLInputElement
 }
 
 const PasswordInput2 = forwardRef<HTMLInputElement, PasswordInput2Props>(
-    ({ label, error, required, className = '', ...props }, ref) => {
+    ({ label, error, required, className = '', autoComplete, ...props }, ref) => {
         const [showPassword, setShowPassword] = useState(false)
         const [isFocused, setIsFocused] = useState(false)
 
@@ -24,13 +24,13 @@ const PasswordInput2 = forwardRef<HTMLInputElement, PasswordInput2Props>(
                 <div
                     className={`
                         relative flex items-center gap-3 px-4 py-3.5 rounded-[6px] h-14 transition-all duration-200
+                        outline-none bg-white
                         ${error 
                             ? 'border border-red-400 focus-within:border-red-500' 
                             : isFocused 
-                                ? 'border-[1.5px] border-primary focus:border-primary' 
+                                ? 'border-[1.5px] border-primary' 
                                 : 'border-[1.5px] border-neutral-5 hover:border-neutral-6'
                         }
-                        bg-white
                     `}
                 >
                     <input
@@ -40,7 +40,7 @@ const PasswordInput2 = forwardRef<HTMLInputElement, PasswordInput2Props>(
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
                         {...props}
-                        autoComplete={props.autoComplete || 'current-password'}
+                        autoComplete={autoComplete || 'current-password'}
                     />
 
                     <button
