@@ -1,175 +1,253 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
-import { MobileBottomSheet } from '@/components/custom-utils/EventFilterDropdownMobileBottomSheet'
-import FilterButtonsActions1 from '@/components/custom-utils/buttons/event-search/FilterActionButtons1'
-import { LocationFilterSelect } from '@/components/custom-utils/inputs/event-search/LocationFilterSelect'
-import EventFilterTypeBtn from '@/components/custom-utils/buttons/event-search/EventFilterTypeBtn'
-import { resolveCountryCode } from '@/helper-fns/resolveCountryCode'
-import { useMediaQuery } from '@/lib/custom-hooks/UseMediaQuery'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { cn } from '@/lib/utils'
+import { useState, useRef, useEffect } from "react"
+import { Icon } from "@iconify/react"
+import { cn } from "@/lib/utils"
+import { Country, State, City } from "country-state-city"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import EventFilterTypeBtn from "@/components/custom-utils/buttons/event-search/EventFilterTypeBtn"
 
-interface LocationFilterProps {
-    value?: { country: string; state: string } | null
-    filterFor?: 'homepage' | 'eventPage'
-    onChange: (value: { country: string; state: string } | null) => void
-    countries: { value: string; label: string }[]
-    getStates: (countryCode: string) => { value: string; label: string }[]
+
+interface LocationValue {
+    country: string   // ISO code e.g. "NG"
+    city: string   // city name or state name if no city
+    state?: string   // state name
+    label: string   // display label
 }
 
-export default function LocationFilter({
-    value,
-    onChange,
-    countries,
-    filterFor = 'homepage',
-    getStates
-}: LocationFilterProps) {
+interface LocationResult {
+    label: string
+    country: string
+    city: string
+    state?: string
+    type: 'city' | 'state'
+    flag: string
+}
 
+interface LocationSearchFilterProps {
+    value?: LocationValue | null
+    onChange: (value: LocationValue | null) => void
+    icon?: string
+}
 
+function buildResults(query: string): LocationResult[] {
+    if (!query || query.trim().length < 2) return []
+    const q = query.trim().toLowerCase()
+
+    const results: LocationResult[] = []
+
+    const countries = Country.getAllCountries()
+
+    for (const country of countries) {
+        // Search cities
+        const cities = City.getCitiesOfCountry(country.isoCode) ?? []
+        for (const city of cities) {
+            if (city.name.toLowerCase().startsWith(q)) {
+                const state = State.getStateByCodeAndCountry(city.stateCode, country.isoCode)
+                results.push({
+                    label: `${city.name}, ${state?.name ?? city.stateCode}, ${country.name}`,
+                    country: country.isoCode,
+                    city: city.name,
+                    state: state?.name,
+                    type: 'city',
+                    flag: country.flag ?? '',
+                })
+                if (results.length >= 30) break
+            }
+        }
+
+        // Search states too
+        if (results.length < 30) {
+            const states = State.getStatesOfCountry(country.isoCode) ?? []
+            for (const state of states) {
+                if (state.name.toLowerCase().startsWith(q)) {
+                    results.push({
+                        label: `${state.name}, ${country.name}`,
+                        country: country.isoCode,
+                        city: state.name,
+                        state: state.name,
+                        type: 'state',
+                        flag: country.flag ?? '',
+                    })
+                }
+            }
+        }
+
+        if (results.length >= 30) break
+    }
+
+    // Deduplicate and cap
+    const seen = new Set<string>()
+    return results.filter(r => {
+        if (seen.has(r.label)) return false
+        seen.add(r.label)
+        return true
+    }).slice(0, 20)
+}
+
+export function LocationSearchFilter({ value, onChange, icon = "hugeicons:location-01" }: LocationSearchFilterProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const isTablet = useMediaQuery('(min-width: 768px)')
-    
-    const [location, setLocation] = useState(() => ({
-        country: value?.country || '',
-        state: value?.state || ''
-    }))
+    const [search, setSearch] = useState("")
+    const [results, setResults] = useState<LocationResult[]>([])
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-    const states = useMemo(() => {
-        if (!location.country) return []
-        const countryCode = resolveCountryCode(location.country)
-        return countryCode ? getStates(countryCode) : []
-    }, [location.country, getStates])
+    // Debounced search
+    useEffect(() => {
+        if (debounceRef.current) clearTimeout(debounceRef.current)
 
-    const displayText = useMemo(() => {
-        if (!value?.country && !value?.state) return 'Location'
+        if (!search.trim()) {
+            setResults([])
+            return
+        }
 
-        const countryName = countries.find(c => c.value === value.country)?.label
-        const stateName = states.find(s => s.label.toLowerCase() === value.state.toLowerCase())?.label
+        debounceRef.current = setTimeout(() => {
+            setResults(buildResults(search))
+        }, 250)
 
-        return countryName && stateName
-            ? `${stateName}, ${countryName}`
-            : countryName || stateName || 'Location'
-    }, [value, countries, states])
+        return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+    }, [search])
 
-    const hasActiveFilter = !!value?.country || !!value?.state
+    // Reset on close
+    useEffect(() => {
+        if (!isOpen) setSearch("")
+    }, [isOpen])
 
-    const handleApply = useCallback(() => {
-        onChange(location.country ? location : null)
+    const handleSelect = (result: LocationResult) => {
+        onChange({
+            country: result.country,
+            city: result.city,
+            state: result.state,
+            label: result.label,
+        })
         setIsOpen(false)
-    }, [onChange, location])
+    }
 
-    const handleClear = useCallback(() => {
-        setLocation({ country: '', state: '' })
+    const handleClear = () => {
         onChange(null)
-    }, [onChange])
-
-    const handleCountryChange = useCallback((country: string) => {
-        setLocation({ country, state: '' })
-    }, [])
-
-    const handleStateChange = useCallback((state: string) => {
-        setLocation(prev => ({ ...prev, state }))
-    }, [])
-
-    const triggerVariant = filterFor === "homepage" ? 'default' : 'compact'
-
-    const filterContent = (
-        <div className="space-y-5">
-            <div>
-                <label className="block text-sm font-medium text-neutral-8 mb-2">
-                    Country
-                </label>
-                <LocationFilterSelect
-                    value={location.country}
-                    onValueChange={handleCountryChange}
-                    options={countries}
-                    placeholder="Select country"
-                />
-            </div>
-
-            <div>
-                <label className="block text-sm font-medium text-neutral-8 mb-2">
-                    State / Region
-                </label>
-                <LocationFilterSelect
-                    value={location.state}
-                    onValueChange={handleStateChange}
-                    options={states}
-                    placeholder="Select state"
-                    disabled={!location.country}
-                />
-            </div>
-        </div>
-    )
+        setSearch("")
+    }
 
     return (
-        <>
-            {/* Mobile - Bottom Sheet */}
-            {!isTablet && (
-                <>
-                    <EventFilterTypeBtn
-                        onClick={() => setIsOpen(true)}
-                        displayText={displayText}
-                        hasActiveFilter={hasActiveFilter}
-                        variant={triggerVariant}
+        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+            <DropdownMenuTrigger asChild>
+                <EventFilterTypeBtn
+                    displayText={value ? value.label.split(',')[0] : "All Locations"}
+                    hasActiveFilter={!!value}
+                />
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+                align="start"
+                sideOffset={8}
+                className={cn(
+                    "w-80 p-4 rounded-2xl shadow-xl bg-white border-none z-50",
+                    "data-[state=open]:animate-in data-[state=open]:fade-in-0",
+                    "data-[state=open]:duration-300 data-[state=open]:zoom-in-95",
+                    "data-[state=open]:slide-in-from-top-2",
+                    "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
+                    "data-[state=closed]:duration-200 data-[state=closed]:zoom-out-95",
+                    "data-[state=closed]:slide-out-to-top-2",
+                )}
+            >
+                {/* Search input */}
+                <div className="relative mb-3">
+                    <Icon
+                        icon="mage:search"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-brand-neutral-5"
                     />
+                    <input
+                        autoFocus
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Enter locationss here"
+                        className="w-full bg-brand-neutral-1 rounded-xl py-3 pl-10 pr-4 text-xs placeholder:text-xs outline-none focus:ring-1 focus:ring-brand-primary-4 placeholder:text-brand-neutral-5"
+                    />
+                    {search && (
+                        <button
+                            onClick={() => setSearch("")}
+                            className="absolute right-3 top-1/2 -translate-y-1/2"
+                        >
+                            <Icon icon="lucide:x" className="size-3.5 text-brand-neutral-5" />
+                        </button>
+                    )}
+                </div>
 
-                    <MobileBottomSheet
-                        isOpen={isOpen}
-                        onClose={() => setIsOpen(false)}
-                        title="Location"
-                    >
-                        {filterContent}
-                        <FilterButtonsActions1
-                            onApply={handleApply}
-                            onClear={handleClear}
-                        />
-                    </MobileBottomSheet>
-                </>
-            )}
+                {/* Results list */}
+                <div className="max-h-60 overflow-y-auto space-y-0.5 custom-scrollbar">
+                    {results.length > 0 ? (
+                        results.map((result, i) => (
+                            <button
+                                key={i}
+                                onClick={() => handleSelect(result)}
+                                className={cn(
+                                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors",
+                                    value?.label === result.label
+                                        ? "bg-brand-primary-1 text-brand-primary-6"
+                                        : "hover:bg-brand-neutral-1 text-brand-neutral-8"
+                                )}
+                            >
+                                {/* Flag / icon */}
+                                <span className="text-base shrink-0">
+                                    {result.flag || '📍'}
+                                </span>
 
-            {/* Tablet - Dialog */}
-            {isTablet && (
-                <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-                    <DropdownMenuTrigger asChild>
-                        <div>
-                            <EventFilterTypeBtn 
-                                onClick={() => setIsOpen(true)}
-                                displayText={displayText} 
-                                hasActiveFilter={!!hasActiveFilter}
-                                variant={triggerVariant}
-                            />
-                        </div>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent 
-                        className={cn(
-                            "w-[25em] z-100! p-4 rounded-xl shadow-[0px_3.69px_14.76px_0px_rgba(51,38,174,0.08)]",
-                            // Open animation
-                            "data-[state=open]:animate-in",
-                            "data-[state=open]:fade-in-0",
-                            "data-[state=open]:duration-500 data-[state=open]:ease-[cubic-bezier(0.16,1,0.3,1)]",
-                            "data-[state=open]:zoom-in-90",
-                            "data-[state=open]:slide-in-from-top-4",
-                            // Close animation
-                            "data-[state=closed]:animate-out",
-                            "data-[state=closed]:fade-out-0",
-                            "data-[state=closed]:duration-400 data-[state=closed]:ease-in",
-                            "data-[state=closed]:zoom-out-90",
-                            "data-[state=closed]:slide-out-to-top-4"
-                        )}
-                        align="start"
+                                <div className="min-w-0">
+                                    <p className={cn(
+                                        "text-xs font-medium truncate",
+                                        value?.label === result.label
+                                            ? "text-brand-primary-6"
+                                            : "text-brand-secondary-8"
+                                    )}>
+                                        {result.type === 'city'
+                                            ? result.city
+                                            : result.state}
+                                    </p>
+                                    <p className="text-[10px] text-brand-neutral-5 truncate">
+                                        {result.label.split(',').slice(1).join(',').trim()}
+                                    </p>
+                                </div>
+
+                                {/* Type badge */}
+                                <span className={cn(
+                                    "ml-auto shrink-0 text-[9px] font-semibold px-1.5 py-0.5 rounded-full",
+                                    result.type === 'city'
+                                        ? "bg-brand-accent-1 text-brand-accent-7"
+                                        : "bg-brand-primary-1 text-brand-primary-6"
+                                )}>
+                                    {result.type === 'city' ? 'City' : 'State'}
+                                </span>
+                            </button>
+                        ))
+                    ) : search.trim().length >= 2 ? (
+                        <p className="py-8 text-center text-xs text-brand-neutral-5">
+                            No locations found for "{search}"
+                        </p>
+                    ) : (
+                        <p className="py-8 text-center text-xs text-brand-neutral-5">
+                            Start typing to search locations
+                        </p>
+                    )}
+                </div>
+
+                <div className="flex items-center justify-between mt-4 pt-3 border-t border-brand-neutral-2">
+                    <button
+                        onClick={handleClear}
+                        className="text-sm text-brand-neutral-6 hover:text-brand-neutral-9 font-medium transition-colors px-2"
                     >
-                        <div className="space-y-6">
-                            {filterContent}
-                            <FilterButtonsActions1
-                                onApply={handleApply}
-                                onClear={handleClear}
-                            />
-                        </div>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )}
-        </>
+                        Clear
+                    </button>
+                    <button
+                        onClick={() => setIsOpen(false)}
+                        className="bg-brand-primary-6 hover:bg-brand-primary-7 text-white text-sm font-semibold px-6 py-2 rounded-full transition-colors"
+                    >
+                        Apply
+                    </button>
+                </div>
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }
