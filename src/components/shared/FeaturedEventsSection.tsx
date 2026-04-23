@@ -21,11 +21,15 @@ interface Props {
 
 export default function FeaturedEventsSection({ events }: Props) {
 
-    // Duplicate for infinite loop feel
-    const displayEvents = events.length && events.length > 3 ? [...events, ...events, ...events].map((e, i) => ({
-        ...e,
-        _key: `${e.id}-${i}`,
-    })) : events.length < 3 ? events : []
+    // Duplicate for infinite loop feel — always attach a unique _key so the JSX
+    // can use it as the React key regardless of which branch is taken.
+    const displayEvents = (() => {
+        if (events.length > 3) {
+            return [...events, ...events, ...events].map((e, i) => ({ ...e, _key: `${e.id}-${i}` }))
+        }
+        // Fewer than or equal to 3 events — show them once, still with a stable _key
+        return events.map((e, i) => ({ ...e, _key: `${e.id}-${i}` }))
+    })()
 
     const [emblaRef, emblaApi] = useEmblaCarousel(
         { loop: true, align: 'start', skipSnaps: false, dragFree: false },
@@ -82,7 +86,7 @@ export default function FeaturedEventsSection({ events }: Props) {
                     <div className="flex">
                         {displayEvents.map(event => (
                             <Link
-                                key={event.id}
+                                key={event._key}
                                 href={EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}
                                 className="flex-[0_0_85%] sm:flex-[0_0_30%] mr-2"
                             >

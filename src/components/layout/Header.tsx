@@ -14,12 +14,13 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import { getDashboardURL } from "@/helper-fns/getDashboardURL";
 import CustomAvatar from "../custom-utils/avatars/CustomAvatar";
 import { useLogOut } from "@/contexts/UseLogout";
+import LiquidBtn from "../custom-utils/buttons/LiquidButton";
 
 
 export default function Header() {
 
-    const pathName    = usePathname()
-    const router      = useRouter()
+    const pathName = usePathname()
+    const router = useRouter()
     const [showMobileMenu, setShowMobileMenu] = useState(false)
 
     const { isAuthenticated, user } = useAppSelector(store => store.auth)
@@ -30,13 +31,13 @@ export default function Header() {
         return pathName.startsWith(href)
     }
 
-    const dashboardUrl   = getDashboardURL(user?.role ?? undefined)
+    const dashboardUrl = getDashboardURL(user?.role ?? undefined)
     const activeNavLinks = isAuthenticated ? navLinksAuthenticated : navLinks
 
     if (
         pathName.startsWith("/auth") ||
         pathName.match("/checkout") ||
-        pathName === "/_not-found"  ||  // Next.js internal 404 route
+        pathName === "/_not-found" ||  // Next.js internal 404 route
         !pathsForHeader1(pathName)
     ) return null
 
@@ -68,13 +69,12 @@ export default function Header() {
 
                     if (link.type === 'cta') {
                         return (
-                            <Link
+                            <LiquidBtn
                                 key={link.href}
-                                href={link.href}
-                                className="ml-4 px-6 py-4 rounded-full bg-primary text-white font-medium text-sm hover:bg-primary-7 hover:shadow-md active:bg-primary-8 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150"
+
                             >
                                 {link.label}
-                            </Link>
+                            </LiquidBtn>
                         )
                     }
 

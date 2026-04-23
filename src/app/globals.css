@@ -58,7 +58,8 @@
   --color-primary-8: #003a91;
   --color-primary-9: #002f74;
   --color-primary-10: #00255c;
-  --color-primary: #0052cc; /* Default primary */
+  --color-primary: #0052cc;
+  /* Default primary */
 
   /* Secondary colors */
   --color-secondary-1: #f0f1f2;
@@ -71,7 +72,8 @@
   --color-secondary-8: #4c515b;
   --color-secondary-9: #3d4149;
   --color-secondary-10: #30333a;
-  --color-secondary: #6b7280; /* Default secondary */
+  --color-secondary: #6b7280;
+  /* Default secondary */
 
   /* Accent colors */
   --color-accent-1: #fff2e9;
@@ -84,7 +86,8 @@
   --color-accent-8: #b55717;
   --color-accent-9: #914613;
   --color-accent-10: #79370f;
-  --color-accent: #ff7a21; /* Default accent */
+  --color-accent: #ff7a21;
+  /* Default accent */
 
   /* Neutral colors */
   --color-neutral-1: #ffffff;
@@ -97,7 +100,8 @@
   --color-neutral-8: #595959;
   --color-neutral-9: #454545;
   --color-neutral-10: #262626;
-  --color-neutral: #8c8c8c; /* Default neutral */
+  --color-neutral: #8c8c8c;
+  /* Default neutral */
 
 
   --color-danger-tertiary: #FEE9E7;
@@ -117,6 +121,7 @@
       opacity: 0;
       transform: translate(-50%, -48%) scale(0.95);
     }
+
     to {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
@@ -128,6 +133,7 @@
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
     }
+
     to {
       opacity: 0;
       transform: translate(-50%, -48%) scale(0.95);
@@ -138,6 +144,7 @@
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
@@ -147,6 +154,7 @@
     from {
       opacity: 1;
     }
+
     to {
       opacity: 0;
     }
@@ -232,15 +240,37 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground box-border overflow-x-hidden;
   }
 }
 
 
-@keyframes dash { to { stroke-dashoffset: 0; } }
-@keyframes grow { from { width: 0% } to { width: 100% } }
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes grow {
+  from {
+    width: 0%
+  }
+
+  to {
+    width: 100%
+  }
+}
+
 @keyframes lg-ripple {
-  from { transform: scale(0); opacity: 0.4; }
-  to   { transform: scale(4); opacity: 0; }
+  from {
+    transform: scale(0);
+    opacity: 0.4;
+  }
+
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
 }
