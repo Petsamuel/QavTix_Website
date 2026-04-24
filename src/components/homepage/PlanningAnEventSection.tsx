@@ -4,6 +4,7 @@ import { space_grotesk } from "@/lib/fonts"
 import Image from "next/image"
 import { HOST_CREATE_EVENT, NAV_LINKS } from "@/components-data/navigation/navLinks"
 import Link from "next/link"
+import LiquidLink from "../custom-utils/buttons/LiquidGlassLink"
 
 export default function PlanningAnEventSection() {
 
@@ -19,14 +20,14 @@ export default function PlanningAnEventSection() {
                 </p>
 
                 <div className="flex items-center mt-8 justify-between sm:justify-start md:mt-14 gap-4">
-                    <Link
+                    <LiquidLink
                         href={HOST_CREATE_EVENT}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-[45%] max-w-[11em] p-4 h-[4em] rounded-[30px] bg-primary hover:bg-primary-7 active:bg-primary-8 hover:shadow-md active:scale-[0.98] text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150 flex items-center justify-center gap-2"
                     >
                         Create an event
-                    </Link>
+                    </LiquidLink>
 
                     <Link
                         href={NAV_LINKS.FAQ.href}

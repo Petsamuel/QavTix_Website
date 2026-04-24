@@ -140,8 +140,9 @@ export default function LiquidTabs({ value, onValueChange, options, className }:
                 <button
                     key={opt.value}
                     onClick={(e) => handleClick(e, opt.value)}
+                    disabled={opt.value === 'attendee'}
                     className={cn(
-                        "relative z-10 overflow-hidden rounded-full text-sm font-medium outline-none whitespace-nowrap transition-colors duration-300",
+                        "relative disabled:cursor-not-allowed disabled:opacity-60 disabled:pointer-events-none z-10 overflow-hidden rounded-full text-sm font-medium outline-none whitespace-nowrap transition-colors duration-300",
                         value === opt.value
                             ? "text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.32)]"
                             : "text-neutral-7 hover:text-neutral-8"

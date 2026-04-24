@@ -7,8 +7,9 @@ import SectionHeading from "@/components/shared/SectionHeading";
 import { space_grotesk } from "@/lib/fonts";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import LiquidLink from "../custom-utils/buttons/LiquidGlassLink";
 
-export default function HowItWorksPageCW(){
+export default function HowItWorksPageCW() {
 
     const router = useRouter()
 
@@ -24,12 +25,12 @@ export default function HowItWorksPageCW(){
                             <p className="text-neutral-7 mt-4">
                                 QavTix makes event ticketing simple for both organizers and attendees.  Browse or sell tickets in three easy steps, with a seamless, secure experience from start to finish. Ready to jump in?
                             </p>
-                            <button
+                            <LiquidLink
                                 onClick={() => router.push("/event/create")}
                                 className="w-fit mt-10 md:mt-14 p-4 h-[4em] rounded-[30px] bg-primary hover:bg-primary-7 active:bg-primary-8 hover:shadow-md active:scale-[0.98] disabled:bg-neutral-5 disabled:cursor-not-allowed disabled:opacity-60 text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150 flex items-center justify-center gap-2"
                             >
                                 Get started for free
-                            </button>
+                            </LiquidLink>
                         </div>
                     </div>
 
@@ -56,17 +57,17 @@ export default function HowItWorksPageCW(){
                     </p>
 
                     <div className="flex items-center mt-8 sm:justify-center md:mt-14 gap-4">
-                        <button
+                        <LiquidLink
                             onClick={() => router.push(EVENT_ROUTES.EVENTS.href)}
                             className="w-[45%] max-w-[11em] p-4 h-[4em] rounded-[30px] bg-primary hover:bg-primary-7 active:bg-primary-8 hover:shadow-md active:scale-[0.98] disabled:bg-neutral-5 disabled:cursor-not-allowed disabled:opacity-60 text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150 flex items-center justify-center gap-2"
                         >
                             Explore event
-                        </button>
+                        </LiquidLink>
 
 
                         <button
                             type="button"
-                            onClick={() => router.push("/")}
+                            onClick={() => router.push(process.env.NEXT_PUBLIC_HOST_SITE || "/")}
                             className="w-[45%] max-w-[11em] text-secondary-8 bg-white p-4 h-[4em] hover:shadow flex items-center gap-2 justify-center px-6 py-3 rounded-[30px] border-2 border-secondary-3 font-medium text-sm hover:bg-neutral-2 hover:border-secondary-5 active:bg-neutral-3 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-neutral-4 focus:ring-offset-2 transition-all duration-150"
                         >
                             Create Event

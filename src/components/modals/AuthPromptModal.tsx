@@ -10,11 +10,12 @@ import CloseBtn from "../custom-utils/buttons/event-search/CloseBtn"
 import { AnimatedDialogForPrompt } from "../custom-utils/AnimatedDialogForPrompts"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import { hideAuthPrompt } from "@/lib/redux/slices/showAuthPromptSlice"
+import LiquidLink from "../custom-utils/buttons/LiquidGlassLink"
 
 
 export default function AuthPromptModal() {
 
-    const router   = useRouter()
+    const router = useRouter()
     const dispatch = useAppDispatch()
     const { isOpen, message } = useAppSelector(state => state.authPrompt)
 
@@ -59,12 +60,12 @@ export default function AuthPromptModal() {
                     >
                         Sign In
                     </Button>
-                    <Button
+                    <LiquidLink
                         onClick={handleSignUp}
                         className="h-14 flex-1 px-6 py-3 rounded-[30px] bg-primary hover:bg-primary-7 active:bg-primary-8 hover:shadow-md active:scale-[0.98] disabled:bg-neutral-5 disabled:cursor-not-allowed disabled:opacity-60 text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150 flex items-center justify-center gap-2"
                     >
                         Get Started
-                    </Button>
+                    </LiquidLink>
                 </div>
             </div>
         </AnimatedDialogForPrompt>

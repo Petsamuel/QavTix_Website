@@ -13,6 +13,7 @@ import { getAvatarColor } from '@/helper-fns/getAvatarColor'
 import { getInitialsFromName } from '@/helper-fns/getInitialFromName'
 import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
 import { formatEventDate } from '@/helper-fns/date-utils'
+import { Skeleton } from '../ui/skeleton'
 
 
 interface Props {
@@ -46,8 +47,8 @@ export default function FeaturedEventsSection({ events }: Props) {
         emblaApi?.scrollNext()
     }, [emblaApi])
 
-    const pauseAutoPlay = useCallback(() => emblaApi?.plugins()?.autoplay?.stop(),  [emblaApi])
-    const play          = useCallback(() => emblaApi?.plugins()?.autoplay?.reset(), [emblaApi])
+    const pauseAutoPlay = useCallback(() => emblaApi?.plugins()?.autoplay?.stop(), [emblaApi])
+    const play = useCallback(() => emblaApi?.plugins()?.autoplay?.reset(), [emblaApi])
 
     const [canScrollPrev, setCanScrollPrev] = useState(false)
     const [canScrollNext, setCanScrollNext] = useState(false)
@@ -92,13 +93,17 @@ export default function FeaturedEventsSection({ events }: Props) {
                             >
                                 <div onMouseOver={pauseAutoPlay} onMouseLeave={play} className="pr-6">
                                     <div className="group drop-shadow-sm lg:drop-shadow-xs bg-transparent relative aspect-3/4 cursor-pointer">
-
-                                        <Image
-                                            src={event.event_image}
-                                            alt={event.event_name}
-                                            fill
-                                            className="object-cover rounded-4xl transition-transform duration-400 lg:group-hover:scale-103"
-                                        />
+                                        {
+                                            event.event_image ?
+                                                <Image
+                                                    src={event.event_image}
+                                                    alt={event.event_name}
+                                                    fill
+                                                    className="object-cover rounded-4xl transition-transform duration-400 lg:group-hover:scale-103"
+                                                />
+                                                :
+                                                <Skeleton className="rounded-4xl bg-neutral-4 w-full h-full transition-transform duration-400 lg:group-hover:scale-103" />
+                                        }
 
                                         <div className="absolute inset-x-0 -bottom-1 bg-white p-5 w-full group-hover:scale-103 border-b rounded-b-4xl lg:rounded-b-sm transform transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] translate-y-0 opacity-100 lg:translate-y-full lg:opacity-0 lg:group-hover:translate-y-0 md:group-hover:opacity-100">
                                             <span className="bg-accent-1 w-fit block text-accent-7 font-medium py-1 px-2 rounded-2xl text-xs">

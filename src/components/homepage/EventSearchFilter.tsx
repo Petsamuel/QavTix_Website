@@ -14,6 +14,7 @@ import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
 import { useRecentSearches } from '@/lib/custom-hooks/UseRecentSearch'
 import { deriveCategories } from '@/helper-fns/deriveCategories'
 import { format } from "date-fns"
+import LiquidLink from '../custom-utils/buttons/LiquidGlassLink'
 
 interface Props {
     initialFilters?: Partial<FilterValues>
@@ -21,16 +22,16 @@ interface Props {
 }
 
 export function EventSearchFilters({ initialFilters, categories = [] }: Props) {
-    
-    const router        = useRouter()
+
+    const router = useRouter()
     const currentParams = useSearchParams()
-    const { push }      = useRecentSearches()
+    const { push } = useRecentSearches()
 
     const [filters, setFilters] = useState<FilterValues>({
         categories: initialFilters?.categories ?? [],
         priceRange: initialFilters?.priceRange ?? null,
-        dateRange:  initialFilters?.dateRange  ?? null,
-        location:   initialFilters?.location   ?? null,
+        dateRange: initialFilters?.dateRange ?? null,
+        location: initialFilters?.location ?? null,
     })
 
     const handleSearch = () => {
@@ -71,12 +72,12 @@ export function EventSearchFilters({ initialFilters, categories = [] }: Props) {
             let locationEntry: Parameters<typeof push>[0]['location'] = null
 
             if (filters.location?.country) {
-                const countryCode  = filters.location.country
+                const countryCode = filters.location.country
                 const countryMatch = Country.getCountryByCode(countryCode.toUpperCase())
 
                 let stateLabel: string | undefined
                 if (filters.location.state) {
-                    const stateCode  = filters.location.state
+                    const stateCode = filters.location.state
                     const stateMatch = State.getStatesOfCountry(countryCode.toUpperCase())
                         .find(s => s.isoCode === stateCode.toUpperCase())
                     stateLabel = stateMatch?.name ?? stateCode
@@ -85,7 +86,7 @@ export function EventSearchFilters({ initialFilters, categories = [] }: Props) {
                 locationEntry = {
                     countryCode,
                     countryLabel: countryMatch?.name ?? countryCode,
-                    stateCode:    filters.location.state || undefined,
+                    stateCode: filters.location.state || undefined,
                     stateLabel,
                 }
             }
@@ -97,8 +98,8 @@ export function EventSearchFilters({ initialFilters, categories = [] }: Props) {
             })
 
             push({
-                query:      q ?? "",
-                location:   locationEntry,
+                query: q ?? "",
+                location: locationEntry,
                 categories: selectedCategories,
                 priceRange: filters.priceRange ?? null,
             })
@@ -162,14 +163,14 @@ export function EventSearchFilters({ initialFilters, categories = [] }: Props) {
                 </div>
 
                 {/* Search Button */}
-                <Button
+                <LiquidLink
                     onClick={handleSearch}
                     data-action="search-events"
-                    className="w-40 bg-primary hover:bg-primary-7 h-14 md:h-[9vh] xl:h-14 mt-5 md:mt-[4vh] px-8 rounded-full"
+                    className="w-40 bg-primary hover:bg-primary-7 h-14 md:h-[9vh] xl:h-14 mt-5 md:mt-[4vh] px-3 rounded-full"
                 >
                     <Search className="mr-2 size-6" />
                     Search event
-                </Button>
+                </LiquidLink>
             </div>
         </div>
     )

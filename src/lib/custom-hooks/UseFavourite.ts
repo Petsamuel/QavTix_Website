@@ -9,11 +9,11 @@ import { showAuthPrompt } from "../redux/slices/showAuthPromptSlice"
 export function useFavourite(eventID: string | number, initialState = false) {
 
     const { isAuthenticated } = useAppSelector(store => store.auth)
-    const [isFavourite,   setIsFavourite]   = useState(initialState)
-    const [feedbackMsg,   setFeedbackMsg]   = useState<string | null>(null)
-    const isPending     = useRef(false)
+    const [isFavourite, setIsFavourite] = useState(initialState)
+    const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null)
+    const isPending = useRef(false)
     const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-    const dispatch      = useAppDispatch()
+    const dispatch = useAppDispatch()
 
     const showFeedback = (msg: string) => {
         if (feedbackTimer.current) clearTimeout(feedbackTimer.current)
@@ -24,6 +24,7 @@ export function useFavourite(eventID: string | number, initialState = false) {
     const toggle = async () => {
         if (!isAuthenticated) {
             dispatch(showAuthPrompt("Sign in to save events to your favourites"))
+            return;
         }
         if (isPending.current) return
         isPending.current = true
@@ -45,8 +46,8 @@ export function useFavourite(eventID: string | number, initialState = false) {
             // Revert + error toast, no feedback
             setIsFavourite(snapshot)
             dispatch(showAlert({
-                variant:     "default",
-                title:       "Could not update favourites",
+                variant: "default",
+                title: "Could not update favourites",
                 description: result.message ?? "Please try again.",
             }))
         }

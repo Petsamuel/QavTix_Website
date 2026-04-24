@@ -15,11 +15,12 @@ import { getDashboardURL } from "@/helper-fns/getDashboardURL"
 import CustomAvatar from "../custom-utils/avatars/CustomAvatar"
 import { useLogOut } from "@/contexts/UseLogout"
 import { cn } from "@/lib/utils"
+import LiquidLink from "../custom-utils/buttons/LiquidGlassLink"
 
 export default function Header2() {
 
     const pathName = usePathname()
-    const router   = useRouter()
+    const router = useRouter()
     const [showMobileMenu, setShowMobileMenu] = useState(false)
 
     const { isAuthenticated, user } = useAppSelector(store => store.auth)
@@ -37,15 +38,15 @@ export default function Header2() {
         pathName.startsWith(NAV_LINKS.EVENT_TRAVEL_AND_TOUR.href)
 
     const mainNavLinks = header2NavLinks.filter(link => link.type !== 'cta' && link.type !== "auth")
-    const ctaLinks     = header2NavLinks.filter(link => link.type === 'cta')
-    const authLinks    = header2NavLinks.filter(link => link.type === 'auth')
+    const ctaLinks = header2NavLinks.filter(link => link.type === 'cta')
+    const authLinks = header2NavLinks.filter(link => link.type === 'auth')
     const dashboardUrl = getDashboardURL(user?.role ?? undefined)
 
     if (
-        pathName === "/"              ||
-        pathName === "/_not-found"    ||  // Next.js internal 404 route
-        pathName.startsWith("/auth")  ||
-        pathName.match("/checkout")   ||
+        pathName === "/" ||
+        pathName === "/_not-found" ||  // Next.js internal 404 route
+        pathName.startsWith("/auth") ||
+        pathName.match("/checkout") ||
         !pathsForHeader2(pathName)
     ) return null
 
@@ -112,13 +113,13 @@ export default function Header2() {
                                     </Link>
                                 ))}
                                 {ctaLinks.map(link => (
-                                    <Link
+                                    <LiquidLink
                                         key={link.href}
                                         href={link.href}
-                                        className="px-6 py-3.5 rounded-full bg-primary text-white font-medium text-sm hover:bg-primary-7 hover:shadow-md active:bg-primary-8 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150"
+                                        className="bg-primary-6 w-fit py-4 px-5 h-12"
                                     >
                                         {link.label}
-                                    </Link>
+                                    </LiquidLink>
                                 ))}
                             </>
                         )}
@@ -135,10 +136,10 @@ export default function Header2() {
                                         disabled={isLoggingOut}
                                         className="flex items-center gap-1 text-xs text-neutral-6 hover:text-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150"
                                     >
-                                    {isLoggingOut
-                                        ? <><Icon icon="eos-icons:three-dots-loading" className="size-8" /> Signing out</>
-                                        : <><Icon icon="hugeicons:logout-square-02" width="17" height="17" />Sign out</>
-                                    }
+                                        {isLoggingOut
+                                            ? <><Icon icon="eos-icons:three-dots-loading" className="size-8" /> Signing out</>
+                                            : <><Icon icon="hugeicons:logout-square-02" width="17" height="17" />Sign out</>
+                                        }
                                     </button>
                                 </div>
                             </div>

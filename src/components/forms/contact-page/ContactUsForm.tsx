@@ -6,23 +6,48 @@ import FormInput2 from "@/components/custom-utils/inputs/FormInput2";
 import FormTextarea1 from "@/components/custom-utils/inputs/FormTextarea1";
 import { space_grotesk } from "@/lib/fonts";
 import { contactUsSchema, ContactUsSchema } from "@/schemas/contact-us.schema";
+import { sendContactEmail } from "@/actions/contact";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { showAlert } from "@/lib/redux/slices/alertSlice";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 export default function ContactUsForm(){
 
+    const dispatch = useAppDispatch()
+
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors, isSubmitting }
     } = useForm<ContactUsSchema>({
         resolver: zodResolver(contactUsSchema),
     })
 
 
-    const handleContactFormSubmit : SubmitHandler<ContactUsSchema> = (data) => {
+    const handleContactFormSubmit : SubmitHandler<ContactUsSchema> = async (data) => {
+        const result = await sendContactEmail({
+            name: data.fullName,
+            email: data.email,
+            message: data.message,
+        })
 
+        if (result.success) {
+            dispatch(showAlert({
+                title: "Message sent!",
+                description: "We\'ve received your message and will get back to you soon.",
+                variant: "success",
+            }))
+            reset()
+        } else {
+            dispatch(showAlert({
+                title: "Failed to send message",
+                description: result.message ?? "Something went wrong. Please try again.",
+                variant: "destructive",
+            }))
+        }
     }
 
     return (
@@ -66,11 +91,13 @@ export default function ContactUsForm(){
                 />
 
                 <ActionButton1 
-                    buttonText="Send Message" 
+                    buttonText={isSubmitting ? "Sending…" : "Send Message"} 
                     buttonType="submit"
                     className="w-full mt-6"  
-                    icon="lucide:send-horizontal" 
+                    icon={isSubmitting ? undefined : "lucide:send-horizontal"} 
                     iconPosition="right"
+                    isLoading={isSubmitting}
+                    isDisabled={isSubmitting}
                 />
             </form>
         </section>

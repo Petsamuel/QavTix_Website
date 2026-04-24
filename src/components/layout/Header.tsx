@@ -15,6 +15,7 @@ import { getDashboardURL } from "@/helper-fns/getDashboardURL";
 import CustomAvatar from "../custom-utils/avatars/CustomAvatar";
 import { useLogOut } from "@/contexts/UseLogout";
 import LiquidBtn from "../custom-utils/buttons/LiquidButton";
+import LiquidLink from "../custom-utils/buttons/LiquidGlassLink";
 
 
 export default function Header() {
@@ -69,12 +70,13 @@ export default function Header() {
 
                     if (link.type === 'cta') {
                         return (
-                            <LiquidBtn
+                            <LiquidLink
                                 key={link.href}
-
+                                href={link.href}
+                                className="bg-primary-6 w-fit py-4 px-5 h-12"
                             >
                                 {link.label}
-                            </LiquidBtn>
+                            </LiquidLink>
                         )
                     }
 
