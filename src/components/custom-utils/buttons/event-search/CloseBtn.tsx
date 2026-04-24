@@ -1,10 +1,11 @@
 import { Icon } from "@iconify/react";
 
-export default function CloseBtn({ action }:{ action: () => void }){
+export default function CloseBtn({ action }: { action: () => void }) {
     return (
         <button
             onClick={action}
             aria-label="Close"
+            className="w-fit h-fit"
         >
             <Icon
                 icon="grommet-icons:close"

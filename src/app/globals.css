@@ -167,6 +167,27 @@
   }
 }
 
+
+@layer components {
+  .custom-phone-input .PhoneInputCountry {
+    margin: 0;
+    height: 100%;
+  }
+
+  .custom-phone-input .PhoneInputInput {
+    height: 100%;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Hide the default tiny flag if you only want the code and chevron */
+  .custom-phone-input .PhoneInputCountryIcon {
+    display: none;
+  }
+
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

@@ -12,6 +12,7 @@ import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepF
 import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
 import { BannerImageUpload } from '@/components/custom-utils/ImageUpload'
 import ProfileImageUpload from '@/components/custom-utils/ProfileImageUpload'
+import PhoneNumberInput from '@/components/custom-utils/inputs/CustomPhoneInput'
 
 export function OrganizationGeneralStep() {
     const { formData, updateFormData, nextStep } = useSignup()
@@ -27,11 +28,11 @@ export function OrganizationGeneralStep() {
         defaultValues: {
             ...(formData as Partial<OrganizationGeneralData>),
             profileImage: (formData as Partial<OrganizationGeneralData>).profileImage,
-            bannerImage:  (formData as Partial<OrganizationGeneralData>).bannerImage,
+            bannerImage: (formData as Partial<OrganizationGeneralData>).bannerImage,
         },
     })
 
-    const onSubmit : SubmitHandler<OrganizationGeneralData> = (data) => {
+    const onSubmit: SubmitHandler<OrganizationGeneralData> = (data) => {
         updateFormData(data)
         nextStep()
     }
@@ -47,7 +48,7 @@ export function OrganizationGeneralStep() {
         ? State.getStatesOfCountry(selectedCountry).map(s => ({
             value: s.isoCode,
             label: s.name
-          }))
+        }))
         : []
 
 
@@ -71,15 +72,18 @@ export function OrganizationGeneralStep() {
                 {...register('companyEmail')}
                 error={errors.companyEmail?.message}
             />
-
-            <TextInput1
-                showLabel
-                label="Phone number"
-                type="tel"
-                placeholder="Enter company phone number"
-                required
-                {...register('phone')}
-                error={errors.phone?.message}
+            <Controller
+                name="phone"
+                control={control}
+                render={({ field }) => (
+                    <PhoneNumberInput
+                        value={field.value ?? undefined}
+                        onChange={(val) => field.onChange(val ?? '')}
+                        error={errors.phone?.message}
+                        defaultCountry="NG"
+                        data-testid="phone"
+                    />
+                )}
             />
 
             <Controller
