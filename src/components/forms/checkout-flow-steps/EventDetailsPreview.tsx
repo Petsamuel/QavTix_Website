@@ -26,10 +26,10 @@ export default function EventDetailsPreview({ event }: Props) {
         : startDate ?? ""
 
     const imageSrc =
-        event.event_media?.image_url ??
-        "/images/demo-images/event-placeholder.png"
+        event.event_media?.find(v => v.is_featured)?.image_url ||
+        event.event_media[0].image_url
 
-    const hasVideo = !!event.event_media?.video_url
+    const hasVideo = !!event.event_media?.find(v => v.video_url)
 
     return (
         <>
@@ -85,7 +85,7 @@ export default function EventDetailsPreview({ event }: Props) {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <video
-                            src={event.event_media.video_url}
+                            src={event.event_media.find(v => v.video_url)?.video_url}
                             controls
                             autoPlay
                             className="w-full h-full object-cover"
