@@ -89,6 +89,7 @@ export default function SignInForm() {
                     icon="mage:email"
                     {...register("email")}
                     error={errors.email?.message}
+                    onInput={() => setSubmitError(null)}
                     data-testid="signin-email"
                 />
             </div>
@@ -100,6 +101,7 @@ export default function SignInForm() {
                 <PasswordInput1
                     {...register("password")}
                     error={errors.password?.message}
+                    onInput={() => setSubmitError(null)}
                     data-testid="signin-password"
                     autoComplete="current-password"
                 />

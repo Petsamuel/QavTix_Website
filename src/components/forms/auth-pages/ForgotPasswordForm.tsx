@@ -58,6 +58,7 @@ export default function ForgotPasswordForm() {
                     placeholder="Enter Email or Phone number"
                     {...register("email")}
                     error={errors.email?.message}
+                    onInput={() => setSubmitError(null)}
                     data-testid="forgot-password-email"
                 />
 

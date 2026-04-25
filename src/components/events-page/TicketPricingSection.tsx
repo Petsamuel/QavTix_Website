@@ -5,6 +5,7 @@ import AccessDeniedModal from "../modals/AccessDeniedModal"
 import { formatPrice } from "@/helper-fns/formatPrice"
 import { useRouter } from "next/navigation"
 import { EVENT_ROUTES } from "@/components-data/navigation/navLinks"
+import LiquidLink from "../custom-utils/buttons/LiquidGlassLink"
 
 
 
@@ -55,15 +56,15 @@ export default function TicketPricingSection({
             )}
 
             <div className="mt-8">
-                <button
+                <LiquidLink
                     onClick={() => {
-                        event.age_restriction ? setShowAgeRestrictionModal(true) : 
-                        router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id.toString()))
+                        event.age_restriction ? setShowAgeRestrictionModal(true) :
+                            router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id.toString()))
                     }}
                     className="bg-primary-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
                 >
                     Get a ticket
-                </button>
+                </LiquidLink>
             </div>
 
             <AccessDeniedModal open={showAgeRestrictionModal} setOpen={setShowAgeRestrictionModal} eventID={event.id.toString()} />

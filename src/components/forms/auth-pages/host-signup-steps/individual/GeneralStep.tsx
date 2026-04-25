@@ -14,6 +14,7 @@ import { space_grotesk } from '@/lib/fonts'
 import { LEGAL_LINKS } from '@/components-data/navigation/navLinks'
 import { BannerImageUpload } from '@/components/custom-utils/ImageUpload'
 import ProfileImageUpload from '@/components/custom-utils/ProfileImageUpload'
+import PhoneNumberInput from '@/components/custom-utils/inputs/CustomPhoneInput'
 
 
 export function IndividualGeneralStep() {
@@ -30,14 +31,14 @@ export function IndividualGeneralStep() {
         defaultValues: {
             ...(formData as Partial<IndividualGeneralData>),
             profileImage: (formData as Partial<IndividualGeneralData>).profileImage,
-            bannerImage:  (formData as Partial<IndividualGeneralData>).bannerImage,
+            bannerImage: (formData as Partial<IndividualGeneralData>).bannerImage,
         },
     })
 
     const selectedCountry = watch('country')
 
     const countries = Country.getAllCountries().map(c => ({ value: c.isoCode, label: c.name }))
-    const states    = selectedCountry
+    const states = selectedCountry
         ? State.getStatesOfCountry(selectedCountry).map(s => ({ value: s.isoCode, label: s.name }))
         : []
 
@@ -77,15 +78,19 @@ export function IndividualGeneralStep() {
                 data-testid="email"
             />
 
-            <TextInput1
-                showLabel
-                label="Phone number"
-                type="tel"
-                placeholder="Enter your phone number"
-                required
-                {...register('phone')}
-                error={errors.phone?.message}
-                data-testid="phone"
+
+            <Controller
+                name="phone"
+                control={control}
+                render={({ field }) => (
+                    <PhoneNumberInput
+                        value={field.value ?? undefined}
+                        onChange={(val) => field.onChange(val ?? '')}
+                        error={errors.phone?.message}
+                        defaultCountry="NG"
+                        data-testid="phone"
+                    />
+                )}
             />
 
             <Controller

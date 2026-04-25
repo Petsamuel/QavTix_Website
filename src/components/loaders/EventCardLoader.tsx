@@ -11,11 +11,10 @@ const EventCardLoader = () => {
 
 export default function EventCardLoaderContainer() {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(14em,1fr))] gap-6 mt-10 justify-items-center md:justify-items-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 mt-10 justify-items-center md:justify-items-start">
             {Array.from({ length: 8 }).map((_, idx) => (
                 <EventCardLoader key={idx} />
             ))}
         </div>
     )
 }
-

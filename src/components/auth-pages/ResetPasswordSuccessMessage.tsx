@@ -9,6 +9,19 @@ import { DialogDescription, DialogTitle } from "../ui/dialog"
 export default function ResetPasswordSuccessMessage() {
     return (
         <AnimatedDialog open={true} showCloseButton={false} className="rounded-[40px]" childrenContainerStyles="px-8 py-20">
+
+            <Image
+                src="/images/vectors/confetti.svg"
+                alt="" aria-hidden="true"
+                width={500} height={400}
+                className="block md:hidden absolute w-full top-0 left-0 pointer-events-none select-none"
+            />
+            <Image
+                src="/images/vectors/confetti-lg.svg"
+                alt="" aria-hidden="true"
+                width={500} height={400}
+                className="hidden md:block absolute w-full top-0 left-0 pointer-events-none select-none"
+            />
             <div className="text-center">
                 <Image
                     src="/images/vectors/success-indicator.svg"

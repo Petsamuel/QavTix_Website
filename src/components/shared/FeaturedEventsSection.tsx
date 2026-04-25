@@ -13,6 +13,7 @@ import { getAvatarColor } from '@/helper-fns/getAvatarColor'
 import { getInitialsFromName } from '@/helper-fns/getInitialFromName'
 import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
 import { formatEventDate } from '@/helper-fns/date-utils'
+import { Skeleton } from '../ui/skeleton'
 
 
 interface Props {
@@ -21,11 +22,15 @@ interface Props {
 
 export default function FeaturedEventsSection({ events }: Props) {
 
-    // Duplicate for infinite loop feel
-    const displayEvents = events.length && events.length > 3 ? [...events, ...events, ...events].map((e, i) => ({
-        ...e,
-        _key: `${e.id}-${i}`,
-    })) : events.length < 3 ? events : []
+    // Duplicate for infinite loop feel — always attach a unique _key so the JSX
+    // can use it as the React key regardless of which branch is taken.
+    const displayEvents = (() => {
+        if (events.length > 3) {
+            return [...events, ...events, ...events].map((e, i) => ({ ...e, _key: `${e.id}-${i}` }))
+        }
+        // Fewer than or equal to 3 events — show them once, still with a stable _key
+        return events.map((e, i) => ({ ...e, _key: `${e.id}-${i}` }))
+    })()
 
     const [emblaRef, emblaApi] = useEmblaCarousel(
         { loop: true, align: 'start', skipSnaps: false, dragFree: false },
@@ -42,8 +47,8 @@ export default function FeaturedEventsSection({ events }: Props) {
         emblaApi?.scrollNext()
     }, [emblaApi])
 
-    const pauseAutoPlay = useCallback(() => emblaApi?.plugins()?.autoplay?.stop(),  [emblaApi])
-    const play          = useCallback(() => emblaApi?.plugins()?.autoplay?.reset(), [emblaApi])
+    const pauseAutoPlay = useCallback(() => emblaApi?.plugins()?.autoplay?.stop(), [emblaApi])
+    const play = useCallback(() => emblaApi?.plugins()?.autoplay?.reset(), [emblaApi])
 
     const [canScrollPrev, setCanScrollPrev] = useState(false)
     const [canScrollNext, setCanScrollNext] = useState(false)
@@ -82,19 +87,23 @@ export default function FeaturedEventsSection({ events }: Props) {
                     <div className="flex">
                         {displayEvents.map(event => (
                             <Link
-                                key={event.id}
+                                key={event._key}
                                 href={EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}
                                 className="flex-[0_0_85%] sm:flex-[0_0_30%] mr-2"
                             >
                                 <div onMouseOver={pauseAutoPlay} onMouseLeave={play} className="pr-6">
                                     <div className="group drop-shadow-sm lg:drop-shadow-xs bg-transparent relative aspect-3/4 cursor-pointer">
-
-                                        <Image
-                                            src={event.event_image}
-                                            alt={event.event_name}
-                                            fill
-                                            className="object-cover rounded-4xl transition-transform duration-400 lg:group-hover:scale-103"
-                                        />
+                                        {
+                                            event.event_image ?
+                                                <Image
+                                                    src={event.event_image}
+                                                    alt={event.event_name}
+                                                    fill
+                                                    className="object-cover rounded-4xl transition-transform duration-400 lg:group-hover:scale-103"
+                                                />
+                                                :
+                                                <Skeleton className="rounded-4xl bg-neutral-4 w-full h-full transition-transform duration-400 lg:group-hover:scale-103" />
+                                        }
 
                                         <div className="absolute inset-x-0 -bottom-1 bg-white p-5 w-full group-hover:scale-103 border-b rounded-b-4xl lg:rounded-b-sm transform transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] translate-y-0 opacity-100 lg:translate-y-full lg:opacity-0 lg:group-hover:translate-y-0 md:group-hover:opacity-100">
                                             <span className="bg-accent-1 w-fit block text-accent-7 font-medium py-1 px-2 rounded-2xl text-xs">

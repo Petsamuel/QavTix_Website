@@ -14,7 +14,7 @@ export function IndividualBusinessStep() {
 
     const { formData, updateFormData, nextStep, categories } = useSignup()
 
-    
+
     const {
         register,
         handleSubmit,
@@ -23,11 +23,11 @@ export function IndividualBusinessStep() {
         watch,
         formState: { errors },
     } = useForm<IndividualBusinessData>({
-        resolver:   zodResolver(individualBusinessSchema),
+        resolver: zodResolver(individualBusinessSchema),
         defaultValues: {
             ...(formData as Partial<IndividualBusinessData>),
-            eventCategories: (formData as Partial<IndividualBusinessData>).eventCategories ?? ["Music"],
-            relevantLinks:   (formData as Partial<IndividualBusinessData>).relevantLinks   ?? [],
+            eventCategories: (formData as Partial<IndividualBusinessData>).eventCategories ?? [],
+            relevantLinks: (formData as Partial<IndividualBusinessData>).relevantLinks ?? [],
         },
     })
 
@@ -87,11 +87,10 @@ export function IndividualBusinessStep() {
                                     {...register(`relevantLinks.${index}.link`)}
                                     placeholder="https://website.com or social media link"
                                     data-testid={`relevant-link-${index}`}
-                                    className={`w-full px-4 py-3 text-sm rounded-[6px] h-14 transition-all outline-none bg-white text-neutral-9 placeholder:text-neutral-6 ${
-                                        errors.relevantLinks?.[index]?.link
+                                    className={`w-full px-4 py-3 text-sm rounded-[6px] h-14 transition-all outline-none bg-white text-neutral-9 placeholder:text-neutral-6 ${errors.relevantLinks?.[index]?.link
                                             ? 'border border-red-400 focus:border-red-500'
                                             : 'border-[1.5px] border-neutral-5 focus:border-[1.5px] focus:border-primary hover:border-neutral-6'
-                                    }`}
+                                        }`}
                                 />
                                 {errors.relevantLinks?.[index]?.link && (
                                     <p className="text-xs text-red-500 mt-1">

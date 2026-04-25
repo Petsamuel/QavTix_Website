@@ -2,7 +2,8 @@
 
 import { CATEGORIES_ENDPOINT, CATEGORY_PAGE_ENDPOINT, SEARCH_EVENTS_ENDPOINT } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
-import { getServerAxios } from "@/lib/axios"
+import { CACHE_TAGS } from "@/cache-tags"
+import { cookies } from "next/headers"
 
 export interface ApiCategory {
     id:   number
@@ -17,9 +18,19 @@ export interface GetCategoriesResult {
 
 export async function getCategories(): Promise<GetCategoriesResult> {
     try {
-        const axiosInstance = await getServerAxios()
-        const { data } = await axiosInstance.get(CATEGORIES_ENDPOINT)
-        return { success: true, data: data.data ?? [] }
+        const cookiesStore = await cookies()
+        const token = cookiesStore.get("access_token")?.value
+
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/${CATEGORIES_ENDPOINT}`,
+            {
+                next: { revalidate: 60 * 60 * 6, tags: [CACHE_TAGS.CATEGORIES] },
+                headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+            }
+        )
+        if (!res.ok) return { success: false, data: [] }
+        const json = await res.json()
+        return { success: true, data: json.data ?? [] }
     } catch {
         return { success: false, data: [] }
     }
@@ -35,7 +46,9 @@ interface CategoryPageResult {
 export async function getCategoryPage(categoryPath: string): Promise<CategoryPageResult> {
     try {
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "")}/${CATEGORY_PAGE_ENDPOINT.replace("[category_name]", categoryPath)}`
-        const res = await fetch(url, { next: { revalidate: 60 * 5 } })
+        const res = await fetch(url, {
+            next: { revalidate: 60 * 5, tags: [CACHE_TAGS.CATEGORIES] },
+        })
         const json = await res.json()
 
         if (!res.ok) {

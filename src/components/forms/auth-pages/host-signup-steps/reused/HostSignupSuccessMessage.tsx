@@ -44,21 +44,21 @@ export default function HostSignUpSuccessMessage() {
                         Your QavTix host account is active. You're just a few clicks away from your best experience yet.
                     </DialogDescription>
 
-                    <div className="flex flex-col gap-3 mt-8 sm:flex-row">
+                    <div className="flex justify-center items-center flex-col sm:flex-row gap-3 mt-8">
                         <ActionButton2
                             buttonText="Go to dashboard"
                             action={() => router.push(HOST_DASHBOARD)}
-                            className="bg-white w-1/2!"
+                            className="bg-white w-full sm:w-1/2!"
                         />
                         <ActionButton1
                             buttonText="Explore Events"
                             action={() => router.push(NAV_LINKS.EVENTS.href)}
-                            className="whitespace-nowrap w-1/2"
+                            className="whitespace-nowrap w-full sm:w-1/2!"
                         />
                     </div>
 
                     <button
-                        onClick={() => {}}
+                        onClick={() => { }}
                         className="w-fit mx-auto block font-medium text-sm mt-6 text-accent-6"
                     >
                         Watch tutorial video

@@ -22,10 +22,13 @@ async function getToken(): Promise<string | undefined> {
     return cookiesStore.get("access_token")?.value
 }
 
-async function publicFetch<T>(url: string, token?: string): Promise<T | null> {
+async function publicFetch<T>(url: string, token?: string, tags?: string[]): Promise<T | null> {
     try {
         const res = await fetch(url, {
-            next: { revalidate: 60 * 10 },
+            next: {
+                revalidate: 60 * 10,
+                ...(tags?.length ? { tags } : {}),
+            },
             headers: { ...(token && { Authorization: `Bearer ${token}` }) },
         })
         if (!res.ok) {
@@ -66,8 +69,8 @@ export async function getFeaturedEvents(country?: string): Promise<PublicPagesEv
 
     if (country) {
         const [regional, global] = await Promise.all([
-            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${FEATURED_EVENTS_ENDPOINT}?country=${country}`, token),
-            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${FEATURED_EVENTS_ENDPOINT}`, token),
+            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${FEATURED_EVENTS_ENDPOINT}?country=${country}`, token, [CACHE_TAGS.EVENT_CARDS]),
+            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${FEATURED_EVENTS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS]),
         ])
 
         const regionalResults = regional?.results ?? []
@@ -77,7 +80,7 @@ export async function getFeaturedEvents(country?: string): Promise<PublicPagesEv
         return mergeWithFallback(regionalResults, globalResults)
     }
 
-    const data = await publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${FEATURED_EVENTS_ENDPOINT}`, token)
+    const data = await publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${FEATURED_EVENTS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS])
     return data?.results ?? []
 }
 
@@ -87,8 +90,8 @@ export async function getTrendingEvents(country?: string): Promise<PublicPagesEv
 
     if (country) {
         const [regional, global] = await Promise.all([
-            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${TRENDING_EVENTS_ENDPOINT}?country=${country}`, token),
-            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${TRENDING_EVENTS_ENDPOINT}`, token),
+            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${TRENDING_EVENTS_ENDPOINT}?country=${country}`, token, [CACHE_TAGS.EVENT_CARDS]),
+            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${TRENDING_EVENTS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS]),
         ])
 
         const regionalResults = regional?.results ?? []
@@ -98,7 +101,7 @@ export async function getTrendingEvents(country?: string): Promise<PublicPagesEv
         return mergeWithFallback(regionalResults, globalResults)
     }
 
-    const data = await publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${TRENDING_EVENTS_ENDPOINT}`, token)
+    const data = await publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${TRENDING_EVENTS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS])
     return data?.results ?? []
 }
 
@@ -110,11 +113,11 @@ export async function getNearbyEvents(city: string, country?: string): Promise<P
     const countryParams = country ? new URLSearchParams({ country }) : null
 
     const [byCity, byCountry, global] = await Promise.all([
-        publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${EVENTS_NEARBY_ENDPOINT}?${cityParams}`, token),
+        publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${EVENTS_NEARBY_ENDPOINT}?${cityParams}`, token, [CACHE_TAGS.EVENT_CARDS]),
         countryParams
-            ? publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${EVENTS_NEARBY_ENDPOINT}?${countryParams}`, token)
+            ? publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${EVENTS_NEARBY_ENDPOINT}?${countryParams}`, token, [CACHE_TAGS.EVENT_CARDS])
             : Promise.resolve(null),
-        publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${EVENTS_NEARBY_ENDPOINT}`, token),
+        publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${EVENTS_NEARBY_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS]),
     ])
 
     const cityResults    = byCity?.results    ?? []
@@ -132,7 +135,7 @@ export async function getNearbyEvents(city: string, country?: string): Promise<P
 export async function getTopLocations(): Promise<TopLocation[]> {
     const base  = process.env.NEXT_PUBLIC_API_BASE_URL
     const token = await getToken()
-    const data  = await publicFetch<{ data: TopLocation[] }>(`${base}/${TOP_LOCATIONS_ENDPOINT}`, token)
+    const data  = await publicFetch<{ data: TopLocation[] }>(`${base}/${TOP_LOCATIONS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS])
     return data?.data ?? (Array.isArray(data) ? data : [])
 }
 

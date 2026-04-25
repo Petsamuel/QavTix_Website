@@ -10,7 +10,7 @@ import { fromPublicPagesEvent } from "../custom-utils/cards/resources/event-card
 
 interface Props {
     events: PublicPagesEvent[]
-    city?:  string
+    city?: string
 }
 
 const MAX_DISPLAY = 8
@@ -34,6 +34,7 @@ export default function EventsNearYouSection({ events }: Props) {
                     icon="iconoir:arrow-right"
                     action={() => router.push(NAV_LINKS.EVENTS.href)}
                 />
+
                 <button
                     onClick={() => router.push(NAV_LINKS.EVENTS.href)}
                     className="text-sm md:hidden bg-primary hover:bg-primary-7 active:bg-primary-8 text-white p-2 rounded-full h-12 aspect-square font-medium transition-colors inline-flex items-center justify-center"

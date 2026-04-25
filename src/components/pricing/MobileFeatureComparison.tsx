@@ -49,7 +49,7 @@ export default function MobileFeatureComparison({ data }: MobileFeatureCompariso
                                                         value ? (
                                                             <Icon icon="hugeicons:checkmark-square-01" width="24" height="24" className="text-postive-default" />
                                                         ) : (
-                                                            <Icon icon="basil:lock-outline" className="w-5 h-5 text-red-500" />
+                                                            <Icon icon="basil:lock-outline" className="w-5 h-5 text-neutral-8" />
                                                         )
                                                     ) : (
                                                         <span className="text-sm text-neutral-8 font-medium">{value}</span>

@@ -13,14 +13,15 @@ import { space_grotesk } from '@/lib/fonts'
 import { useAppSelector } from '@/lib/redux/hooks'
 import CustomAvatar from '../custom-utils/avatars/CustomAvatar'
 import { useLogOut } from '@/contexts/UseLogout'
+import LiquidLink from '../custom-utils/buttons/LiquidGlassLink'
 
 
-export default function MobileMenu({ 
-    openMobileMenu, 
-    setOpenMobileMenu 
-}: { 
+export default function MobileMenu({
+    openMobileMenu,
+    setOpenMobileMenu
+}: {
     openMobileMenu: boolean
-    setOpenMobileMenu: (v: boolean) => void 
+    setOpenMobileMenu: (v: boolean) => void
 }) {
 
     const { handleLogOut, isLoggingOut } = useLogOut()
@@ -41,7 +42,7 @@ export default function MobileMenu({
         if (openMobileMenu) {
             handleClose()
         }
-    },[pathname])
+    }, [pathname])
 
 
     useEffect(() => {
@@ -75,10 +76,10 @@ export default function MobileMenu({
                     {/* Menu Panel */}
                     <motion.div
                         key="menu-panel"
-                        initial={{ 
+                        initial={{
                             x: '-100%'
                         }}
-                        animate={{ 
+                        animate={{
                             x: 0,
                             transition: {
                                 type: 'tween',
@@ -87,7 +88,7 @@ export default function MobileMenu({
                                 duration: 0.4
                             }
                         }}
-                        exit={{ 
+                        exit={{
                             x: '-100%',
                             transition: {
                                 type: 'tween',
@@ -105,13 +106,13 @@ export default function MobileMenu({
 
                                 <motion.div
                                     initial={{ y: -20, opacity: 0 }}
-                                    animate={{ 
-                                        y: 0, 
+                                    animate={{
+                                        y: 0,
                                         opacity: 1,
                                         transition: { delay: 0.1, duration: 0.3 }
                                     }}
-                                    exit={{ 
-                                        y: -20, 
+                                    exit={{
+                                        y: -20,
                                         opacity: 0,
                                         transition: { duration: 0.2 }
                                     }}
@@ -121,7 +122,7 @@ export default function MobileMenu({
                                 </motion.div>
 
 
-                                <button 
+                                <button
                                     onClick={handleClose}
                                     className="p-2 hover:bg-neutral-2 rounded-full transition-colors"
                                     aria-label="Close menu"
@@ -133,13 +134,13 @@ export default function MobileMenu({
                             {/* Search Input */}
                             <motion.div
                                 initial={{ y: -20, opacity: 0 }}
-                                animate={{ 
-                                    y: 0, 
+                                animate={{
+                                    y: 0,
                                     opacity: 1,
                                     transition: { delay: 0.1, duration: 0.3 }
                                 }}
-                                exit={{ 
-                                    y: -20, 
+                                exit={{
+                                    y: -20,
                                     opacity: 0,
                                     transition: { duration: 0.2 }
                                 }}
@@ -158,11 +159,11 @@ export default function MobileMenu({
                                     return (
                                         <motion.div
                                             key={link.href}
-                                            initial={{ 
+                                            initial={{
                                                 x: -30,
-                                                opacity: 0 
+                                                opacity: 0
                                             }}
-                                            animate={{ 
+                                            animate={{
                                                 x: 0,
                                                 opacity: 1,
                                                 transition: {
@@ -202,53 +203,53 @@ export default function MobileMenu({
 
                             {
                                 isAuthenticated && user?.id ?
-                                <div className="flex mx-3 mb-3 items-center gap-1">
-                                    <CustomAvatar id={user.id} name={user.full_name} size="size-8 ring-2!" />
+                                    <div className="flex mx-3 mb-3 items-center gap-1">
+                                        <CustomAvatar id={user.id} name={user.full_name} size="size-8 ring-2!" />
 
-                                    <div className="flex flex-col gap-2">
-                                        <span className="text-xs font-medium text-neutral-8">
-                                            {user.full_name}
-                                        </span>
-                                        <button
-                                            onClick={handleLogOut}
-                                            disabled={isLoggingOut}
-                                            className="flex items-center gap-1 text-xs text-secondary-4 hover:text-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150"
-                                        >
-                                            {isLoggingOut
-                                                ? <><Icon icon="eos-icons:three-dots-loading" className="size-3" /> Signing out</>
-                                                : "Sign out"
-                                            }
-                                        </button>
+                                        <div className="flex flex-col gap-2">
+                                            <span className="text-xs font-medium text-neutral-8">
+                                                {user.full_name}
+                                            </span>
+                                            <button
+                                                onClick={handleLogOut}
+                                                disabled={isLoggingOut}
+                                                className="flex items-center gap-1 text-xs text-secondary-4 hover:text-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150"
+                                            >
+                                                {isLoggingOut
+                                                    ? <><Icon icon="eos-icons:three-dots-loading" className="size-3" /> Signing out</>
+                                                    : "Sign out"
+                                                }
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                :
-                                <motion.div
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ 
-                                        y: 0, 
-                                        opacity: 1,
-                                        transition: { delay: 0.4, duration: 0.3 }
-                                    }}
-                                    exit={{ 
-                                        y: 20, 
-                                        opacity: 0,
-                                        transition: { duration: 0.2 }
-                                    }}
-                                    className="p-4 flex items-center gap-4 border-t border-neutral-3"
-                                >
-                                    <Link
-                                        href={NAV_LINKS.SIGN_IN.href}
-                                        className="font-semibold text-neutral-8 hover:text-primary transition-colors"
+                                    :
+                                    <motion.div
+                                        initial={{ y: 20, opacity: 0 }}
+                                        animate={{
+                                            y: 0,
+                                            opacity: 1,
+                                            transition: { delay: 0.4, duration: 0.3 }
+                                        }}
+                                        exit={{
+                                            y: 20,
+                                            opacity: 0,
+                                            transition: { duration: 0.2 }
+                                        }}
+                                        className="p-4 flex items-center gap-4 border-t border-neutral-3"
                                     >
-                                        Sign in
-                                    </Link>
-                                    <Link
-                                        href={NAV_LINKS.SIGN_UP.href}
-                                        className="w-fit px-6 py-3 rounded-full text-center font-medium bg-primary text-white hover:bg-primary-7 active:scale-[0.98] transition-all shadow-md"
-                                    >
-                                        Get started
-                                    </Link>
-                                </motion.div>
+                                        <Link
+                                            href={NAV_LINKS.SIGN_IN.href}
+                                            className="font-semibold text-neutral-8 hover:text-primary transition-colors"
+                                        >
+                                            Sign in
+                                        </Link>
+                                        <LiquidLink
+                                            href={NAV_LINKS.SIGN_UP.href}
+                                            className="w-fit px-6 py-3 rounded-full text-center font-medium bg-primary text-white hover:bg-primary-7 active:scale-[0.98] transition-all shadow-md"
+                                        >
+                                            Get started
+                                        </LiquidLink>
+                                    </motion.div>
                             }
                         </div>
                     </motion.div>

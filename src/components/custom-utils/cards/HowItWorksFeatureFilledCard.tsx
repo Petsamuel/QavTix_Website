@@ -60,7 +60,7 @@ export default function HowItWorksFeatureFilledCard({ feature, index }: FeatureC
                 isActive && "max-w-none",
                 isActive ? "h-100 md:h-120 md:-translate-y-10" : "h-90 md:h-100"
             )}
-  
+
         >
             {/* Plain background (default state) */}
             <div className={cn(
@@ -81,6 +81,7 @@ export default function HowItWorksFeatureFilledCard({ feature, index }: FeatureC
                             src={feature.image}
                             alt={feature.title}
                             fill
+                            priority
                             className="object-cover"
                         />
                     </motion.div>
@@ -115,8 +116,8 @@ export default function HowItWorksFeatureFilledCard({ feature, index }: FeatureC
                             'w-10 h-10'
                         )}
                     >
-                        <Icon 
-                            icon={feature.icon} 
+                        <Icon
+                            icon={feature.icon}
                             className={cn(
                                 'transition-colors duration-500 text-primary-6',
                                 'w-5 h-5'
@@ -134,8 +135,8 @@ export default function HowItWorksFeatureFilledCard({ feature, index }: FeatureC
                             space_grotesk.className,
                             "text-secondary-9 leading-tight  transition-all duration-400",
                             // Mobile: smaller text
-                            isActive 
-                                ? "text-2xl md:text-4xl font-normal mb-8" 
+                            isActive
+                                ? "text-2xl md:text-4xl font-normal mb-8"
                                 : "text-xl md:text-2xl font-bold"
                         )}
                     >
