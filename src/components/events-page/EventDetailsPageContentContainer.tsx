@@ -40,7 +40,7 @@ export default function EventDetailsPageContentContainer({ event, relatedEvents 
                     {/* Mobile image */}
                     <figure className="md:hidden">
                         <Image
-                            src="/images/demo-images/event-detail-img.png"
+                            src={event.event_media.image_url}
                             alt={event.title}
                             width={900}
                             height={900}
