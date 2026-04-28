@@ -66,6 +66,16 @@ export function IndividualBusinessStep() {
                 data-testid="brand-name"
             />
 
+            <TextInput1
+                showLabel
+                label="NIN (National Identification Number)"
+                placeholder="Enter your 11-digit NIN"
+                required
+                {...register('nin')}
+                error={errors.nin?.message}
+                data-testid="nin"
+            />
+
             <FormTextarea1
                 label="Description"
                 placeholder="Let your audience meet you"
@@ -88,8 +98,8 @@ export function IndividualBusinessStep() {
                                     placeholder="https://website.com or social media link"
                                     data-testid={`relevant-link-${index}`}
                                     className={`w-full px-4 py-3 text-sm rounded-[6px] h-14 transition-all outline-none bg-white text-neutral-9 placeholder:text-neutral-6 ${errors.relevantLinks?.[index]?.link
-                                            ? 'border border-red-400 focus:border-red-500'
-                                            : 'border-[1.5px] border-neutral-5 focus:border-[1.5px] focus:border-primary hover:border-neutral-6'
+                                        ? 'border border-red-400 focus:border-red-500'
+                                        : 'border-[1.5px] border-neutral-5 focus:border-[1.5px] focus:border-primary hover:border-neutral-6'
                                         }`}
                                 />
                                 {errors.relevantLinks?.[index]?.link && (
