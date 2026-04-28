@@ -12,60 +12,36 @@ import {
 } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { resolveCountryLabel } from "@/helper-fns/resolveCountryCode"
-import { cacheTag, cacheLife } from "next/cache"
 import { cookies, headers } from "next/headers"
 
-const REGIONAL_MIN_THRESHOLD = 8
 
+const REGIONAL_MIN_THRESHOLD = 8
 
 async function getToken(): Promise<string | undefined> {
     const cookiesStore = await cookies()
     return cookiesStore.get("access_token")?.value
 }
 
-export async function getUserLocation(): Promise<{ city: string; country: string }> {
-    const headersList = await headers()
-    const city = headersList.get("x-vercel-ip-city") ?? "Lagos"
-    const countryCode = headersList.get("x-vercel-ip-country") ?? "NG"
-    return {
-        city: decodeURIComponent(city),
-        country: resolveCountryLabel(countryCode),
-    }
-}
-
-
-async function fetchEventCards(url: string, token?: string): Promise<any> {
-    "use cache"
-    cacheTag(CACHE_TAGS.EVENT_CARDS)
-    cacheLife("minutes")
-
-    const res = await fetch(url, {
-        headers: { ...(token && { Authorization: `Bearer ${token}` }) },
-    })
-    if (!res.ok) {
-        console.log("[fetchEventCards] failed:", url, res.status)
+async function publicFetch<T>(url: string, token?: string, tags?: string[]): Promise<T | null> {
+    try {
+        const res = await fetch(url, {
+            next: {
+                revalidate: 60 * 10,
+                ...(tags?.length ? { tags } : {}),
+            },
+            headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+        })
+        if (!res.ok) {
+            console.log("[publicFetch] failed:", url, res.status)
+            return null
+        }
+        const json = await res.json()
+        return json.data ?? json
+    } catch (err) {
+        console.log("[publicFetch] error:", url, err)
         return null
     }
-    const json = await res.json()
-    return json.data ?? json
 }
-
-async function fetchWithTag(url: string, tag: string, token?: string, life: string = "minutes"): Promise<any> {
-    "use cache"
-    cacheTag(tag)
-    cacheLife(life as any)
-
-    const res = await fetch(url, {
-        headers: { ...(token && { Authorization: `Bearer ${token}` }) },
-    })
-    if (!res.ok) {
-        console.log("[fetchWithTag] failed:", url, res.status)
-        return null
-    }
-    const json = await res.json()
-    return json.data ?? json
-}
-
 
 function mergeWithFallback(
     regional: PublicPagesEvent[],
@@ -76,6 +52,16 @@ function mergeWithFallback(
     return [...regional, ...extras]
 }
 
+export async function getUserLocation(): Promise<{ city: string; country: string }> {
+    const headersList = await headers()
+    const city = headersList.get("x-vercel-ip-city") ?? "Lagos"
+    const countryCode = headersList.get("x-vercel-ip-country") ?? "NG"
+
+    return {
+        city: decodeURIComponent(city),
+        country: resolveCountryLabel(countryCode),
+    }
+}
 
 export async function getFeaturedEvents(country?: string): Promise<PublicPagesEvent[]> {
     const base = process.env.NEXT_PUBLIC_API_BASE_URL
@@ -83,16 +69,18 @@ export async function getFeaturedEvents(country?: string): Promise<PublicPagesEv
 
     if (country) {
         const [regional, global] = await Promise.all([
-            fetchEventCards(`${base}/${FEATURED_EVENTS_ENDPOINT}?country=${country}`, token),
-            fetchEventCards(`${base}/${FEATURED_EVENTS_ENDPOINT}`, token),
+            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${FEATURED_EVENTS_ENDPOINT}?country=${country}`, token, [CACHE_TAGS.EVENT_CARDS]),
+            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${FEATURED_EVENTS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS]),
         ])
+
         const regionalResults = regional?.results ?? []
         const globalResults = global?.results ?? []
+
         if (regionalResults.length >= REGIONAL_MIN_THRESHOLD) return regionalResults
         return mergeWithFallback(regionalResults, globalResults)
     }
 
-    const data = await fetchEventCards(`${base}/${FEATURED_EVENTS_ENDPOINT}`, token)
+    const data = await publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${FEATURED_EVENTS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS])
     return data?.results ?? []
 }
 
@@ -102,16 +90,18 @@ export async function getTrendingEvents(country?: string): Promise<PublicPagesEv
 
     if (country) {
         const [regional, global] = await Promise.all([
-            fetchEventCards(`${base}/${TRENDING_EVENTS_ENDPOINT}?country=${country}`, token),
-            fetchEventCards(`${base}/${TRENDING_EVENTS_ENDPOINT}`, token),
+            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${TRENDING_EVENTS_ENDPOINT}?country=${country}`, token, [CACHE_TAGS.EVENT_CARDS]),
+            publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${TRENDING_EVENTS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS]),
         ])
+
         const regionalResults = regional?.results ?? []
         const globalResults = global?.results ?? []
+
         if (regionalResults.length >= REGIONAL_MIN_THRESHOLD) return regionalResults
         return mergeWithFallback(regionalResults, globalResults)
     }
 
-    const data = await fetchEventCards(`${base}/${TRENDING_EVENTS_ENDPOINT}`, token)
+    const data = await publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${TRENDING_EVENTS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS])
     return data?.results ?? []
 }
 
@@ -119,12 +109,15 @@ export async function getNearbyEvents(city: string, country?: string): Promise<P
     const base = process.env.NEXT_PUBLIC_API_BASE_URL
     const token = await getToken()
 
+    const cityParams = new URLSearchParams({ city })
+    const countryParams = country ? new URLSearchParams({ country }) : null
+
     const [byCity, byCountry, global] = await Promise.all([
-        fetchEventCards(`${base}/${EVENTS_NEARBY_ENDPOINT}?city=${city}`, token),
-        country
-            ? fetchEventCards(`${base}/${EVENTS_NEARBY_ENDPOINT}?country=${country}`, token)
+        publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${EVENTS_NEARBY_ENDPOINT}?${cityParams}`, token, [CACHE_TAGS.EVENT_CARDS]),
+        countryParams
+            ? publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${EVENTS_NEARBY_ENDPOINT}?${countryParams}`, token, [CACHE_TAGS.EVENT_CARDS])
             : Promise.resolve(null),
-        fetchEventCards(`${base}/${EVENTS_NEARBY_ENDPOINT}`, token),
+        publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${EVENTS_NEARBY_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS]),
     ])
 
     const cityResults = byCity?.results ?? []
@@ -132,69 +125,109 @@ export async function getNearbyEvents(city: string, country?: string): Promise<P
     const globalResults = global?.results ?? []
 
     if (cityResults.length >= REGIONAL_MIN_THRESHOLD) return cityResults
+
     const withCountry = mergeWithFallback(cityResults, countryResults)
     if (withCountry.length >= REGIONAL_MIN_THRESHOLD) return withCountry
+
     return mergeWithFallback(withCountry, globalResults)
 }
 
 export async function getTopLocations(): Promise<TopLocation[]> {
     const base = process.env.NEXT_PUBLIC_API_BASE_URL
     const token = await getToken()
-    const data = await fetchEventCards(`${base}/${TOP_LOCATIONS_ENDPOINT}`, token)
+    const data = await publicFetch<{ data: TopLocation[] }>(`${base}/${TOP_LOCATIONS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS])
     return data?.data ?? (Array.isArray(data) ? data : [])
 }
 
-export async function getLocationPage(city: string): Promise<{ success: boolean; data?: LocationPageData; message?: string }> {
-    "use cache"
-    cacheTag(CACHE_TAGS.EVENT_CARDS)
-    cacheLife("minutes")
+interface LocationPageResult {
+    success: boolean
+    data?: LocationPageData
+    message?: string
+}
+
+export async function getLocationPage(city: string): Promise<LocationPageResult> {
     try {
+        const token = await getToken()
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/${LOCATION_PAGE_ENDPOINT.replace("[loc]", city)}`
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/${LOCATION_PAGE_ENDPOINT.replace("[loc]", city)}`,
+            {
+                next: { revalidate: 60 * 5 },
+                headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+            }
         )
+
         const json = await res.json()
-        if (!res.ok) return { success: false, message: json.message ?? "Failed to load location data." }
+
+        if (!res.ok) {
+            console.log("[getLocationPage] status:", res.status, JSON.stringify(json))
+            return { success: false, message: json.message ?? "Failed to load location data." }
+        }
+
         return { success: true, data: json.data }
-    } catch {
+
+    } catch (err) {
+        console.log("[getLocationPage] error:", err)
         return { success: false, message: "Request failed." }
     }
 }
 
-export async function getEventDetails(eventID: string): Promise<{ success: boolean; data?: EventDetails; message?: string }> {
-    "use cache"
-    cacheTag(CACHE_TAGS.EVENT_DETAILS)
-    cacheTag(`event-${eventID}`)
-    cacheLife("hours")
+interface GetEventDetailsResult {
+    success: boolean
+    data?: EventDetails
+    message?: string
+}
 
+export async function getEventDetails(eventID: string): Promise<GetEventDetailsResult> {
     try {
+        const cookiesStore = await cookies()
+        const token = cookiesStore.get("access_token")?.value
+
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`
-        const res = await fetch(url)
+        const res = await fetch(url, {
+            headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+            next: { tags: [CACHE_TAGS.EVENT_DETAILS], revalidate: 600 },
+        })
+
         const json = await res.json()
-        if (!res.ok) return { success: false, message: handleApiError(json) }
+
+        if (!res.ok) {
+            console.log("[getEventDetails] status:", res.status, JSON.stringify(json))
+            return { success: false, message: handleApiError(json) }
+        }
+
         return { success: true, data: json.data ?? json }
-    } catch {
+
+    } catch (err) {
+        console.log("[getEventDetails] error:", err)
         return { success: false, message: "Failed to load event details." }
     }
 }
 
-export async function getMarketplaceEventDetails(eventID: string): Promise<{
+interface GetMarketplaceEventDetailsResult {
     success: boolean
     data?: MarketplaceEventDetails
     message?: string
     statusCode?: number
     errorCode?: string | number | null
-}> {
+}
+
+export async function getMarketplaceEventDetails(eventID: string): Promise<GetMarketplaceEventDetailsResult> {
     try {
-        const token = await getToken()
+        const cookiesStore = await cookies()
+        const token = cookiesStore.get("access_token")?.value
+
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${MARKETPLACE_EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`
 
         const res = await fetch(url, {
             cache: "no-store",
             headers: { ...(token && { Authorization: `Bearer ${token}` }) },
+            next: { tags: [CACHE_TAGS.EVENT_DETAILS] },
         })
 
         const json = await res.json()
+
         if (!res.ok) {
+            console.log("[getMarketplaceEventDetails] status:", res.status, JSON.stringify(json))
             return {
                 success: false,
                 message: handleApiError(json),
@@ -202,8 +235,15 @@ export async function getMarketplaceEventDetails(eventID: string): Promise<{
                 errorCode: json.code || json.error_code || null,
             }
         }
+
         return { success: true, data: json.data ?? json }
-    } catch {
-        return { success: false, message: "Failed to load marketplace event details.", statusCode: 500 }
+
+    } catch (err) {
+        console.log("[getMarketplaceEventDetails] error:", err)
+        return {
+            success: false,
+            message: "Failed to load marketplace event details.",
+            statusCode: 500,
+        }
     }
 }
