@@ -16,9 +16,10 @@ import { DEFAULT_LOCATION } from "@/components-data/settings.data"
 import { getServerAxios } from "@/lib/axios"
 import ModalRenderer from "@/components/modals/ModalRenderer"
 import { getGuestTicketSession } from "@/actions/util/get-ticket-session"
+import { Suspense } from "react"
 
-export const metadata: Metadata  = siteMetadata
-export const viewport: Viewport  = siteViewport
+export const metadata: Metadata = siteMetadata
+export const viewport: Viewport = siteViewport
 
 async function getLayoutData() {
     const axiosInstance = await getServerAxios()
@@ -29,14 +30,14 @@ async function getLayoutData() {
     ])
 
     return {
-        locationData:  locationResult.status  === "fulfilled" ? locationResult.value                    : DEFAULT_LOCATION,
-        ticketSession: ticketSessionResult.status === "fulfilled" ? ticketSessionResult.value            : null,
-        userData:      profileResult.status   === "fulfilled" ? profileResult.value?.data ?? null        : null,
+        locationData: locationResult.status === "fulfilled" ? locationResult.value : DEFAULT_LOCATION,
+        ticketSession: ticketSessionResult.status === "fulfilled" ? ticketSessionResult.value : null,
+        userData: profileResult.status === "fulfilled" ? profileResult.value?.data ?? null : null,
     }
 }
 
 export default async function MainRootLayout({ children }: { children: React.ReactNode }) {
-	
+
     const { locationData, ticketSession, userData } = await getLayoutData()
 
     return (
@@ -47,23 +48,25 @@ export default async function MainRootLayout({ children }: { children: React.Rea
                 <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
                 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
             </head>
-            <ReduxStoreProvider>
-                <TicketUserProvider user={userData} ticketSession={ticketSession}>
-                    <body className={`${inter.className} min-h-screen h-screen`} suppressHydrationWarning>
-                        <AppSettings currency={locationData.currency} region={locationData.region} />
-                        <AuthPersistor userData={userData} />
-                        <CustomGlobalAlert />
+            <Suspense fallback={null}>
+                <ReduxStoreProvider>
+                    <TicketUserProvider user={userData} ticketSession={ticketSession}>
+                        <body className={`${inter.className} min-h-screen h-screen`} suppressHydrationWarning>
+                            <AppSettings currency={locationData.currency} region={locationData.region} />
+                            <AuthPersistor userData={userData} />
+                            <CustomGlobalAlert />
 
-                        <Header2 />
-                        <Header />
+                            <Header2 />
+                            <Header />
 
-                        {children}
+                            {children}
 
-                        <ModalRenderer />
-                        <Footer />
-                    </body>
-                </TicketUserProvider>
-            </ReduxStoreProvider>
+                            <ModalRenderer />
+                            <Footer />
+                        </body>
+                    </TicketUserProvider>
+                </ReduxStoreProvider>
+            </Suspense>
         </html>
     )
 }

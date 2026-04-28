@@ -9,39 +9,39 @@ import { setUser } from "@/lib/redux/slices/authUserSlice"
 import { NAV_LINKS } from "@/components-data/navigation/navLinks"
 import { SOCIAL_AUTH_PATH } from "@/apiPaths"
 
-export const dynamic = "force-dynamic"
+
 
 function OAuthCallbackPage() {
-    const router       = useRouter()
+    const router = useRouter()
     const searchParams = useSearchParams()
-    const dispatch     = useAppDispatch()
+    const dispatch = useAppDispatch()
     const [error, setError] = useState<string | null>(null)
-    
+
     useEffect(() => {
-        const code     = searchParams.get("code")
+        const code = searchParams.get("code")
         const provider = searchParams.get("state")
         const callbackUrl = `${process.env.NEXT_PUBLIC_APP_DOMAIN}/auth/callback`
-    
+
         if (!code || !provider) {
             setError("Invalid callback. Please try again.")
             return
         }
-    
+
         const exchange = async () => {
             try {
                 const { data } = await axios.post(SOCIAL_AUTH_PATH.replace("[provider]", provider), {
                     code,
                     callback_url: callbackUrl,
                 })
-    
+
                 dispatch(setUser(data.user))
-    
+
                 if (data.user.role === "host") {
                     window.location.href = `host.${process.env.NEXT_PUBLIC_APP_DOMAIN}`
                 } else {
                     router.push(NAV_LINKS.HOME.href)
                 }
-    
+
             } catch (err) {
                 if (err instanceof AxiosError) {
                     setError(err.response?.data?.message ?? "Authentication failed.")
@@ -50,10 +50,10 @@ function OAuthCallbackPage() {
                 }
             }
         }
-    
+
         exchange()
     }, [])
-    
+
     if (error) return (
         <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
             <div className="p-3 rounded-full bg-red-50">
@@ -68,7 +68,7 @@ function OAuthCallbackPage() {
             </button>
         </div>
     )
-    
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center gap-3">
             <Icon icon="eos-icons:three-dots-loading" className="size-12 text-primary" />
