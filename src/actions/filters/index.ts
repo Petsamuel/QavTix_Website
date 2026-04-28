@@ -4,7 +4,6 @@ import { CATEGORIES_ENDPOINT, CATEGORY_PAGE_ENDPOINT, SEARCH_EVENTS_ENDPOINT } f
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { CACHE_TAGS } from "@/cache-tags"
 import { cookies } from "next/headers"
-import { cacheLife } from "next/cache"
 
 export interface ApiCategory {
     id: number
@@ -88,9 +87,6 @@ export async function searchEvents(
     limit = 3,
     filters: SearchEventsFilters = {},
 ): Promise<SearchEventsResult> {
-    "use cache"
-
-    cacheLife("seconds")
     try {
         const params = new URLSearchParams({ search: query, limit: String(limit) })
 
