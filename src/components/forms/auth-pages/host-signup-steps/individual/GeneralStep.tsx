@@ -169,6 +169,16 @@ export function IndividualGeneralStep() {
                 data-testid="city"
             />
 
+            <TextInput1
+                showLabel
+                label="Postal code"
+                placeholder="Enter your postal code"
+                required
+                {...register('postalCode')}
+                error={errors.postalCode?.message}
+                data-testid="postal-code"
+            />
+
             <Controller
                 name="agreedToTerms"
                 control={control}

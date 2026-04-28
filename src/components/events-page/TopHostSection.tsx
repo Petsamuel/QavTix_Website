@@ -13,15 +13,15 @@ interface Props {
 }
 
 const MIN_SLIDES_FOR_LOOP = 6     // minimum real slides to even consider looping
-const MIN_DUPLICATES        = 3   // at least 3 full sets → usually enough buffer
+const MIN_DUPLICATES = 3   // at least 3 full sets → usually enough buffer
 
 export default function TopHostsSection({ hosts }: Props) {
-  const isMobile          = !useMediaQuery('(min-width: 768px)')
-  const isDesktop         = !isMobile
+  const isMobile = !useMediaQuery('(min-width: 768px)')
+  const isDesktop = !isMobile
 
   const hasEnoughForSmoothLoop = hosts.length >= MIN_SLIDES_FOR_LOOP
 
-  const shouldLoop     = isMobile || hasEnoughForSmoothLoop
+  const shouldLoop = isMobile || hasEnoughForSmoothLoop
   const shouldAutoplay = shouldLoop
 
   let displayHosts: (TrendingHost & { _key: string })[] = hosts.map((h, i) => ({
@@ -31,7 +31,7 @@ export default function TopHostsSection({ hosts }: Props) {
 
   if (shouldLoop) {
     const copiesNeeded = Math.max(MIN_DUPLICATES, Math.ceil(2.5 * (isDesktop ? 3 : 1.5))) // rough heuristic
-    const sets         = Array.from({ length: copiesNeeded }, (_, setIdx) =>
+    const sets = Array.from({ length: copiesNeeded }, (_, setIdx) =>
       hosts.map((h, idx) => ({
         ...h,
         _key: `${h.id}-set${setIdx}-${idx}`,
@@ -43,10 +43,10 @@ export default function TopHostsSection({ hosts }: Props) {
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
-      loop:      shouldLoop,
-      align:     'start',
+      loop: shouldLoop,
+      align: 'start',
       skipSnaps: false,
-      dragFree:  false,
+      dragFree: false,
       watchDrag: shouldLoop,
       startIndex: shouldLoop ? hosts.length : 0,
     },
@@ -66,7 +66,7 @@ export default function TopHostsSection({ hosts }: Props) {
   }, [emblaApi])
 
   const pauseAutoPlay = useCallback(() => emblaApi?.plugins()?.autoplay?.stop(), [emblaApi])
-  const playAutoPlay   = useCallback(() => emblaApi?.plugins()?.autoplay?.play(),  [emblaApi])
+  const playAutoPlay = useCallback(() => emblaApi?.plugins()?.autoplay?.play(), [emblaApi])
 
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
@@ -91,7 +91,7 @@ export default function TopHostsSection({ hosts }: Props) {
   return (
     <section className="w-full pt-16 md:pt-10 pb-16 px-4 md:ps-10 lg:ps-16 md:pe-0">
       <div>
-        <div className="flex items-center gap-6 justify-between md:pe-16">
+        <div className="flex pe-4 items-center gap-6 justify-between mb-8 md:pe-10">
           <h2 className={`text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
             Top Hosts
           </h2>

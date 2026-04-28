@@ -204,7 +204,7 @@ export default function MobileMenu({
                             {
                                 isAuthenticated && user?.id ?
                                     <div className="flex mx-3 mb-3 items-center gap-1">
-                                        <CustomAvatar id={user.id} name={user.full_name} size="size-8 ring-2!" />
+                                        <CustomAvatar id={user.id} profileImg={user.profile_picture} name={user.full_name} size="size-7 ring-2!" textSize="text-base" />
 
                                         <div className="flex flex-col gap-2">
                                             <span className="text-xs font-medium text-neutral-8">

@@ -8,23 +8,26 @@ export const individualGeneralSchema = z.object({
     country: z.string().min(1, 'Please select a country'),
     state: z.string().min(1, 'Please select a state'),
     city: z.string().min(2, 'Please enter your city'),
+    postalCode: z.string().min(1, 'Postal code is required'), // ← ADD
     profileImage: z.instanceof(File, { message: "Profile image is required" })
         .refine((file) => file.size <= 2 * 1024 * 1024, "Profile image must be less than 2MB")
         .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
-                "Profile image must be JPEG, PNG, or WEBP"),
+            "Profile image must be JPEG, PNG, or WEBP"),
     bannerImage: z.instanceof(File, { message: "Banner image is required" })
         .refine((file) => file.size <= 5 * 1024 * 1024, "Banner image must be less than 5MB")
         .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
-                "Banner image must be JPEG, PNG, or WEBP"),
+            "Banner image must be JPEG, PNG, or WEBP"),
     agreedToTerms: z.boolean({
-    error: "Please complete all mandatory fields",   // This shows when value is undefined/missing
+        error: "Please complete all mandatory fields",
     }).refine((val) => val === true, {
-    message: 'Please complete all mandatory fields',
+        message: 'Please complete all mandatory fields',
     }),
 })
 
+
 export const individualBusinessSchema = z.object({
     brandName: z.string().min(2, 'Brand name is required'),
+    nin: z.string().min(11, 'NIN must be 11 digits').max(11, 'NIN must be 11 digits').regex(/^\d+$/, 'NIN must be numeric'), // ← ADD
     description: z.string().min(10, 'Description must be at least 10 characters'),
     relevantLinks: z.array(
         z.object({
@@ -44,21 +47,22 @@ export const organizationGeneralSchema = z.object({
     profileImage: z.instanceof(File, { message: "Profile image is required" })
         .refine((file) => file.size <= 2 * 1024 * 1024, "Profile image must be less than 2MB")
         .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
-                "Profile image must be JPEG, PNG, or WEBP"),
+            "Profile image must be JPEG, PNG, or WEBP"),
     bannerImage: z.instanceof(File, { message: "Banner image is required" })
         .refine((file) => file.size <= 5 * 1024 * 1024, "Banner image must be less than 5MB")
         .refine((file) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
-                "Banner image must be JPEG, PNG, or WEBP"),
+            "Banner image must be JPEG, PNG, or WEBP"),
     agreedToTerms: z.boolean({
-    error: "Please complete all mandatory fields",   // This shows when value is undefined/missing
+        error: "Please complete all mandatory fields",
     }).refine((val) => val === true, {
-    message: 'Please complete all mandatory fields',
+        message: 'Please complete all mandatory fields',
     }),
 })
 
 export const organizationBusinessSchema = z.object({
     businessName: z.string().min(2, 'Business name is required'),
     businessType: z.string().min(1, 'Please select business type'),
+    nin: z.string().min(11, 'NIN must be 11 digits').max(11, 'NIN must be 11 digits').regex(/^\d+$/, 'NIN must be numeric'), // ← ADD
     registrationNumber: z.string().min(1, 'Registration number is required'),
     taxId: z.string().min(1, 'Tax ID is required'),
     postalCode: z.string().min(1, 'Postal code is required'),

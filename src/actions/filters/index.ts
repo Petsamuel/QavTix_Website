@@ -6,14 +6,14 @@ import { CACHE_TAGS } from "@/cache-tags"
 import { cookies } from "next/headers"
 
 export interface ApiCategory {
-    id:   number
+    id: number
     name: string
 }
 
 export interface GetCategoriesResult {
-    success:    boolean
-    data:       ApiCategory[]
-    message?:   string
+    success: boolean
+    data: ApiCategory[]
+    message?: string
 }
 
 export async function getCategories(): Promise<GetCategoriesResult> {
@@ -38,8 +38,8 @@ export async function getCategories(): Promise<GetCategoriesResult> {
 
 
 interface CategoryPageResult {
-    success:  boolean
-    data?:    CategoryPageData
+    success: boolean
+    data?: CategoryPageData
     message?: string
 }
 
@@ -66,25 +66,25 @@ export async function getCategoryPage(categoryPath: string): Promise<CategoryPag
 
 
 export interface SearchEventsResult {
-    success:  boolean
-    data?:    PublicPagesEvent[]
-    total?:   number
+    success: boolean
+    data?: PublicPagesEvent[]
+    total?: number
     message?: string
 }
 
 export interface SearchEventsFilters {
-    categories?:  number[]
-    country?:     string
-    state?:       string
-    min_price?:   number
-    max_price?:   number
-    start_date?:  string
-    end_date?:    string
+    categories?: number[]
+    country?: string
+    state?: string
+    min_price?: number
+    max_price?: number
+    start_date?: string
+    end_date?: string
 }
 
 export async function searchEvents(
-    query:   string,
-    limit  = 3,
+    query: string,
+    limit = 3,
     filters: SearchEventsFilters = {},
 ): Promise<SearchEventsResult> {
     try {
@@ -93,20 +93,20 @@ export async function searchEvents(
         if (filters.categories?.length) {
             filters.categories.forEach(id => params.append("category", String(id)))
         }
-        if (filters.country)            params.set("country",    filters.country)
-        if (filters.state)              params.set("state",      filters.state)
-        if (filters.min_price != null)  params.set("min_price",  String(filters.min_price))
-        if (filters.max_price != null)  params.set("max_price",  String(filters.max_price))
-        if (filters.start_date)         params.set("start_date", filters.start_date)
-        if (filters.end_date)           params.set("end_date",   filters.end_date)
+        if (filters.country) params.set("country", filters.country)
+        if (filters.state) params.set("state", filters.state)
+        if (filters.min_price != null) params.set("min_price", String(filters.min_price))
+        if (filters.max_price != null) params.set("max_price", String(filters.max_price))
+        if (filters.start_date) params.set("start_date", filters.start_date)
+        if (filters.end_date) params.set("end_date", filters.end_date)
 
-        const base    = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "")
+        const base = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "")
         const fullUrl = `${base}/${SEARCH_EVENTS_ENDPOINT}?${params}`
 
         console.log("[searchEvents] URL:", fullUrl)
         console.log("[searchEvents] filters:", JSON.stringify(filters, null, 2))
 
-        const res  = await fetch(fullUrl, { cache: "no-store" })
+        const res = await fetch(fullUrl)
         const json = await res.json()
 
         if (!res.ok) {
@@ -115,7 +115,7 @@ export async function searchEvents(
         }
 
         const results = json.data?.results ?? json.results ?? []
-        const total   = json.data?.count   ?? json.count   ?? results.length
+        const total = json.data?.count ?? json.count ?? results.length
 
         console.log("[searchEvents] total:", total, "| returned:", results.length)
 

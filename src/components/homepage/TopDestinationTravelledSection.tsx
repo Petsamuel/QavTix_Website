@@ -27,7 +27,7 @@ export default function TopDestinationTravelledSection({ locations }: Props) {
             ...FALLBACK_DESTINATIONS.filter(
                 fb => !locations.some(loc => loc.city.toLowerCase() === fb.city.toLowerCase())
             ).slice(0, MIN_LOCATIONS - locations.length),
-          ]
+        ]
 
     // Merge live data with curated images + descriptions
     const enriched = paddedLocations.map(loc => ({
@@ -70,7 +70,7 @@ export default function TopDestinationTravelledSection({ locations }: Props) {
     return (
         <section className="w-full py-8 mt-8 bg-neutral-1 ps-4 sm:ps-10 lg:ps-14 xl:ps-20 lg:min-h-[25em] lg:h-[25em]">
             <div>
-                <div className="flex items-center justify-between mb-10 pe-4 sm:pe-10 lg:pe-14 xl:pe-20">
+                <div className="flex pe-4 items-center gap-6 justify-between mb-8 md:pe-10">
                     <h2 className={`text-2xl md:text-3xl font-bold text-secondary-9 ${space_grotesk.className}`}>
                         Top traveled destinations
                     </h2>

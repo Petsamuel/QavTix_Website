@@ -13,7 +13,7 @@ import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepF
 import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
 
 const BUSINESS_TYPES = [
-    { value: 'llc',         label: 'LLC' },
+    { value: 'llc', label: 'LLC' },
     { value: 'corporation', label: 'Corporation' },
     { value: 'partnership', label: 'Partnership' },
 ]
@@ -29,11 +29,11 @@ export function OrganizationBusinessStep() {
         watch,
         formState: { errors },
     } = useForm<OrganizationBusinessData>({
-        resolver:      zodResolver(organizationBusinessSchema),
+        resolver: zodResolver(organizationBusinessSchema),
         defaultValues: {
             ...(formData as Partial<OrganizationBusinessData>),
             eventCategories: (formData as Partial<OrganizationBusinessData>).eventCategories ?? [],
-            relevantLinks:   (formData as Partial<OrganizationBusinessData>).relevantLinks   ?? [],
+            relevantLinks: (formData as Partial<OrganizationBusinessData>).relevantLinks ?? [],
         },
     })
 
@@ -72,11 +72,11 @@ export function OrganizationBusinessStep() {
                 data-testid="business-name"
             />
 
-            <Controller 
+            <Controller
                 name='businessType'
                 control={control}
                 render={({ field }) => {
-                    return (                     
+                    return (
                         <FormSelect1
                             label="Business type"
                             required
@@ -113,6 +113,16 @@ export function OrganizationBusinessStep() {
 
             <TextInput1
                 showLabel
+                label="NIN (National Identification Number)"
+                placeholder="Enter your 11-digit NIN"
+                required
+                {...register('nin')}
+                error={errors.nin?.message}
+                data-testid="nin"
+            />
+
+            <TextInput1
+                showLabel
                 label="Postal code"
                 placeholder="Enter your postal code"
                 required
@@ -142,11 +152,10 @@ export function OrganizationBusinessStep() {
                                     {...register(`relevantLinks.${index}.link`)}
                                     placeholder="https://website.com or social media link"
                                     data-testid={`relevant-link-${index}`}
-                                    className={`w-full px-4 py-3 text-sm rounded-[6px] h-14 transition-all outline-none bg-white text-neutral-9 placeholder:text-neutral-6 ${
-                                        errors.relevantLinks?.[index]
+                                    className={`w-full px-4 py-3 text-sm rounded-[6px] h-14 transition-all outline-none bg-white text-neutral-9 placeholder:text-neutral-6 ${errors.relevantLinks?.[index]
                                             ? 'border border-red-400 focus:border-red-500'
                                             : 'border-[1.5px] border-neutral-5 focus:border-[1.5px] focus:border-primary hover:border-neutral-6'
-                                    }`}
+                                        }`}
                                 />
                                 {errors.relevantLinks?.[index] && (
                                     <p className="text-xs text-red-500 mt-1">

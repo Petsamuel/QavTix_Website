@@ -45,26 +45,26 @@ async function publicFetch<T>(url: string, token?: string, tags?: string[]): Pro
 
 function mergeWithFallback(
     regional: PublicPagesEvent[],
-    global:   PublicPagesEvent[],
+    global: PublicPagesEvent[],
 ): PublicPagesEvent[] {
     const seenIds = new Set(regional.map(e => e.id))
-    const extras  = global.filter(e => !seenIds.has(e.id))
+    const extras = global.filter(e => !seenIds.has(e.id))
     return [...regional, ...extras]
 }
 
 export async function getUserLocation(): Promise<{ city: string; country: string }> {
     const headersList = await headers()
-    const city        = headersList.get("x-vercel-ip-city")    ?? "Lagos"
+    const city = headersList.get("x-vercel-ip-city") ?? "Lagos"
     const countryCode = headersList.get("x-vercel-ip-country") ?? "NG"
 
     return {
-        city:    decodeURIComponent(city),
+        city: decodeURIComponent(city),
         country: resolveCountryLabel(countryCode),
     }
 }
 
 export async function getFeaturedEvents(country?: string): Promise<PublicPagesEvent[]> {
-    const base  = process.env.NEXT_PUBLIC_API_BASE_URL
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL
     const token = await getToken()
 
     if (country) {
@@ -74,7 +74,7 @@ export async function getFeaturedEvents(country?: string): Promise<PublicPagesEv
         ])
 
         const regionalResults = regional?.results ?? []
-        const globalResults   = global?.results   ?? []
+        const globalResults = global?.results ?? []
 
         if (regionalResults.length >= REGIONAL_MIN_THRESHOLD) return regionalResults
         return mergeWithFallback(regionalResults, globalResults)
@@ -85,7 +85,7 @@ export async function getFeaturedEvents(country?: string): Promise<PublicPagesEv
 }
 
 export async function getTrendingEvents(country?: string): Promise<PublicPagesEvent[]> {
-    const base  = process.env.NEXT_PUBLIC_API_BASE_URL
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL
     const token = await getToken()
 
     if (country) {
@@ -95,7 +95,7 @@ export async function getTrendingEvents(country?: string): Promise<PublicPagesEv
         ])
 
         const regionalResults = regional?.results ?? []
-        const globalResults   = global?.results   ?? []
+        const globalResults = global?.results ?? []
 
         if (regionalResults.length >= REGIONAL_MIN_THRESHOLD) return regionalResults
         return mergeWithFallback(regionalResults, globalResults)
@@ -106,10 +106,10 @@ export async function getTrendingEvents(country?: string): Promise<PublicPagesEv
 }
 
 export async function getNearbyEvents(city: string, country?: string): Promise<PublicPagesEvent[]> {
-    const base  = process.env.NEXT_PUBLIC_API_BASE_URL
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL
     const token = await getToken()
 
-    const cityParams    = new URLSearchParams({ city })
+    const cityParams = new URLSearchParams({ city })
     const countryParams = country ? new URLSearchParams({ country }) : null
 
     const [byCity, byCountry, global] = await Promise.all([
@@ -120,9 +120,9 @@ export async function getNearbyEvents(city: string, country?: string): Promise<P
         publicFetch<{ results: PublicPagesEvent[] }>(`${base}/${EVENTS_NEARBY_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS]),
     ])
 
-    const cityResults    = byCity?.results    ?? []
+    const cityResults = byCity?.results ?? []
     const countryResults = byCountry?.results ?? []
-    const globalResults  = global?.results    ?? []
+    const globalResults = global?.results ?? []
 
     if (cityResults.length >= REGIONAL_MIN_THRESHOLD) return cityResults
 
@@ -133,25 +133,25 @@ export async function getNearbyEvents(city: string, country?: string): Promise<P
 }
 
 export async function getTopLocations(): Promise<TopLocation[]> {
-    const base  = process.env.NEXT_PUBLIC_API_BASE_URL
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL
     const token = await getToken()
-    const data  = await publicFetch<{ data: TopLocation[] }>(`${base}/${TOP_LOCATIONS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS])
+    const data = await publicFetch<{ data: TopLocation[] }>(`${base}/${TOP_LOCATIONS_ENDPOINT}`, token, [CACHE_TAGS.EVENT_CARDS])
     return data?.data ?? (Array.isArray(data) ? data : [])
 }
 
 interface LocationPageResult {
-    success:  boolean
-    data?:    LocationPageData
+    success: boolean
+    data?: LocationPageData
     message?: string
 }
 
 export async function getLocationPage(city: string): Promise<LocationPageResult> {
     try {
-        const token      = await getToken()
-        const res        = await fetch(
+        const token = await getToken()
+        const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/${LOCATION_PAGE_ENDPOINT.replace("[loc]", city)}`,
             {
-                next:    { revalidate: 60 * 5 },
+                next: { revalidate: 60 * 5 },
                 headers: { ...(token && { Authorization: `Bearer ${token}` }) },
             }
         )
@@ -172,21 +172,20 @@ export async function getLocationPage(city: string): Promise<LocationPageResult>
 }
 
 interface GetEventDetailsResult {
-    success:  boolean
-    data?:    EventDetails
+    success: boolean
+    data?: EventDetails
     message?: string
 }
 
 export async function getEventDetails(eventID: string): Promise<GetEventDetailsResult> {
     try {
         const cookiesStore = await cookies()
-        const token        = cookiesStore.get("access_token")?.value
+        const token = cookiesStore.get("access_token")?.value
 
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`
         const res = await fetch(url, {
-            cache:   "no-store",
             headers: { ...(token && { Authorization: `Bearer ${token}` }) },
-            next:    { tags: [CACHE_TAGS.EVENT_DETAILS] },
+            next: { tags: [CACHE_TAGS.EVENT_DETAILS], revalidate: 600 },
         })
 
         const json = await res.json()
@@ -205,24 +204,24 @@ export async function getEventDetails(eventID: string): Promise<GetEventDetailsR
 }
 
 interface GetMarketplaceEventDetailsResult {
-    success:     boolean
-    data?:       MarketplaceEventDetails
-    message?:    string
+    success: boolean
+    data?: MarketplaceEventDetails
+    message?: string
     statusCode?: number
-    errorCode?:  string | number | null
+    errorCode?: string | number | null
 }
 
 export async function getMarketplaceEventDetails(eventID: string): Promise<GetMarketplaceEventDetailsResult> {
     try {
         const cookiesStore = await cookies()
-        const token        = cookiesStore.get("access_token")?.value
+        const token = cookiesStore.get("access_token")?.value
 
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${MARKETPLACE_EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`
 
         const res = await fetch(url, {
-            cache:   "no-store",
+            cache: "no-store",
             headers: { ...(token && { Authorization: `Bearer ${token}` }) },
-            next:    { tags: [CACHE_TAGS.EVENT_DETAILS] },
+            next: { tags: [CACHE_TAGS.EVENT_DETAILS] },
         })
 
         const json = await res.json()
@@ -230,10 +229,10 @@ export async function getMarketplaceEventDetails(eventID: string): Promise<GetMa
         if (!res.ok) {
             console.log("[getMarketplaceEventDetails] status:", res.status, JSON.stringify(json))
             return {
-                success:    false,
-                message:    handleApiError(json),
+                success: false,
+                message: handleApiError(json),
                 statusCode: res.status,
-                errorCode:  json.code || json.error_code || null,
+                errorCode: json.code || json.error_code || null,
             }
         }
 
@@ -242,8 +241,8 @@ export async function getMarketplaceEventDetails(eventID: string): Promise<GetMa
     } catch (err) {
         console.log("[getMarketplaceEventDetails] error:", err)
         return {
-            success:    false,
-            message:    "Failed to load marketplace event details.",
+            success: false,
+            message: "Failed to load marketplace event details.",
             statusCode: 500,
         }
     }

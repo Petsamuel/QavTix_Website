@@ -110,7 +110,7 @@ export const FOOTER_LEGAL_LINKS = {
 
 
 export const ATTENDEE_SELL_TICKET = `${process.env.NEXT_PUBLIC_HOST_SITE}/dashboard/`;
-export const ATTENDEE_PROFILE_SETTINGS = `${process.env.NEXT_PUBLIC_HOST_SITE}/dashboard/account-settings/profile`;
+export const ATTENDEE_PROFILE_SETTINGS = `${process.env.NEXT_PUBLIC_ATTENDEE_SITE}/dashboard/account-settings/profile`;
 
 export const HOST_DASHBOARD = `${process.env.NEXT_PUBLIC_HOST_SITE}/dashboard/`;
 export const HOST_EVENTS = `${process.env.NEXT_PUBLIC_HOST_SITE}/events/`;
