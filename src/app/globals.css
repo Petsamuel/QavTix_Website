@@ -295,3 +295,15 @@
     opacity: 0;
   }
 }
+
+@keyframes editRing {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}

@@ -13,19 +13,19 @@ import { revalidateTag } from "next/cache"
 
 
 interface GetTrendingHostsResult {
-    success:  boolean
-    data?:    TrendingHost[]
+    success: boolean
+    data?: TrendingHost[]
     message?: string
 }
 
 interface GetHostDetailsResult {
-    success:  boolean
-    data?:    HostDetails
+    success: boolean
+    data?: HostDetails
     message?: string
 }
 
 interface MutateResult {
-    success:  boolean
+    success: boolean
     message?: string
 }
 
@@ -55,17 +55,28 @@ export async function getTrendingHosts(): Promise<GetTrendingHostsResult> {
 
 export async function getHostDetails(hostId: number | string): Promise<GetHostDetailsResult> {
     try {
-        const url = `${HOST_DETAILS_ENDPOINT.replace("[host_id]", String(hostId))}`
+        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${HOST_DETAILS_ENDPOINT.replace("[host_id]", String(hostId))}`
 
-        const axiosInstance = await getServerAxios()
-        const { data: json } = await axiosInstance.get(url)
+        const res = await fetch(url, {
+            cache: "force-cache",
+            next: {
+                tags: [`host-${hostId}`],
+                revalidate: 300,
+            },
+        })
 
+        if (!res.ok) {
+            const json = await res.json()
+            console.error("[getHostDetails] status:", res.status, JSON.stringify(json))
+            return { success: false, message: handleApiError(json) }
+        }
+
+        const json = await res.json()
         return { success: true, data: json.data ?? json }
 
-    } catch (error: any) {
-        console.log("[getHostDetails] status:", error?.response?.status)
-        console.log("[getHostDetails] body:", JSON.stringify(error?.response?.data))
-        return { success: false, message: handleApiError(error?.response?.data) }
+    } catch (err: any) {
+        console.error("[getHostDetails] error:", err?.message)
+        return { success: false, message: "Failed to load host details." }
     }
 }
 
@@ -100,7 +111,7 @@ export async function unfollowHost(hostID: number | string): Promise<MutateResul
 
         await axiosInstance.delete(url, { data: { host_id: hostID } })
 
-        
+
         revalidateTag(CACHE_TAGS.HOSTS, "max")
         revalidateTag(CACHE_TAGS.HOST_DETAILS, "max")
 
@@ -116,7 +127,7 @@ export async function unfollowHost(hostID: number | string): Promise<MutateResul
 
 
 interface ContactHostResult {
-    success:  boolean
+    success: boolean
     message?: string
 }
 
@@ -125,9 +136,9 @@ export async function contactHost(payload: ContactHostPayload): Promise<ContactH
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/${CONTACT_HOST_ENDPOINT}`,
             {
-                method:  "POST",
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body:    JSON.stringify(payload),
+                body: JSON.stringify(payload),
             }
         )
 
