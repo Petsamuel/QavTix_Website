@@ -37,7 +37,7 @@ export function PasswordStep({ accountType }: Props) {
         watch,
         formState: { errors, isSubmitting },
     } = useForm<PasswordData>({
-        resolver:      zodResolver(passwordSchema),
+        resolver: zodResolver(passwordSchema),
         defaultValues: formData as Partial<PasswordData>,
     })
 
@@ -79,12 +79,12 @@ export function PasswordStep({ accountType }: Props) {
                 : buildOrganizationPayload(payloadData as unknown as OrganizationSubmitData, categories)
 
             await axios.post(HOST_SIGNUP_PATH, payload)
-            setSignUpSuccessful(true)
+            window.open(process.env.NEXT_PUBLIC_HOST_SITE, "_blank")
 
         } catch (error) {
             let message = "An unexpected error occurred. Please try again.";
             if (error instanceof AxiosError) {
-               message = handleApiError(error.response?.data)
+                message = handleApiError(error.response?.data)
             } else if (error instanceof Error) {
                 message = error.message
             }
@@ -92,7 +92,7 @@ export function PasswordStep({ accountType }: Props) {
 
             dispatch(showAlert({
                 title: "Sign Up Failed",
-                description:  message,
+                description: message,
                 variant: "default"
             }))
         }
@@ -113,7 +113,7 @@ export function PasswordStep({ accountType }: Props) {
                 data-testid="signup-password"
                 autoComplete="new-password"
                 className={cn(signUpSuccessful && "blur-3xl")}
-                />
+            />
 
             <PasswordInput2
                 label="Confirm Password"
