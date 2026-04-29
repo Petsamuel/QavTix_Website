@@ -6,6 +6,7 @@ import {
     PasswordData,
 } from "@/schemas/host-signup.schema"
 import { ApiCategory } from "@/actions/filters"
+import { resolveCountryLabel, resolveStateLabel } from "./resolveCountryCode";
 
 // Define submit data types with images as strings (after upload)
 export type IndividualSubmitData = Omit<IndividualGeneralData, 'profileImage' | 'bannerImage'> & {
@@ -34,8 +35,8 @@ export function buildIndividualPayload(
         full_name: formData.fullName,
         business_name: formData.brandName,
         phone_number: formData.phone,
-        country: formData.country,
-        state: formData.state,
+        country: resolveCountryLabel(formData.country),
+        state: resolveStateLabel(formData.country, formData.state),
         city: formData.city,
         description: formData.description,
         postal_code: formData.postalCode,
@@ -63,8 +64,8 @@ export function buildOrganizationPayload(
         tax_id: formData.taxId,
         nin: formData.nin,
         description: formData.description,
-        country: formData.country,
-        state: formData.state,
+        country: resolveCountryLabel(formData.country),
+        state: resolveStateLabel(formData.country, formData.state),
         city: formData.city,
         postal_code: formData.postalCode,
         profile_picture: formData.profileImage,

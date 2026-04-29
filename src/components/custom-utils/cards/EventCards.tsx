@@ -24,8 +24,8 @@ import { mockAttendees } from '@/components-data/mock-attendees'
 
 export default function EventsCard(card: EventCardProps) {
 
-    const [imageError,  setImageError]  = useState(false)
-    const [showShare,   setShowShare]   = useState(false)
+    const [imageError, setImageError] = useState(false)
+    const [showShare, setShowShare] = useState(false)
     const displayCount = Math.min(card.attendees || 0, 3)
 
     const { isFavourite, toggle: toggleFavourite, feedbackMsg } = useFavourite(card.id, card.isFavourite)
@@ -38,7 +38,7 @@ export default function EventsCard(card: EventCardProps) {
 
     return (
         <>
-            <Link 
+            <Link
                 href={eventUrl}
                 className="block w-full max-w-72 md:max-w-70 p-3 relative min-h-[25em] rounded-[32px] border border-neutral-6 bg-white hover:bg-secondary-1 hover:shadow-sm transition-all duration-200 focus:outline-none focus:ring-[1.5px] focus:ring-accent-5 focus:ring-offset-[1.5px] group"
                 aria-label={`View event: ${card.title}`}
@@ -123,7 +123,7 @@ export default function EventsCard(card: EventCardProps) {
                             </div>
                         </div>
 
-                       <div className="flex items-center flex-wrap justify-between pt-2 gap-2">
+                        <div className="flex items-center flex-wrap justify-between pt-2 gap-2">
                             {(card.attendees ?? 0) > 0 && (
                                 <div className="flex -space-x-1.5 shrink-0">
                                     {mockAttendees.slice(displayCount).map((user) => (

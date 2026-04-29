@@ -36,9 +36,29 @@ async function getLayoutData() {
     }
 }
 
-export default async function MainRootLayout({ children }: { children: React.ReactNode }) {
-
+async function LayoutContent({ children }: { children: React.ReactNode }) {
     const { locationData, ticketSession, userData } = await getLayoutData()
+
+    return (
+        <ReduxStoreProvider>
+            <TicketUserProvider user={userData} ticketSession={ticketSession}>
+                <AppSettings currency={locationData.currency} region={locationData.region} />
+                <AuthPersistor userData={userData} />
+                <CustomGlobalAlert />
+
+                <Header2 />
+                <Header />
+
+                {children}
+
+                <ModalRenderer />
+                <Footer />
+            </TicketUserProvider>
+        </ReduxStoreProvider>
+    )
+}
+
+export default function MainRootLayout({ children }: { children: React.ReactNode }) {
 
     return (
         <html lang="en">
@@ -48,25 +68,13 @@ export default async function MainRootLayout({ children }: { children: React.Rea
                 <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
                 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
             </head>
-            <Suspense fallback={null}>
-                <ReduxStoreProvider>
-                    <TicketUserProvider user={userData} ticketSession={ticketSession}>
-                        <body className={`${inter.className} min-h-screen h-screen`} suppressHydrationWarning>
-                            <AppSettings currency={locationData.currency} region={locationData.region} />
-                            <AuthPersistor userData={userData} />
-                            <CustomGlobalAlert />
-
-                            <Header2 />
-                            <Header />
-
-                            {children}
-
-                            <ModalRenderer />
-                            <Footer />
-                        </body>
-                    </TicketUserProvider>
-                </ReduxStoreProvider>
-            </Suspense>
+            <body className={`${inter.className} min-h-screen h-screen`} suppressHydrationWarning>
+                <Suspense fallback={null}>
+                    <LayoutContent>
+                        {children}
+                    </LayoutContent>
+                </Suspense>
+            </body>
         </html>
     )
 }

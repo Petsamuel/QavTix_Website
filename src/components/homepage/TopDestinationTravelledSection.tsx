@@ -9,6 +9,7 @@ import { space_grotesk } from '@/lib/fonts'
 import { Icon } from '@iconify/react'
 import CarouselActionBtns from '../custom-utils/buttons/CarouselActionBtns'
 import { getCityStaticData, FALLBACK_DESTINATIONS } from '@/components-data/cities'
+import { NAV_LINKS } from '@/components-data/navigation/navLinks'
 
 
 interface Props {
@@ -87,7 +88,7 @@ export default function TopDestinationTravelledSection({ locations }: Props) {
                         {displayLocations.map(loc => (
                             <Link
                                 key={loc._key}
-                                href={`/events/location/${loc.city.toLowerCase().replace(/\s+/g, '-')}`}
+                                href={`${NAV_LINKS.EVENT_LOCATION.href}/${loc.city.toLowerCase().replace(/\s+/g, '-')}`}
                                 className="relative flex-[0_0_85%] sm:flex-[0_0_45%] md:flex-[0_0_30%] xl:flex-[0_0_22%] min-w-0"
                                 onMouseEnter={() => autoplay?.stop()}
                                 onMouseLeave={() => autoplay?.play()}
