@@ -28,13 +28,14 @@ interface Props {
 }
 
 export function PasswordStep({ accountType }: Props) {
-    const { formData, categories, setSignUpSuccessful, signUpSuccessful } = useSignup()
+    const { formData, categories, signUpSuccessful } = useSignup()
     const [submitError, setSubmitError] = useState<string | null>(null)
 
     const {
         register,
         handleSubmit,
         watch,
+        reset,
         formState: { errors, isSubmitting },
     } = useForm<PasswordData>({
         resolver: zodResolver(passwordSchema),
@@ -79,8 +80,8 @@ export function PasswordStep({ accountType }: Props) {
                 : buildOrganizationPayload(payloadData as unknown as OrganizationSubmitData, categories)
 
             await axios.post(HOST_SIGNUP_PATH, payload)
+            reset()
             window.open(process.env.NEXT_PUBLIC_HOST_SITE, "_blank")
-
         } catch (error) {
             let message = "An unexpected error occurred. Please try again.";
             if (error instanceof AxiosError) {
