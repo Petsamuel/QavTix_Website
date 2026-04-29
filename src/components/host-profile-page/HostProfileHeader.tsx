@@ -1,24 +1,25 @@
 'use client'
 
+import { useState } from "react"
 import { space_grotesk } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Icon } from "@iconify/react"
 import { useFollowHost } from "@/lib/custom-hooks/UseFollowHost"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getAvatarColor } from "@/helper-fns/getAvatarColor"
 import { getInitialsFromName } from "@/helper-fns/getInitialFromName"
 import Link from "next/link"
-
+import Image from "next/image"
 
 const PLATFORM_ICONS: Record<string, string> = {
-    twitter:   "hugeicons:new-twitter",
+    twitter: "hugeicons:new-twitter",
     instagram: "hugeicons:instagram",
     instagrame: "hugeicons:instagram",
-    youtube:   "mynaui:youtube-solid",
-    tiktok:    "ic:baseline-tiktok",
-    facebook:  "fa6-brands:facebook",
-    website:   "humbleicons:globe",
-    linkedin:  "hugeicons:linkedin-01",
+    youtube: "mynaui:youtube-solid",
+    tiktok: "ic:baseline-tiktok",
+    facebook: "fa6-brands:facebook",
+    website: "humbleicons:globe",
+    linkedin: "hugeicons:linkedin-01",
 }
 
 interface Props {
@@ -27,7 +28,11 @@ interface Props {
 
 export default function HostProfilePageHeader({ host }: Props) {
 
-    const { isFollowing, toggle } = useFollowHost(host.id, host.is_following)
+    const { isFollowing, followersCount, isPending, toggle } = useFollowHost(
+        host.id,
+        host.is_following,
+        host.followers_count,
+    )
 
     const socialLinks = host.relevant_links.flatMap(obj =>
         Object.entries(obj)
@@ -36,34 +41,44 @@ export default function HostProfilePageHeader({ host }: Props) {
     )
 
     const followBtn = (className?: string) => (
-        <button
+        <FollowButton
+            isFollowing={isFollowing}
+            isPending={isPending}
             onClick={toggle}
-            className={cn(
-                "p-3 rounded-4xl font-medium text-sm w-34 h-12 transition-all duration-200 hover:shadow-md active:scale-[0.98]",
-                isFollowing
-                    ? "bg-white text-secondary-7 border-2 border-secondary-3 hover:bg-neutral-2"
-                    : "bg-secondary-6 text-white hover:bg-secondary-7",
-                className,
-            )}
-        >
-            {isFollowing ? "Following" : "Follow"}
-        </button>
+            className={className}
+        />
     )
 
     return (
         <section>
             <div>
                 <div className="h-72 md:h-96 relative mb-20 md:mb-16">
-                    <div className="rounded-[50px] h-full overflow-hidden bg-linear-to-br from-primary-2 via-primary-3 to-slate-200" />
+                    <div className="rounded-[50px] h-full overflow-hidden bg-linear-to-br from-primary-2 via-primary-3 to-slate-200">
+                        {host.profile_banner && (
+                            <Image
+                                src={host.profile_banner}
+                                alt={`${host.host} banner`}
+                                fill
+                                className="object-cover"
+                                priority
+                            />
+                        )}
+                    </div>
 
+                    {/* Avatar */}
                     <div className="bg-white p-3 rounded-full -bottom-16 absolute w-fit">
                         <Avatar className="w-[6.25em] md:w-36 aspect-square h-auto rounded-full">
-                            <AvatarFallback
-                                className={cn(
-                                    getAvatarColor(String(host.id)),
-                                    "text-white font-bold text-3xl md:text-5xl w-full h-full rounded-full flex items-center justify-center"
-                                )}
-                            >
+                            {host.profile_picture && (
+                                <AvatarImage
+                                    src={host.profile_picture}
+                                    alt={host.host}
+                                    className="object-cover rounded-full"
+                                />
+                            )}
+                            <AvatarFallback className={cn(
+                                getAvatarColor(String(host.id)),
+                                "text-white font-bold text-3xl md:text-5xl w-full h-full rounded-full flex items-center justify-center"
+                            )}>
                                 {getInitialsFromName(host.host)}
                             </AvatarFallback>
                         </Avatar>
@@ -88,7 +103,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                                     className={cn(
                                         "shrink-0",
                                         !host.is_subscribed && !host.is_verified && "hidden",
-                                        (host.is_verified && host.is_subscribed )? "text-[#FFCC00]" : host.is_verified ? "text-primary-5" : "text-neutral-5"
+                                        (host.is_verified && host.is_subscribed) ? "text-[#FFCC00]" : host.is_verified ? "text-primary-5" : "text-neutral-5"
                                     )}
                                 />
                             </div>
@@ -117,7 +132,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                         <div className="mt-10 md:mt-0 flex flex-wrap justify-between items-center gap-5">
                             <div className="flex gap-6 font-medium text-neutral-8 items-center">
                                 <span className={`${space_grotesk.className} flex flex-col gap-1`}>
-                                    <span className="text-neutral-7">{host.followers_count.toLocaleString()}</span>
+                                    <span className="text-neutral-7">{followersCount.toLocaleString()}</span>
                                     <span>Followers</span>
                                 </span>
                                 <hr className="w-px h-8 border border-neutral-6" />
@@ -133,5 +148,50 @@ export default function HostProfilePageHeader({ host }: Props) {
                 </div>
             </div>
         </section>
+    )
+}
+
+
+function FollowButton({
+    isFollowing,
+    isPending,
+    onClick,
+    className,
+}: {
+    isFollowing: boolean
+    isPending: boolean
+    onClick: () => void
+    className?: string
+}) {
+    const [hovered, setHovered] = useState(false)
+
+    return (
+        <button
+            onClick={onClick}
+            disabled={isPending}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            className={cn(
+                "p-3 rounded-4xl font-medium text-sm w-34 h-12",
+                "transition-all duration-200 active:scale-[0.98]",
+                "disabled:opacity-60 disabled:cursor-not-allowed",
+                isFollowing
+                    ? hovered
+                        ? "bg-red-50 text-red-500 border-2 border-red-300"
+                        : "bg-white text-secondary-7 border-2 border-secondary-3 hover:bg-neutral-2"
+                    : "bg-secondary-6 text-white hover:bg-secondary-7 hover:shadow-md",
+                className,
+            )}
+        >
+            {isPending ? (
+                <span className="flex items-center justify-center">
+                    <span className="block w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                </span>
+            ) : isFollowing ? (
+                hovered ? "Unfollow" : "Following"
+            ) : (
+                "Follow"
+            )}
+        </button>
     )
 }

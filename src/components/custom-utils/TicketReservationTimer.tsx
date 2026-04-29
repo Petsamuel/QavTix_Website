@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import ReservationTimeExpiredPrompt from '../modals/ReservationTimeExpiredPrompt'
 
-const RESERVATION_DURATION = 50 * 60 // 10 minutes in seconds
+const RESERVATION_DURATION = 10 * 60 // 10 minutes in seconds
 
 export default function TicketReservationTimer() {
     const { resetCheckout } = useCheckout()
@@ -59,11 +59,11 @@ export default function TicketReservationTimer() {
     const isUrgent = timeLeft <= 60 // Last minute
 
     return (
-        <div 
+        <div
             className={cn(
                 'my-10 rounded px-4 py-2 transition-colors',
-                isUrgent 
-                    ? 'bg-orange-50 border-orange-200 animate-pulse' 
+                isUrgent
+                    ? 'bg-orange-50 border-orange-200 animate-pulse'
                     : 'bg-blue-50 border-blue-200'
             )}
         >
@@ -74,7 +74,7 @@ export default function TicketReservationTimer() {
                     </h3>
                 )}
                 <p className='text-sm text-neutral-7'>
-                    Your ticket is temporarily reserved. Please complete checkout in 
+                    Your ticket is temporarily reserved. Please complete checkout in
                     {' '}
                     <span className="font-mono font-medium text-accent-6">
                         {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}

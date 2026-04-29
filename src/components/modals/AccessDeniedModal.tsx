@@ -1,13 +1,10 @@
 import { useRouter } from 'next/navigation'
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
 import { space_grotesk } from '@/lib/fonts'
 import { CustomIcons } from '@/components/Svg-Icons'
 import { Dispatch, SetStateAction } from 'react'
-import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
 import CloseBtn from '../custom-utils/buttons/event-search/CloseBtn'
 import { AnimatedDialogForPrompt } from '../custom-utils/AnimatedDialogForPrompts'
-import LiquidLink from '../custom-utils/buttons/LiquidGlassLink'
 
 
 export default function AccessDeniedModal({ open, setOpen, eventID }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>>, eventID: string }) {

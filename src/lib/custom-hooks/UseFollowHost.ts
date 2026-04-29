@@ -1,46 +1,61 @@
 "use client"
 
 import { useRef, useState } from "react"
+import { useRouter } from "next/navigation"
 import { followHost, unfollowHost } from "@/actions/host"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import { showAlert } from "@/lib/redux/slices/alertSlice"
 import { showAuthPrompt } from "../redux/slices/showAuthPromptSlice"
 
-export function useFollowHost(hostId: number | string, initialState = false) {
-
+export function useFollowHost(
+    hostId: number | string,
+    initialState = false,
+    initialFollowersCount = 0,
+) {
     const dispatch = useAppDispatch()
+    const router = useRouter()
     const { isAuthenticated } = useAppSelector(store => store.auth)
 
     const [isFollowing, setIsFollowing] = useState(initialState)
-    const isPending = useRef(false)
+    const [followersCount, setFollowersCount] = useState(initialFollowersCount)
+    const [isPending, setIsPending] = useState(false)
+    const pendingRef = useRef(false)
 
     const toggle = async () => {
         if (!isAuthenticated) {
             dispatch(showAuthPrompt("Sign in to follow and get updates from this host"))
             return
         }
+        if (pendingRef.current) return
+        pendingRef.current = true
+        setIsPending(true)
 
-        if (isPending.current) return
-        isPending.current = true
+        const wasFollowing = isFollowing
 
-        const snapshot = isFollowing
-        setIsFollowing(!snapshot)  // optimistic
+        // Optimistic update
+        setIsFollowing(!wasFollowing)
+        setFollowersCount(prev => wasFollowing ? Math.max(0, prev - 1) : prev + 1)
 
-        const result = snapshot
+        const result = wasFollowing
             ? await unfollowHost(hostId)
             : await followHost(hostId)
 
         if (!result.success) {
-            setIsFollowing(snapshot)  // revert
+            // Revert
+            setIsFollowing(wasFollowing)
+            setFollowersCount(prev => wasFollowing ? prev + 1 : Math.max(0, prev - 1))
             dispatch(showAlert({
-                variant:     "destructive",
-                title:       snapshot ? "Could not unfollow" : "Could not follow",
+                variant: "destructive",
+                title: wasFollowing ? "Could not unfollow" : "Could not follow",
                 description: result.message ?? "Please try again.",
             }))
+        } else {
+            router.refresh()
         }
 
-        isPending.current = false
+        pendingRef.current = false
+        setIsPending(false)
     }
 
-    return { isFollowing, toggle }
+    return { isFollowing, followersCount, isPending, toggle }
 }

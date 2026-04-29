@@ -9,7 +9,8 @@ import {
 } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { getServerAxios } from "@/lib/axios"
-import { revalidateTag } from "next/cache"
+import { cacheLife, cacheTag, revalidateTag } from "next/cache"
+import { cookies } from "next/headers"
 
 
 interface GetTrendingHostsResult {
@@ -29,12 +30,26 @@ interface MutateResult {
     message?: string
 }
 
-
 export async function getTrendingHosts(): Promise<GetTrendingHostsResult> {
+    const accessToken = (await cookies()).get("access_token")?.value
+    return _getTrendingHosts(accessToken)
+}
+
+async function _getTrendingHosts(
+    accessToken: string | undefined,
+): Promise<GetTrendingHostsResult> {
+    "use cache"
+    cacheLife("minutes")
+    cacheTag(CACHE_TAGS.HOSTS)
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/${TRENDING_HOSTS_ENDPOINT}`,
-            { next: { revalidate: 60 * 10, tags: [CACHE_TAGS.HOSTS] } }
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+                },
+            },
         )
 
         const json = await res.json()
@@ -44,7 +59,7 @@ export async function getTrendingHosts(): Promise<GetTrendingHostsResult> {
             return { success: false, message: handleApiError(json) }
         }
 
-        const results = json.data ?? json.results.data ?? []
+        const results = json.data ?? json.results?.data ?? []
         return { success: true, data: results }
 
     } catch (err) {
@@ -92,6 +107,7 @@ export async function followHost(hostID: number | string): Promise<MutateResult>
 
         revalidateTag(CACHE_TAGS.HOSTS, "max")
         revalidateTag(CACHE_TAGS.HOST_DETAILS, "max")
+        revalidateTag(`host-${hostID}`, "max")
 
         return { success: true }
 
@@ -114,6 +130,7 @@ export async function unfollowHost(hostID: number | string): Promise<MutateResul
 
         revalidateTag(CACHE_TAGS.HOSTS, "max")
         revalidateTag(CACHE_TAGS.HOST_DETAILS, "max")
+        revalidateTag(`host-${hostID}`, "max")
 
         return { success: true }
 
