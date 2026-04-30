@@ -44,7 +44,7 @@ function AttendeeAvatars({ count, eventId }: { count: number; eventId: string })
 
 const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
 
-    const { isFollowing, toggle } = useFollowHost(event.organizer_id, event.is_following)
+    const { isFollowing, isPending, toggle } = useFollowHost(event.organizer_id, event.is_following)
 
     return (
         <div className={cn(className)}>
@@ -72,6 +72,7 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                 </div>
                 <FollowHostBtn1
                     isFollowing={isFollowing}
+                    isPending={isPending}
                     onClick={(e) => { e.preventDefault(); toggle() }}
                     className={cn("w-auto! px-4", "md:px-6")}
                 />
