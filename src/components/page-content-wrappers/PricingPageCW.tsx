@@ -1,7 +1,7 @@
 "use client"
 import PricingContent from "@/components/pricing/PricingContent";
 import SectionHeading from "@/components/shared/SectionHeading";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs";
 import { useState, useEffect, useRef } from "react";
 import LiquidTabs from "../custom-utils/buttons/LiquidTabs";
 
