@@ -1,10 +1,10 @@
 import { CheckoutAttendeeInfoFormProvider } from "@/contexts/CheckoutAttendeeInfoFormContext"
 import { CheckoutFlowProvider } from "@/contexts/CheckoutFlowProvider"
 import { SplitPaymentProvider } from "@/contexts/SplitPaymentContextProvider"
-import { getEventDetails } from "@/actions/getters"
 import { getGroups } from "@/actions/groups"
 import CheckoutPageClient from "@/components/checkout/CheckoutPageClient"
 import EventNotFound from "@/components/events-page/EventNotFound"
+import { getEventDetails } from "@/actions/getters"
 
 interface Props {
     params: Promise<{ event_id: string }>
@@ -24,7 +24,7 @@ export default async function EventTicketCheckoutPage({ params }: Props) {
         )
     }
 
-    const event  = eventResult.data
+    const event = eventResult.data
     const groups = groupsResult.data ?? []
 
     return (

@@ -5,6 +5,7 @@ import Image from "next/image"
 import { format } from "date-fns"
 import { useState } from "react"
 import { Play, X } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface Props {
     event: EventDetails
@@ -27,7 +28,7 @@ export default function EventDetailsPreview({ event }: Props) {
 
     const imageSrc =
         event.event_media?.find(v => v.is_featured)?.image_url ||
-        event.event_media[0].image_url
+        event.event_media?.[0]?.image_url
 
     const hasVideo = !!event.event_media?.find(v => v.video_url)
 
@@ -39,13 +40,17 @@ export default function EventDetailsPreview({ event }: Props) {
             >
                 {/* Image + optional Watch Video pill */}
                 <figure className="shrink-0 relative">
-                    <Image
-                        src={imageSrc}
-                        alt={event.title}
-                        width={300}
-                        height={300}
-                        className="rounded-3xl h-25 w-24 md:w-32 object-cover"
-                    />
+                    {imageSrc ? (
+                        <Image
+                            src={imageSrc}
+                            alt={event.title}
+                            width={300}
+                            height={300}
+                            className="rounded-3xl h-25 w-24 md:w-32 object-cover"
+                        />
+                    ) : (
+                        <Skeleton className="rounded-3xl h-25 w-24 md:w-32" />
+                    )}
                     {hasVideo && (
                         <button
                             onClick={() => setVideoOpen(true)}
