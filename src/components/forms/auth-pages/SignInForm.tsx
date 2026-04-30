@@ -61,7 +61,7 @@ export default function SignInForm() {
             if (safeReturn && safeReturn?.startsWith(attendeeSite)) {
                 window.location.href = safeReturn
             } else {
-                router.push(NAV_LINKS.HOME.href)
+                window.location.href = attendeeSite
             }
 
         } catch (error) {

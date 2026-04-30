@@ -53,7 +53,8 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfu
 
             dispatch(setUser(data.user))
             reset()
-            setSuccessfulSignUp(true)
+            window.open(process.env.NEXT_PUBLIC_ATTENDEE_SITE, '_blank')
+            window.location.href = '/'
         } catch (error) {
             if (error instanceof AxiosError) {
                 setSubmitError(handleApiError(error.response?.data))
