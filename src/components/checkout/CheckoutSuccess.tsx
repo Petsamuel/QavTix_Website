@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react"
 import { space_grotesk } from "@/lib/fonts";
 import Image from "next/image";
-import ActionButton1 from "../custom-utils/buttons/ActionButton1";
 import { useParams, useRouter } from "next/navigation";
 import { EVENT_ROUTES } from "@/components-data/navigation/navLinks";
 
@@ -15,6 +14,11 @@ export default function CheckoutSuccessMessage() {
 
     useEffect(() => {
         ref.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+        const timer = setTimeout(() => {
+            router.push(EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", (event_id || "").toString()))
+        }, 3000)
+        return () => clearTimeout(timer)
     }, [])
 
     return (
@@ -25,7 +29,6 @@ export default function CheckoutSuccessMessage() {
                 <p className="text-center text-[#616166] text-sm">
                     Your spot is secured. We look forward to seeing you.
                 </p>
-                <ActionButton1 buttonText="On Getting Ticket" className="w-full mt-6" buttonType="button" action={() => router.push(EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", typeof event_id === "string" ? event_id : ""))} />
             </div>
         </div>
     )

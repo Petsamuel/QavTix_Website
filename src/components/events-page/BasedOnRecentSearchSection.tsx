@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import EventsCard1 from "../custom-utils/cards/EventCards"
 import { space_grotesk } from "@/lib/fonts"
-import { searchEvents, SearchEventsFilters } from "@/actions/filters"
+import { searchEvents, SearchEventsFilters } from "@/actions/filters/client"
 import { useRecentSearches, RecentSearchEntry } from "@/lib/custom-hooks/UseRecentSearch"
 import { resolveCountryLabel, resolveStateLabel } from "@/helper-fns/resolveCountryCode"
 import EventCardLoaderContainer from "../loaders/EventCardLoader"

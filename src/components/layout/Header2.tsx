@@ -137,7 +137,7 @@ export default function Header2() {
                                         className="flex items-center gap-1 text-xs text-neutral-6 hover:text-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150"
                                     >
                                         {isLoggingOut
-                                            ? <><Icon icon="eos-icons:three-dots-loading" className="size-8" /> Signing out</>
+                                            ? <><Icon icon="eos-icons:three-dots-loading" className="size-6" /></>
                                             : <><Icon icon="hugeicons:logout-square-02" width="17" height="17" />Sign out</>
                                         }
                                     </button>

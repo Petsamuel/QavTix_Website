@@ -10,9 +10,10 @@ import { Icon } from "@iconify/react"
 import Link from "next/link"
 import { useFollowHost } from "@/lib/custom-hooks/UseFollowHost"
 import { mockAttendees } from "@/components-data/mock-attendees"
+import CustomAvatar from "@/components/custom-utils/avatars/CustomAvatar"
 
 interface Props {
-    event:      EventDetails
+    event: EventDetails
     className?: string
 }
 
@@ -54,17 +55,13 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                 "md:justify-start md:gap-6"
             )}>
                 <div className="flex items-center gap-2">
-                    <Avatar className="ring-2 ring-background size-12">
-                        <AvatarFallback className={`${getAvatarColor(event.organizer_display_name)} text-white font-medium`}>
-                            {getInitialsFromName(event.organizer_display_name)}
-                        </AvatarFallback>
-                    </Avatar>
+                    <CustomAvatar id={event.organizer_id} name={event.organizer_display_name} size="size-12" />
                     <div>
                         <p className="text-xs text-neutral-7">Hosted by</p>
-                        <Link 
+                        <Link
                             className="flex items-center text-secondary-9 text-sm"
                             href={NAV_LINKS.HOST_PROFILE.href.replace('[host_id]', event.organizer_id)}
-                            >
+                        >
                             <strong className="font-normal whitespace-nowrap capitalize">{event.organizer_display_name}</strong>
                             <Icon icon="line-md:chevron-right" width="20" height="20" />
                         </Link>

@@ -13,7 +13,6 @@ import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { useAppDispatch } from "@/lib/redux/hooks"
 import { setUser } from "@/lib/redux/slices/authUserSlice"
 import { useRouter, useSearchParams } from "next/navigation"
-import { NAV_LINKS } from "@/components-data/navigation/navLinks"
 import { GET_PROFILE_PATH, LOGIN_PATH } from "@/apiPaths"
 import { validateReturnTo } from "@/helper-fns/validateReturnTo"
 
@@ -21,10 +20,10 @@ export default function SignInForm() {
 
     const [submitError, setSubmitError] = useState<string | null>(null)
 
-    const dispatch      = useAppDispatch()
-    const router        = useRouter()
-    const searchParams  = useSearchParams()
-    const returnTo      = searchParams.get('returnTo')
+    const dispatch = useAppDispatch()
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const returnTo = searchParams.get('returnTo')
 
     const {
         register,
@@ -42,8 +41,8 @@ export default function SignInForm() {
             const role = loginData?.user?.role ?? loginData?.role ?? ""
             const safeReturn = validateReturnTo(returnTo)
 
-            if (role === "host"){
-                const hostSite  = process.env.NEXT_PUBLIC_HOST_SITE ?? ''
+            if (role === "host") {
+                const hostSite = process.env.NEXT_PUBLIC_HOST_SITE ?? ''
                 const destination = safeReturn?.startsWith(hostSite) ? safeReturn : hostSite
                 window.location.href = destination
                 return
@@ -57,8 +56,9 @@ export default function SignInForm() {
             dispatch(setUser(data.user))
 
             const attendeeSite = process.env.NEXT_PUBLIC_ATTENDEE_SITE ?? ''
-            
-            if (safeReturn && safeReturn?.startsWith(attendeeSite)) {
+            const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? ''
+
+            if (safeReturn && (safeReturn.startsWith(attendeeSite) || safeReturn.startsWith(appDomain))) {
                 window.location.href = safeReturn
             } else {
                 window.location.href = attendeeSite

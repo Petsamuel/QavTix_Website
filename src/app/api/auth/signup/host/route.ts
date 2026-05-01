@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
         if (!res.ok) {
             const message = res.status === 409
-                ? "An account with this email already exists. Please sign in instead."
+                ? "An account with these details already exists. Please log in."
                 : json
                     ? handleApiError(json)
                     : `Server error (${res.status}). Please try again.`

@@ -1,7 +1,7 @@
 'use client'
 
-import { hasGuestTicketForEvent, GuestTicketSession } from '@/actions/util/get-ticket-session'
-import { createContext, useContext, ReactNode } from 'react'
+import { hasGuestTicketForEvent, GuestTicketSession, getGuestTicketSession } from '@/actions/util/get-ticket-session'
+import { createContext, useContext, ReactNode, useState, useEffect } from 'react'
 
 interface TicketUserContextType {
     user: AuthUser | null
@@ -21,8 +21,36 @@ interface TicketUserProviderProps {
 export function TicketUserProvider({ 
     children, 
     user, 
-    ticketSession 
+    ticketSession: initialTicketSession 
 }: TicketUserProviderProps) {
+    const [ticketSession, setTicketSession] = useState<GuestTicketSession | null>(initialTicketSession)
+
+    useEffect(() => {
+        // Hydrate from sessionStorage on the client since it's not available on the server
+        const loadSession = () => {
+            const session = getGuestTicketSession()
+            setTicketSession(session)
+        }
+
+        if (!initialTicketSession) {
+            loadSession()
+        }
+
+        // Listen for updates from same tab (e.g. after checkout completion)
+        window.addEventListener('guest-ticket-session-updated', loadSession)
+        
+        // Listen for updates from other tabs
+        const handleStorage = (e: StorageEvent) => {
+            if (e.key === 'guest_ticket_session') loadSession()
+        }
+        window.addEventListener('storage', handleStorage)
+
+        return () => {
+            window.removeEventListener('guest-ticket-session-updated', loadSession)
+            window.removeEventListener('storage', handleStorage)
+        }
+    }, [initialTicketSession])
+
     const value: TicketUserContextType = {
         user,
         ticketSession,
@@ -56,10 +84,8 @@ export function useTicketSession() {
 }
 
 export function useHasTicketForEvent(eventID: string) {
-    // GUEST — CHECK SESSIONSTORAGE (CLIENT ONLY)
-    if (typeof window !== 'undefined') {
-        return hasGuestTicketForEvent(eventID)
-    }
-
-    return false
+    const { ticketSession } = useTicketUser()
+    
+    // Check if the current user/guest session has a ticket for this event
+    return ticketSession?.eventId === eventID
 }

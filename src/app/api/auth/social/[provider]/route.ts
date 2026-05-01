@@ -33,8 +33,13 @@ export async function POST(
         if (!res.ok) {
             console.log(`[social-auth:${provider}] status:`, res.status)
             console.log(`[social-auth:${provider}] body:`, JSON.stringify(json, null, 2))
+
+            const message = res.status === 409
+                ? "An account with these details already exists. Please log in."
+                : handleApiError(json)
+
             return NextResponse.json(
-                { message: handleApiError(json) },
+                { message },
                 { status: res.status }
             )
         }

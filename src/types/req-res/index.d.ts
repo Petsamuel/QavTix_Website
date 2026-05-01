@@ -73,6 +73,7 @@ interface ContactHostPayload {
 
 interface InitializePaymentPayload {
     full_name:     string
+    email?:        string
     phone_number:  string
     is_split:      boolean
     promo_code:    string

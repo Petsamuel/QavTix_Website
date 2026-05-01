@@ -9,6 +9,9 @@ const SESSION_KEY = 'guest_ticket_session'
 
 export function setGuestTicketSession(data: GuestTicketSession) {
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(data))
+    if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('guest-ticket-session-updated'))
+    }
 }
 
 export function getGuestTicketSession(): GuestTicketSession | null {
@@ -23,6 +26,9 @@ export function getGuestTicketSession(): GuestTicketSession | null {
 
 export function clearGuestTicketSession() {
     sessionStorage.removeItem(SESSION_KEY)
+    if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('guest-ticket-session-updated'))
+    }
 }
 
 export function hasGuestTicketForEvent(eventId: string): boolean {

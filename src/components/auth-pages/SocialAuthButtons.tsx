@@ -44,7 +44,7 @@ export default function SocialAuthButtons() {
                 <span className="font-bold">Facebook</span>
             </button>
 
-            <button
+            {/* <button
                 onClick={() => 
                     dispatch(showAlert({
                         title: "Method Disabled",
@@ -59,7 +59,7 @@ export default function SocialAuthButtons() {
                     : <Icon icon="ic:baseline-apple" className="size-6" />
                 }
                 <span className="font-bold">Apple</span>
-            </button>
+            </button> */}
         </>
     )
 }

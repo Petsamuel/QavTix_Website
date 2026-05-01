@@ -1,10 +1,10 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { addFavourite, removeFavourite } from "@/actions/favourites"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import { showAlert } from "@/lib/redux/slices/alertSlice"
 import { showAuthPrompt } from "../redux/slices/showAuthPromptSlice"
+import { addFavourite, removeFavourite } from "@/actions/favourites/client"
 
 export function useFavourite(eventID: string | number, initialState = false) {
 

@@ -11,22 +11,22 @@ import { fromPublicPagesEvent } from "@/components/custom-utils/cards/resources/
 import { formatEventDate } from "@/helper-fns/date-utils"
 import { formatPrice, parsePrice } from "@/helper-fns/formatPrice"
 import { resolveSearchIntent } from "@/components-data/search-intelligence"
-import { searchEvents } from "@/actions/filters"
+import { searchEvents } from "@/actions/filters/client"
 
 export default function SearchPage() {
 
     const searchParams = useSearchParams()
     const router = useRouter()
 
-    const [query,       setQuery]       = useState(searchParams.get("q") || "")
-    const [intent,      setIntent]      = useState<SearchResult | null>(null)
-    const [events,      setEvents]      = useState<PublicPagesEvent[]>([])
+    const [query, setQuery] = useState(searchParams.get("q") || "")
+    const [intent, setIntent] = useState<SearchResult | null>(null)
+    const [events, setEvents] = useState<PublicPagesEvent[]>([])
     const [totalEvents, setTotalEvents] = useState(0)
     const [isSearching, setIsSearching] = useState(false)
     const [hasSearched, setHasSearched] = useState(false)
 
     const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-    const abortRef      = useRef<AbortController | null>(null)
+    const abortRef = useRef<AbortController | null>(null)
 
     const handleQuery = useCallback((value: string) => {
         setQuery(value)
@@ -81,9 +81,9 @@ export default function SearchPage() {
         }
     }
 
-    const showEmpty   = hasSearched && !isSearching && query.trim() && events.length === 0 && intent?.intent === 'event'
-    const showEvents  = events.length > 0 && intent?.intent === 'event'
-    const showPages   = intent && intent.intent !== 'event' && intent.intent !== 'empty' && intent.suggestions.length > 0
+    const showEmpty = hasSearched && !isSearching && query.trim() && events.length === 0 && intent?.intent === 'event'
+    const showEvents = events.length > 0 && intent?.intent === 'event'
+    const showPages = intent && intent.intent !== 'event' && intent.intent !== 'empty' && intent.suggestions.length > 0
 
     return (
         <main className="bg-white min-h-screen pt-28 pb-20 global-px">
@@ -260,10 +260,10 @@ export default function SearchPage() {
                             Quick links
                         </p>
                         {[
-                            { label: 'Explore all events',  href: NAV_LINKS.EVENTS.href,   icon: 'hugeicons:calendar-03'     },
-                            { label: 'Pricing plans',       href: NAV_LINKS.PRICING.href,  icon: 'hugeicons:money-bag-01'    },
-                            { label: 'Contact support',     href: NAV_LINKS.CONTACT_US.href, icon: 'hugeicons:customer-support' },
-                            { label: 'FAQ',                 href: NAV_LINKS.FAQ.href,      icon: 'hugeicons:help-circle'     },
+                            { label: 'Explore all events', href: NAV_LINKS.EVENTS.href, icon: 'hugeicons:calendar-03' },
+                            { label: 'Pricing plans', href: NAV_LINKS.PRICING.href, icon: 'hugeicons:money-bag-01' },
+                            { label: 'Contact support', href: NAV_LINKS.CONTACT_US.href, icon: 'hugeicons:customer-support' },
+                            { label: 'FAQ', href: NAV_LINKS.FAQ.href, icon: 'hugeicons:help-circle' },
                         ].map(link => (
                             <Link
                                 key={link.href}

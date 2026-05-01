@@ -1,5 +1,6 @@
 import { getEventDetails }  from "@/actions/getters"
-import { getCategories, searchEvents } from "@/actions/filters"
+import { getCategories } from "@/actions/filters"
+import { searchEvents } from "@/actions/filters/client"
 import EventDetailsPageContentContainer from "@/components/events-page/EventDetailsPageContentContainer"
 import EventNotFound from "@/components/events-page/EventNotFound"
 import { Metadata } from "next"

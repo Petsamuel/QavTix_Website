@@ -58,7 +58,7 @@ export default function OAuthCallbackPage() {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
                 <div className="p-3 rounded-full bg-red-50">
-                    <Icon icon="mage:warning-circle" className="size-8 text-red-400" />
+                    <Icon icon="mingcute:warning-line" className="size-8 text-red-400" />
                 </div>
                 <p className="text-sm font-medium text-neutral-9">{error}</p>
                 <button

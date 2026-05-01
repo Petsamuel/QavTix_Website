@@ -4,9 +4,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatedDialog } from "../custom-utils/AnimatedDialog";
 import { DialogDescription, DialogTitle } from "../ui/dialog"
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 
 export default function ResetPasswordSuccessMessage() {
+
+    const router = useRouter()
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            router.push(AUTH_ROUTES.SIGN_IN.href)
+        }, 3000)
+        return () => clearTimeout(timer)
+    }, [router])
+
     return (
         <AnimatedDialog open={true} showCloseButton={false} className="rounded-[40px]" childrenContainerStyles="px-8 py-20">
 
