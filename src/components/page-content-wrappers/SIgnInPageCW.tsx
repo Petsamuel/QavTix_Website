@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import SocialAuthButtons from "@/components/auth-pages/SocialAuthButtons";
 import { AUTH_ROUTES } from "@/components-data/navigation/navLinks";
 
-export default function SignInCWPage(){
+export default function SignInCWPage() {
 
     const router = useRouter()
 
@@ -19,7 +19,7 @@ export default function SignInCWPage(){
                 <h2 className={`${space_grotesk.className} text-secondary-9 text-2xl md:text-3xl lg:text-[2rem] font-bold mb-2`}>Welcome back!</h2>
                 <p className="text-neutral-7 text-sm">Don’t have an account? <Link href="/auth/signup" className="font-medium text-primary-6">Sign Up</Link></p>
 
-                <div className="mt-10 flex gap-4 flex-wrap justify-between">
+                <div className="mt-10 flex gap-4 flex-wrap">
                     <SocialAuthButtons />
                 </div>
 
