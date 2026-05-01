@@ -1,7 +1,7 @@
 'use client'
 
 import { initializePayment, validatePromoCode, verifyPayment } from '@/actions/checkout'
-import { getUserLocation } from '@/actions/getters'
+import { getUserLocation } from '@/actions/getters/client'
 import { setGuestTicketSession } from '@/actions/util/get-ticket-session'
 import { extractAccessCode } from '@/helper-fns/extractAccessCode'
 import { buildEqualSplitMembers, buildManualSplitMembers, SplitMember, validateSplitMembers } from '@/helper-fns/splitpaymentValidator'
@@ -14,67 +14,67 @@ import { createContext, useState, ReactNode, useEffect, useContext, useMemo, use
 
 // SHAPE OF A SINGLE TICKET IN THE CHECKOUT FLOW — NORMALISED FROM THE RAW EVENT TICKET
 export interface CheckoutTicket {
-    _key:          string
-    ticket_type:   string
-    description:   string
-    id:            number
-    price:         number 
-    quantity:      number  // CURRENT QUANTITY SELECTED BY THE USER
-    maxQuantity:   number  // PER-PERSON LIMIT ENFORCED BY THE EVENT
-    totalStock:    number
-    available:     boolean
-    soldOut:       boolean
-    sales_start:   string
-    sales_end:     string
-    currency:      string
-    promo_codes:   EventTicketPromoCode[]
+    _key: string
+    ticket_type: string
+    description: string
+    id: number
+    price: number
+    quantity: number  // CURRENT QUANTITY SELECTED BY THE USER
+    maxQuantity: number  // PER-PERSON LIMIT ENFORCED BY THE EVENT
+    totalStock: number
+    available: boolean
+    soldOut: boolean
+    sales_start: string
+    sales_end: string
+    currency: string
+    promo_codes: EventTicketPromoCode[]
 }
 
 // DISCOUNT APPLIED VIA PROMO CODE — SUPPORTS BOTH PERCENTAGE AND FLAT AMOUNT
 interface Discount {
-    type:         string
-    code?:        string
-    percentage?:  number
-    amount?:      number
-    description:  string
+    type: string
+    code?: string
+    percentage?: number
+    amount?: number
+    description: string
 }
 
 // ALL READABLE STATE EXPOSED BY THE CHECKOUT CONTEXT
 interface CheckoutState {
-    event:                EventDetails
-    groups:               Group[]
-    currentStep:          number
-    tickets:              CheckoutTicket[]
-    attendeeInfo:         Partial<AttendeeInformationData>
-    paymentMethod:        string | null
-    isProcessing:         boolean
-    checkoutComplete:     boolean  // FLIPS TO TRUE AFTER SUCCESSFUL PAYMENT VERIFICATION
-    isSplitPayment:       boolean  // TRACKS IF THE SUCCESSFUL PAYMENT WAS A SPLIT PAYMENT
-    discount:             Discount | null
-    subtotal:             number
-    total:                number   // SUBTOTAL MINUS ANY DISCOUNT
-    discountAmount:       number
-    totalTickets:         number   // SUM OF ALL SELECTED TICKET QUANTITIES
-    selectedTickets:      CheckoutTicket[]  // ONLY TICKETS WITH QUANTITY > 0
+    event: EventDetails
+    groups: Group[]
+    currentStep: number
+    tickets: CheckoutTicket[]
+    attendeeInfo: Partial<AttendeeInformationData>
+    paymentMethod: string | null
+    isProcessing: boolean
+    checkoutComplete: boolean  // FLIPS TO TRUE AFTER SUCCESSFUL PAYMENT VERIFICATION
+    isSplitPayment: boolean  // TRACKS IF THE SUCCESSFUL PAYMENT WAS A SPLIT PAYMENT
+    discount: Discount | null
+    subtotal: number
+    total: number   // SUBTOTAL MINUS ANY DISCOUNT
+    discountAmount: number
+    totalTickets: number   // SUM OF ALL SELECTED TICKET QUANTITIES
+    selectedTickets: CheckoutTicket[]  // ONLY TICKETS WITH QUANTITY > 0
 }
 
 // ALL ACTIONS EXPOSED BY THE CHECKOUT CONTEXT
 interface CheckoutActions {
-    setCurrentStep:       (step: number) => void
+    setCurrentStep: (step: number) => void
     canProceedToCheckout: () => boolean
-    nextStep:             () => void
-    prevStep:             () => void
-    isMarketplace:        boolean
+    nextStep: () => void
+    prevStep: () => void
+    isMarketplace: boolean
     updateTicketQuantity: (key: string, quantity: number) => void
-    incrementTicket:      (key: string) => void
-    decrementTicket:      (key: string) => void
-    clearTickets:         () => void
-    updateAttendeeInfo:   (data: Partial<AttendeeInformationData>) => void
-    applyDiscount:        (discount: Discount) => void
-    removeDiscount:       () => void
-    validateCoupon:       (code: string) => Promise<Discount | null>
-    processPayment:       () => Promise<void>
-    resetCheckout:        () => void
+    incrementTicket: (key: string) => void
+    decrementTicket: (key: string) => void
+    clearTickets: () => void
+    updateAttendeeInfo: (data: Partial<AttendeeInformationData>) => void
+    applyDiscount: (discount: Discount) => void
+    removeDiscount: () => void
+    validateCoupon: (code: string) => Promise<Discount | null>
+    processPayment: () => Promise<void>
+    resetCheckout: () => void
 }
 
 type CheckoutContextType = CheckoutState & CheckoutActions
@@ -84,8 +84,8 @@ const CheckoutContext = createContext<CheckoutContextType | undefined>(undefined
 
 interface Props {
     children: ReactNode
-    event:    EventDetails
-    groups:   Group[]
+    event: EventDetails
+    groups: Group[]
 }
 
 
@@ -94,19 +94,19 @@ interface Props {
 function normaliseTicket(t: EventTicket, index: number, quantity: number = 0): CheckoutTicket {
     const totalStock = t.quantity ?? 0
     return {
-        _key:        `${t.ticket_type}-${index}`,
+        _key: `${t.ticket_type}-${index}`,
         ticket_type: t.ticket_type,
-        id:          t.id,
+        id: t.id,
         description: t.description,
-        price:       Number(t.price) || 0,
+        price: Number(t.price) || 0,
         quantity,  // ALWAYS STARTS AT 0 — USER SELECTS QUANTITY IN STEP 1 UNLESS FOR MARKETPLACE TICKET
         maxQuantity: t.per_person_max ?? 10,
         totalStock,
-        available:   totalStock > 0,
-        soldOut:     totalStock === 0,
-        currency:    t.currency,
+        available: totalStock > 0,
+        soldOut: totalStock === 0,
+        currency: t.currency,
         sales_start: t.sales_start,
-        sales_end:   t.sales_end,
+        sales_end: t.sales_end,
         promo_codes: t.promo_codes ?? [],
     }
 }
@@ -119,7 +119,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
     const isMarketplace = pathName.includes("marketplace")
     const [isSplitPayment, setIsSplitPayment] = useState(false)
 
-    const [currentStep,setCurrentStep] = useState(1)
+    const [currentStep, setCurrentStep] = useState(1)
 
     // Initialize tickets for checkout
     // Marketplace uses single .ticket, regular events use .tickets array
@@ -129,18 +129,18 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
             if (isMarketplace) {
                 return [(event as MarketplaceEventDetails).ticket]
                     .filter(Boolean)
-                    .map((e, i) => normaliseTicket({...e, id: Number((event as MarketplaceEventDetails).listing_id)}, i, 1))  // MARKETPLACE TICKETS START WITH QUANTITY 1
+                    .map((e, i) => normaliseTicket({ ...e, id: Number((event as MarketplaceEventDetails).listing_id) }, i, 1))  // MARKETPLACE TICKETS START WITH QUANTITY 1
             }
             return (event.tickets ?? []).map((e, i) => normaliseTicket(e, i))
         }
     )
 
     // ATTENDEE INFO IS SYNCED IN FROM THE FORM BEFORE STEP 3 TRIGGERS PAYMENT
-    const [attendeeInfo,     setAttendeeInfo]      = useState<Partial<AttendeeInformationData>>({})
-    const [paymentMethod,    setPaymentMethod]     = useState<string | null>(null)
-    const [isProcessing,     setIsProcessing]      = useState(false)
-    const [checkoutComplete, setCheckoutComplete]  = useState(false)
-    const [discount,         setDiscount]          = useState<Discount | null>(null)
+    const [attendeeInfo, setAttendeeInfo] = useState<Partial<AttendeeInformationData>>({})
+    const [paymentMethod, setPaymentMethod] = useState<string | null>(null)
+    const [isProcessing, setIsProcessing] = useState(false)
+    const [checkoutComplete, setCheckoutComplete] = useState(false)
+    const [discount, setDiscount] = useState<Discount | null>(null)
 
     // DERIVED TOTALS — RECOMPUTED ONLY WHEN TICKETS OR DISCOUNT CHANGES
     const subtotal = useMemo(
@@ -171,7 +171,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
     // RETURNS AN ERROR STRING IF THE USER CANNOT PROCEED — NULL IF VALID
     const getTicketSelectionError = useCallback(() => {
         if (tickets.length === 0) return 'No tickets available for this event'
-        if (totalTickets === 0)   return 'Please select at least one ticket to continue'
+        if (totalTickets === 0) return 'Please select at least one ticket to continue'
         return null
     }, [tickets.length, totalTickets])
 
@@ -223,9 +223,9 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         if (currentStep === 3) {
             if (!attendeeInfo.name || !attendeeInfo.email || !attendeeInfo.phone || !attendeeInfo.dateOfBirth) {
                 dispatch(showAlert({
-                    title:       'Incomplete Information',
+                    title: 'Incomplete Information',
                     description: 'Please fill in all required fields before proceeding to checkout.',
-                    variant:     'destructive',
+                    variant: 'destructive',
                 }))
                 return
             }
@@ -254,7 +254,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
 
         if (!result.success || !result.data) {
             dispatch(showAlert({
-                title:       'Invalid Promo Code',
+                title: 'Invalid Promo Code',
                 description: 'The promo code you entered is invalid. Please try again.',
             }))
 
@@ -262,10 +262,10 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         }
 
         return {
-            type:        result.data.type,
-            code:        result.data.code,
-            percentage:  result.data.percentage,
-            amount:      result.data.amount,
+            type: result.data.type,
+            code: result.data.code,
+            percentage: result.data.percentage,
+            amount: result.data.amount,
             description: result.data.description,
         }
     }, [event.id])
@@ -291,7 +291,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
 
             const isSplit = !!attendeeInfo?.shareWithGroup && (attendeeInfo.attendees?.length ?? 0) > 0;
             const splitMode = (attendeeInfo as any).splitMode as SplitMode ?? 'equal'
-            
+
             // Track if this is split payment for success message
             setIsSplitPayment(isSplit)
 
@@ -313,43 +313,44 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                 ? splitMode === 'equal'
                     ? buildEqualSplitMembers(
                         (attendeeInfo.attendees ?? []).map(a => ({
-                            email:         a.email,
-                            dateOfBirth:   a.dateOfBirth,
+                            email: a.email,
+                            dateOfBirth: a.dateOfBirth,
                         }))
-                      )
+                    )
                     : buildManualSplitMembers(
                         (attendeeInfo.attendees ?? []).map(a => ({
-                            email:         a.email,
-                            dateOfBirth:   a.dateOfBirth,
-                            amount:        a.amount ?? 0,
+                            email: a.email,
+                            dateOfBirth: a.dateOfBirth,
+                            amount: a.amount ?? 0,
                         })),
                         total,
-                      )
+                    )
                 : []
 
             const paymentPayload: InitializePaymentPayload = isMarketplace
                 ? {
-                    full_name:              attendeeInfo.name!,
-                    phone_number:           attendeeInfo.phone!,
-                    is_split:               isSplit,
+                    full_name: attendeeInfo.name!,
+                    phone_number: attendeeInfo.phone!,
+                    is_split: isSplit,
                     marketplace_listing_id: (event as MarketplaceEventDetails).listing_id,
-                    promo_code:             discount?.code ?? '',
-                    save_card:              false,
-                    date_of_birth:          attendeeInfo.dateOfBirth || '',
-                    tickets:                [],
+                    promo_code: discount?.code ?? '',
+                    save_card: false,
+                    date_of_birth: attendeeInfo.dateOfBirth || '',
+                    tickets: [],
                     ...(isSplit && { split_members: splitMembers }),
                 }
                 : {
-                    full_name:     attendeeInfo.name!,
-                    event_id:      event.id,
-                    phone_number:  attendeeInfo.phone!,
-                    is_split:      isSplit,
-                    tickets:       selectedTickets.map(t => ({
+                    full_name: attendeeInfo.name!,
+                    email: attendeeInfo.email!,
+                    event_id: event.id,
+                    phone_number: attendeeInfo.phone!,
+                    is_split: isSplit,
+                    tickets: selectedTickets.map(t => ({
                         ticket_id: t.id,
-                        quantity:  t.quantity,
+                        quantity: t.quantity,
                     })),
-                    promo_code:    discount?.code ?? '',
-                    save_card:     false,
+                    promo_code: discount?.code ?? '',
+                    save_card: false,
                     date_of_birth: attendeeInfo.dateOfBirth || '',
                     ...(isSplit && { split_members: splitMembers }),
                 }
@@ -358,49 +359,49 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
 
             if (!init.success || !init.checkout_url) {
                 dispatch(showAlert({
-                    title:       'Payment Error',
+                    title: 'Payment Error',
                     description: init.message ?? 'Could not initialize payment.',
-                    variant:     'destructive',
+                    variant: 'destructive',
                 }))
                 return
             }
 
-            const PaystackPop  = (await import('@paystack/inline-js')).default
-            const handler      = new PaystackPop()
-            const accessCode   = extractAccessCode(init.checkout_url)
+            const PaystackPop = (await import('@paystack/inline-js')).default
+            const handler = new PaystackPop()
+            const accessCode = extractAccessCode(init.checkout_url)
 
             handler.resumeTransaction(accessCode, {
                 onSuccess: async (transaction: { reference: string }) => {
                     const verify = await verifyPayment({
                         reference: transaction.reference,
                         save_card: false,
-                        country:   user?.country || country,
+                        country: user?.country || country,
                     })
 
                     if (!verify.success) {
                         dispatch(showAlert({
-                            title:       'Verification Failed',
+                            title: 'Verification Failed',
                             description: verify.message ?? 'Payment could not be verified.',
-                            variant:     'destructive',
+                            variant: 'destructive',
                         }))
                         return
                     }
 
                     if (!user) {
                         setGuestTicketSession({
-                            eventId:       event.id,
-                            attendeeName:  attendeeInfo.name!,
+                            eventId: event.id,
+                            attendeeName: attendeeInfo.name!,
                             attendeeEmail: attendeeInfo.email!,
-                            purchaseDate:  new Date().toISOString(),
+                            purchaseDate: new Date().toISOString(),
                         })
                     }
 
                     dispatch(showAlert({
                         title: isSplit ? 'Split Payment Successful!' : 'Payment Successful!',
-                        description: isSplit 
+                        description: isSplit
                             ? 'Your tickets have been secured. All group members will receive their tickets once they complete payment.'
                             : 'Your tickets have been secured. Check your email for confirmation.',
-                        variant: 'default',
+                        variant: 'success',
                         duration: 6000
                     }))
                     setCheckoutComplete(true)
@@ -408,9 +409,9 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
 
                 onCancel: () => {
                     dispatch(showAlert({
-                        title:       'Payment Cancelled',
+                        title: 'Payment Cancelled',
                         description: 'You cancelled the payment. Your tickets were not issued.',
-                        variant:     'destructive',
+                        variant: 'destructive',
                     }))
                 },
             })
@@ -433,13 +434,19 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
     // FULL RESET — BRINGS THE CHECKOUT BACK TO ITS INITIAL STATE
     const resetCheckout = useCallback(() => {
         setCurrentStep(1)
-        setTickets((event.tickets ?? []).map((e, i) => normaliseTicket(e,i)))
+        setTickets(
+            isMarketplace
+                ? [(event as MarketplaceEventDetails).ticket]
+                    .filter(Boolean)
+                    .map((e, i) => normaliseTicket({ ...e, id: Number((event as MarketplaceEventDetails).listing_id) }, i, 1))
+                : (event.tickets ?? []).map((e, i) => normaliseTicket(e, i))
+        )
         setAttendeeInfo({})
         setPaymentMethod(null)
         setCheckoutComplete(false)
         setIsSplitPayment(false)
         setDiscount(null)
-    }, [event.tickets])
+    }, [event, isMarketplace])
 
     // TRUE IF THE USER HAS SELECTED AT LEAST ONE TICKET — USED TO GATE NAVIGATION PROMPTS
     const canProceedToCheckout = useCallback(
@@ -453,16 +460,35 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         if (currentStep === 3) {
             if (!attendeeInfo.name || !attendeeInfo.email || !attendeeInfo.phone || !attendeeInfo.dateOfBirth) {
                 dispatch(showAlert({
-                    title:       'Incomplete Information',
+                    title: 'Incomplete Information',
                     description: 'Please fill in all required fields before proceeding to checkout.',
-                    variant:     'destructive',
+                    variant: 'destructive',
                 }))
                 return
             }
-            
+
             processPayment()
         }
     }, [currentStep, attendeeInfo, processPayment, dispatch])
+
+
+
+    // RESET TO INITIAL STATE WHENEVER THE USER LANDS ON (OR RETURNS TO) THE PAGE
+    useEffect(() => {
+        setCurrentStep(1)
+        setTickets(
+            isMarketplace
+                ? [(event as MarketplaceEventDetails).ticket]
+                    .filter(Boolean)
+                    .map((e, i) => normaliseTicket({ ...e, id: Number((event as MarketplaceEventDetails).listing_id) }, i, 1))
+                : (event.tickets ?? []).map((e, i) => normaliseTicket(e, i))
+        )
+        setAttendeeInfo({})
+        setPaymentMethod(null)
+        setCheckoutComplete(false)
+        setIsSplitPayment(false)
+        setDiscount(null)
+    }, []) // EMPTY DEPS — RUNS ONCE ON MOUNT ONLY
 
     const value = useMemo<CheckoutContextType>(() => ({
         event,
@@ -490,7 +516,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         clearTickets,
         canProceedToCheckout,
         updateAttendeeInfo,
-        applyDiscount:  setDiscount,
+        applyDiscount: setDiscount,
         removeDiscount: () => setDiscount(null),
         validateCoupon,
         processPayment,

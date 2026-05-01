@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation'
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { space_grotesk } from '@/lib/fonts'
 import { CustomIcons } from '@/components/Svg-Icons'
@@ -8,9 +7,6 @@ import { AnimatedDialogForPrompt } from '../custom-utils/AnimatedDialogForPrompt
 
 
 export default function AccessDeniedModal({ open, setOpen, eventID }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>>, eventID: string }) {
-
-    const router = useRouter()
-
     return (
         <AnimatedDialogForPrompt open={open} onOpenChange={(v) => setOpen(v)}>
             <div className="">

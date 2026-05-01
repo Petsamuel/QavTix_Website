@@ -14,7 +14,6 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import { getDashboardURL } from "@/helper-fns/getDashboardURL";
 import CustomAvatar from "../custom-utils/avatars/CustomAvatar";
 import { useLogOut } from "@/contexts/UseLogout";
-import LiquidBtn from "../custom-utils/buttons/LiquidButton";
 import LiquidLink from "../custom-utils/buttons/LiquidGlassLink";
 
 
@@ -111,7 +110,7 @@ export default function Header() {
                                 className="flex items-center gap-1 text-xs text-secondary-4 hover:text-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150"
                             >
                                 {isLoggingOut
-                                    ? <><Icon icon="eos-icons:three-dots-loading" className="size-8" /> Signing out</>
+                                    ? <><Icon icon="eos-icons:three-dots-loading" className="size-6" /></>
                                     : <><Icon icon="hugeicons:logout-square-02" width="17" height="17" />Sign out</>
                                 }
                             </button>

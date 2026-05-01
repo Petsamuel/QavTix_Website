@@ -1,6 +1,4 @@
-"use server"
-
-import { cacheLife, cacheTag, revalidateTag } from "next/cache"
+import { cacheLife, cacheTag } from "next/cache"
 import { CACHE_TAGS } from "@/cache-tags"
 import {
     FEATURED_EVENTS_ENDPOINT,
@@ -12,15 +10,9 @@ import {
     MARKETPLACE_EVENT_DETAILS_ENDPOINT,
 } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
-import { resolveCountryLabel } from "@/helper-fns/resolveCountryCode"
-import { cookies, headers } from "next/headers"
+import { getAuthToken } from "@/helper-fns/getAuthToken"
 
 const REGIONAL_MIN_THRESHOLD = 8
-
-async function getToken(): Promise<string | undefined> {
-    const cookiesStore = await cookies()
-    return cookiesStore.get("access_token")?.value
-}
 
 // ─── raw fetcher — no cache here, callers own caching ────────────────────────
 
@@ -50,22 +42,10 @@ function mergeWithFallback(
     return [...regional, ...extras]
 }
 
-// ─── user location (never cached — reads request headers) ────────────────────
-
-export async function getUserLocation(): Promise<{ city: string; country: string }> {
-    const headersList = await headers()
-    const city = headersList.get("x-vercel-ip-city") ?? "Lagos"
-    const countryCode = headersList.get("x-vercel-ip-country") ?? "NG"
-    return {
-        city: decodeURIComponent(city),
-        country: resolveCountryLabel(countryCode),
-    }
-}
-
 // ─── featured events ──────────────────────────────────────────────────────────
 
 export async function getFeaturedEvents(country?: string): Promise<PublicPagesEvent[]> {
-    const token = await getToken()
+    const token = await getAuthToken()
     return _getFeaturedEvents(token, country)
 }
 
@@ -97,7 +77,7 @@ async function _getFeaturedEvents(
 // ─── trending events ──────────────────────────────────────────────────────────
 
 export async function getTrendingEvents(country?: string): Promise<PublicPagesEvent[]> {
-    const token = await getToken()
+    const token = await getAuthToken()
     return _getTrendingEvents(token, country)
 }
 
@@ -129,7 +109,7 @@ async function _getTrendingEvents(
 // ─── nearby events ────────────────────────────────────────────────────────────
 
 export async function getNearbyEvents(city: string, country?: string): Promise<PublicPagesEvent[]> {
-    const token = await getToken()
+    const token = await getAuthToken()
     return _getNearbyEvents(token, city, country)
 }
 
@@ -167,7 +147,7 @@ async function _getNearbyEvents(
 // ─── top locations ────────────────────────────────────────────────────────────
 
 export async function getTopLocations(): Promise<TopLocation[]> {
-    const token = await getToken()
+    const token = await getAuthToken()
     return _getTopLocations(token)
 }
 
@@ -184,7 +164,7 @@ async function _getTopLocations(token: string | undefined): Promise<TopLocation[
 // ─── location page ────────────────────────────────────────────────────────────
 
 export async function getLocationPage(city: string): Promise<{ success: boolean; data?: LocationPageData; message?: string }> {
-    const token = await getToken()
+    const token = await getAuthToken()
     return _getLocationPage(token, city)
 }
 
@@ -212,7 +192,7 @@ async function _getLocationPage(
 // ─── event details ────────────────────────────────────────────────────────────
 
 export async function getEventDetails(eventID: string): Promise<{ success: boolean; data?: EventDetails; message?: string }> {
-    const token = await getToken()
+    const token = await getAuthToken()
     return _getEventDetails(token, eventID)
 }
 
@@ -246,7 +226,7 @@ export async function getMarketplaceEventDetails(eventID: string): Promise<{
     statusCode?: number
     errorCode?: string | number | null
 }> {
-    const token = await getToken()
+    const token = await getAuthToken()
     return _getMarketplaceEventDetails(token, eventID)
 }
 
@@ -280,14 +260,4 @@ async function _getMarketplaceEventDetails(
     } catch {
         return { success: false, message: "Failed to load marketplace event details.", statusCode: 500 }
     }
-}
-
-// ─── revalidation helpers (call these from mutations) ────────────────────────
-
-export async function revalidateEventCards() {
-    revalidateTag(CACHE_TAGS.EVENT_CARDS, "max")
-}
-
-export async function revalidateEventDetails() {
-    revalidateTag(CACHE_TAGS.EVENT_DETAILS, "max")
 }

@@ -1,5 +1,6 @@
 import { getMarketplaceEventDetails } from "@/actions/getters"
-import { getCategories, searchEvents } from "@/actions/filters"
+import { getCategories } from "@/actions/filters"
+import { searchEvents } from "@/actions/filters/client"
 import EventDetailsPageContentContainer from "@/components/events-page/EventDetailsPageContentContainer"
 import MarketplaceTicketNotFound from "@/components/events-page/MarketplaceTicketNotFound"
 import MarketplaceAuthError from "@/components/events-page/MarketplaceAuthError"

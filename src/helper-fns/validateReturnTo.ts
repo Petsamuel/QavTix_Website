@@ -1,4 +1,5 @@
 const ALLOWED_ORIGINS = [
+    process.env.NEXT_PUBLIC_APP_DOMAIN,
     process.env.NEXT_PUBLIC_HOST_SITE,
     process.env.NEXT_PUBLIC_ATTENDEE_SITE,
 ].filter(Boolean) as string[]

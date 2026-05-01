@@ -1,4 +1,4 @@
-import { getFeaturedEvents, getNearbyEvents, getTopLocations, getUserLocation } from "@/actions/getters"
+import { getFeaturedEvents, getNearbyEvents, getTopLocations } from "@/actions/getters"
 import { getCategories } from "@/actions/filters"
 import HomepagePageCW from "@/components/page-content-wrappers/HomepageCw";
 import { buildPageMetadata } from "@/metadata"
@@ -7,6 +7,7 @@ import HeroSection from "@/components/homepage/HeroSection";
 import { Suspense } from "react";
 import EventCategorySection from "@/components/shared/EventCategorySection";
 import EventCardLoaderContainer from "@/components/loaders/EventCardLoader";
+import { getUserLocation } from "@/actions/getters/client";
 
 
 export const metadata: Metadata = buildPageMetadata(

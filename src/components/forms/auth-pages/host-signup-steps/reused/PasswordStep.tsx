@@ -81,11 +81,7 @@ export function PasswordStep({ accountType }: Props) {
 
             await axios.post(HOST_SIGNUP_PATH, payload)
             reset()
-            window.open(
-                process.env.NEXT_PUBLIC_HOST_SITE || "https://host.qavtix.com",
-                "_blank",
-                "noopener,noreferrer"
-            )
+            window.location.href = process.env.NEXT_PUBLIC_HOST_SITE || "https://host.qavtix.com"
         } catch (error) {
             let message = "An unexpected error occurred. Please try again.";
             if (error instanceof AxiosError) {

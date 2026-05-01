@@ -17,7 +17,7 @@ import { useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 
 interface Props {
-    event:      EventDetails | MarketplaceEventDetails
+    event: EventDetails | MarketplaceEventDetails
     className?: string
 }
 
@@ -29,7 +29,7 @@ export default function EventOverviewSection({ event, className }: Props) {
 
     const { isFavourite, toggle: toggleFavourite, feedbackMsg } = useFavourite(event.id, event.is_favorite)
 
-    const eventUrl    = `${process.env.NEXT_PUBLIC_APP_DOMAIN}${EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}`
+    const eventUrl = `${process.env.NEXT_PUBLIC_APP_DOMAIN}${EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}`
     const fullAddress = [
         event.event_location.venue_name,
         event.event_location.address,
@@ -56,11 +56,9 @@ export default function EventOverviewSection({ event, className }: Props) {
                             <Badge
                                 key={tag}
                                 variant="default"
-                                className={`py-1 px-2 rounded-2xl text-center text-[14px] font-medium capitalize ${
-                                    statusStyles[event.event_status as keyof StatusStylesRecord]?.bg ?? "bg-neutral-2"
-                                } ${
-                                    statusStyles[event.event_status as keyof StatusStylesRecord]?.text ?? "text-neutral-7"
-                                }`}
+                                className={`py-1 px-2 rounded-2xl text-center text-[14px] font-medium capitalize ${statusStyles[event.event_status as keyof StatusStylesRecord]?.bg ?? "bg-neutral-2"
+                                    } ${statusStyles[event.event_status as keyof StatusStylesRecord]?.text ?? "text-neutral-7"
+                                    }`}
                             >
                                 {tag}
                             </Badge>
@@ -116,25 +114,25 @@ export default function EventOverviewSection({ event, className }: Props) {
                             href={`https://maps.google.com/?q=${encodeURIComponent(mapQuery)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex-1 min-w-0 text-neutral-7 flex items-center gap-1"
+                            className="w-fit min-w-0 text-neutral-7 inline-flex gap-1 underline items-center"
                         >
                             <span className="text-sm wrap-break-words flex-1">{fullAddress}</span>
-                            <Icon icon="system-uicons:arrow-top-right" width="21" height="21" className="shrink-0" />
+                            <Icon icon="system-uicons:arrow-top-right" width="16" height="16" className="shrink-0 -ml-0.5" />
                         </Link>
                     </div>
                 </div>
 
                 {/* Tickets */}
                 {
-                    pathName.includes("/marketplace/") ? 
-                    <button
-                        onClick={() => router.push(MARKETPLACE_ROUTES.CHECKOUT.href.replace("[ticket_id]", (event as MarketplaceEventDetails).listing_id.toString()))}
-                        className="bg-primary-6 mt-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
-                    >
-                        Purchase Ticket
-                    </button>
-                    :
-                    <TicketStatusSection event={event} />
+                    pathName.includes("/marketplace/") ?
+                        <button
+                            onClick={() => router.push(MARKETPLACE_ROUTES.CHECKOUT.href.replace("[ticket_id]", (event as MarketplaceEventDetails).listing_id.toString()))}
+                            className="bg-primary-6 mt-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
+                        >
+                            Purchase Ticket
+                        </button>
+                        :
+                        <TicketStatusSection event={event} />
                 }
 
                 {/* Full description */}

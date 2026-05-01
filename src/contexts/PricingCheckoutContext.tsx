@@ -10,7 +10,7 @@ import {
 } from "react"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import { showAlert } from "@/lib/redux/slices/alertSlice"
-import { getUserLocation } from "@/actions/getters"
+import { getUserLocation } from "@/actions/getters/client"
 import { extractAccessCode } from "@/helper-fns/extractAccessCode"
 import { PLATFORM_CURRENCY } from "@/components-data/currencies"
 import {

@@ -1,4 +1,4 @@
-import { searchEvents, SearchEventsFilters } from "@/actions/filters"
+import { searchEvents, SearchEventsFilters } from "@/actions/filters/client"
 import { getCategories } from "@/actions/filters"
 import { SearchResultSection } from "@/components/events-page/SearchResultSection"
 import { resolveCountryLabel, resolveStateLabel } from "@/helper-fns/resolveCountryCode"

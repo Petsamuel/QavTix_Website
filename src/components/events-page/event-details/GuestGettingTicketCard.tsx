@@ -13,11 +13,12 @@ import AddToCalendarButton from '@/components/custom-utils/buttons/AddToCalendar
 import { formatLocation } from '@/components/custom-utils/cards/resources/event-card-adapter'
 import ShareEventModal from '@/components/modals/ShareEventModal'
 import { formatCountdown } from '@/helper-fns/date-utils'
+import LiquidLink from '@/components/custom-utils/buttons/LiquidGlassLink'
 
 export default function GuestGettingTicketCard({ event }: { event: EventDetails }) {
 
-    const [session,    setSession]    = useState<GuestTicketSession | null>(null)
-    const [showShare,  setShowShare]  = useState(false)
+    const [session, setSession] = useState<GuestTicketSession | null>(null)
+    const [showShare, setShowShare] = useState(false)
 
     const eventUrl = `${process.env.NEXT_PUBLIC_APP_DOMAIN}${EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}`
     const countdown = formatCountdown(event.start_datetime)
@@ -61,11 +62,11 @@ export default function GuestGettingTicketCard({ event }: { event: EventDetails 
                                 <div className="flex gap-2">
                                     <AddToCalendarButton
                                         event={{
-                                            title:       event.title,
+                                            title: event.title,
                                             description: event.short_description,
-                                            location:    formatLocation(event.event_location),
-                                            startDate:   event.start_datetime,
-                                            endDate:     event.end_datetime,
+                                            location: formatLocation(event.event_location),
+                                            startDate: event.start_datetime,
+                                            endDate: event.end_datetime,
                                         }}
                                     />
 
@@ -116,7 +117,7 @@ export default function GuestGettingTicketCard({ event }: { event: EventDetails 
                         </p>
 
                         <Link
-                            href={AUTH_ROUTES.SIGN_IN.href}
+                            href={`${AUTH_ROUTES.SIGN_IN.href}?returnTo=${encodeURIComponent(eventUrl)}`}
                             className="flex items-center gap-1 font-medium text-primary-6"
                         >
                             <span>Sign in</span>
@@ -126,12 +127,12 @@ export default function GuestGettingTicketCard({ event }: { event: EventDetails 
                 </div>
 
                 {/* GET MORE TICKETS — LINKS BACK TO THE EVENT PAGE */}
-                <Link
-                    href={eventUrl}
+                <LiquidLink
+                    href={`${eventUrl}/checkout`}
                     className="bg-primary-6 inline-block w-fit mt-4 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
                 >
                     Get more tickets
-                </Link>
+                </LiquidLink>
             </div>
 
             <ShareEventModal

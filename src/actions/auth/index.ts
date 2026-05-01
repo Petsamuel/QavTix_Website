@@ -2,39 +2,33 @@
 
 import { FORGOT_PASSWORD_ENDPOINT, VERIFY_OTP_ENDPOINT, RESET_PASSWORD_ENDPOINT } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
-import { LOGOUT_PATH } from "@/apiPaths"
 import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
 export const logOut = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_APP_DOMAIN}${LOGOUT_PATH}`, {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        // Forward cookies so the route handler can read refresh_token
-        credentials: "include",
-    })
-    // Clear both auth cookies regardless of backend response
-    const cookieStore = await cookies()
-    cookieStore.delete("access_token")
-    cookieStore.delete("refresh_token")
+    const cookiesStore = await cookies()
+    cookiesStore.delete("access_token")
+    cookiesStore.delete("refresh_token")
+    redirect(process.env.NEXT_PUBLIC_APP_DOMAIN || "/")
 }
 
 interface ActionResult {
-    success:  boolean
+    success: boolean
     message?: string
 }
 
 interface VerifyOtpResult {
-    success:  boolean
-    token?:   string
+    success: boolean
+    token?: string
     message?: string
 }
 
 export async function requestPasswordReset(email: string): Promise<ActionResult> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${FORGOT_PASSWORD_ENDPOINT}`, {
-            method:  "POST",
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify({ email }),
+            body: JSON.stringify({ email }),
         })
 
         const json = await res.json()
@@ -56,9 +50,9 @@ export async function verifyOtp(email: string, otp: string): Promise<VerifyOtpRe
 
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${VERIFY_OTP_ENDPOINT}`, {
-            method:  "POST",
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify({ email, otp }),
+            body: JSON.stringify({ email, otp }),
         })
 
         const json = await res.json()
@@ -79,9 +73,9 @@ export async function verifyOtp(email: string, otp: string): Promise<VerifyOtpRe
 export async function resetPassword(token: string, newPassword: string): Promise<ActionResult> {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${RESET_PASSWORD_ENDPOINT}`, {
-            method:  "POST",
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify({ token, new_password: newPassword }),
+            body: JSON.stringify({ token, new_password: newPassword }),
         })
 
         const json = await res.json()

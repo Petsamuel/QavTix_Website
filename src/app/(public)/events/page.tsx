@@ -1,11 +1,12 @@
 import EventsPageCW from "@/components/page-content-wrappers/EventPageCW"
-import { getFeaturedEvents, getTopLocations, getNearbyEvents, getTrendingEvents, getUserLocation } from "@/actions/getters"
+import { getFeaturedEvents, getTopLocations, getNearbyEvents, getTrendingEvents } from "@/actions/getters"
 import { getCategories } from "@/actions/filters"
 import { getTrendingHosts } from "@/actions/host"
 import { Metadata } from "next"
 import { buildPageMetadata } from "@/metadata"
 import { Suspense } from "react"
 import EventPageLoader from "@/components/loaders/EventPagesLoader"
+import { getUserLocation } from "@/actions/getters/client"
 
 
 export const metadata: Metadata = buildPageMetadata(

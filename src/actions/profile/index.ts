@@ -1,9 +1,7 @@
-"use server"
-
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { CACHE_TAGS } from "@/cache-tags"
-import { cookies } from "next/headers"
 import { GET_PROFILE_ENDPOINT } from "@/endpoints"
+import { getAuthToken } from "@/helper-fns/getAuthToken"
 
 interface ProfileResult {
     success:  boolean
@@ -12,16 +10,19 @@ interface ProfileResult {
 }
 
 export async function getProfile(): Promise<ProfileResult> {
-    try {
-        const cookieStore = await cookies()
-        const accessToken = cookieStore.get("access_token")?.value
+    const token = await getAuthToken()
+    return _getProfile(token)
+}
 
+async function _getProfile(token: string | undefined): Promise<ProfileResult> {
+    "use cache"
+    try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/${GET_PROFILE_ENDPOINT}`,
             {
                 headers: {
                     "Content-Type": "application/json",
-                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 },
                 next: { tags: [CACHE_TAGS.PROFILE] },
             }
