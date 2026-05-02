@@ -51,8 +51,8 @@ export function ImageUpload({
   }, [value])
 
   const aspectClasses = {
-    square:  'aspect-square',
-    banner:  'aspect-video',
+    square: 'aspect-square',
+    banner: 'aspect-video',
     profile: 'aspect-square rounded-full',
   }
 
@@ -159,9 +159,9 @@ export function BannerImageUpload(props: Omit<ImageUploadProps, 'aspectRatio' | 
     <ImageUpload
       {...props}
       aspectRatio="banner"
-      label="Banner Image"
-      description="Upload a banner image for your profile"
-      placeholder="Upload banner image"
+      label="Account cover image"
+      description="Upload an account cover image for your profile"
+      placeholder="Upload an account cover image"
       maxSize={5}
     />
   )

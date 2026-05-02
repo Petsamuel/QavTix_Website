@@ -36,23 +36,25 @@ async function getLayoutData() {
     }
 }
 
-async function LayoutDataLoader() {
-    const axiosInstance = await getServerAxios()
-    const [locationResult, ticketSessionResult, profileResult] = await Promise.allSettled([
-        getOrDetectLocation(),
-        getGuestTicketSession(),
-        axiosInstance.get(GET_PROFILE_ENDPOINT).then(r => r.data),
-    ])
-
-    const locationData = locationResult.status === "fulfilled" ? locationResult.value : DEFAULT_LOCATION
-    const ticketSession = ticketSessionResult.status === "fulfilled" ? ticketSessionResult.value : null
-    const userData = profileResult.status === "fulfilled" ? profileResult.value?.data ?? null : null
+async function RootProviders({ children }: { children: React.ReactNode }) {
+    const { locationData, ticketSession, userData } = await getLayoutData()
 
     return (
-        <TicketUserProvider user={userData} ticketSession={ticketSession}>
-            <AppSettings currency={locationData.currency} region={locationData.region} />
-            <AuthPersistor userData={userData} />
-        </TicketUserProvider>
+        <ReduxStoreProvider>
+            <TicketUserProvider user={userData} ticketSession={ticketSession}>
+                <AuthPersistor userData={userData} />
+                <AppSettings currency={locationData.currency} region={locationData.region} />
+                <CustomGlobalAlert />
+
+                <Header2 />
+                <Header />
+
+                {children}
+
+                <ModalRenderer />
+                <Footer />
+            </TicketUserProvider>
+        </ReduxStoreProvider>
     )
 }
 
@@ -60,20 +62,11 @@ export default function MainRootLayout({ children }: { children: React.ReactNode
     return (
         <html lang="en">
             <body className={`${inter.className} min-h-screen h-screen`} suppressHydrationWarning>
-                <ReduxStoreProvider>
-                    <Header2 />
-                    <Header />
-
-                    {children}
-
-                    <Footer />
-                    <ModalRenderer />
-                    <CustomGlobalAlert />
-
-                    <Suspense fallback={null}>
-                        <LayoutDataLoader />
-                    </Suspense>
-                </ReduxStoreProvider>
+                <Suspense fallback={null}>
+                    <RootProviders>
+                        {children}
+                    </RootProviders>
+                </Suspense>
             </body>
         </html>
     )

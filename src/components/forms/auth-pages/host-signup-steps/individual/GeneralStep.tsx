@@ -59,7 +59,7 @@ export function IndividualGeneralStep() {
 
             <TextInput1
                 showLabel
-                label="Full name"
+                label="Full Name (as shown on your ID)"
                 placeholder="Enter your first and last name"
                 required
                 {...register('fullName')}
