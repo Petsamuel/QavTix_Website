@@ -1,35 +1,11 @@
-import { NextRequest, NextResponse } from "next/server"
+import { accessCookieOptions, refreshCookieOptions } from "@/components-data/cookie-keys"
+import { NextResponse } from "next/server"
 
+export async function POST() {
+    const response = NextResponse.json({ success: true })
 
-export async function POST(req: NextRequest) {
-    try {
-        const refreshToken = req.cookies.get("refresh_token")?.value
+    response.cookies.delete({ name: "access_token", path: accessCookieOptions.path, ...("domain" in accessCookieOptions && { domain: accessCookieOptions.domain }) })
+    response.cookies.delete({ name: "refresh_token", path: refreshCookieOptions.path, ...("domain" in refreshCookieOptions && { domain: refreshCookieOptions.domain }) })
 
-        // Safe to fire-and-forget — we clear cookies regardless of the outcome
-        if (refreshToken) {
-            await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout/`, {
-                method:  "POST",
-                headers: { "Content-Type": "application/json" },
-                body:    JSON.stringify({ refresh: refreshToken }),
-            }).catch(() => {
-                // Don't block logout if the server call fails
-            })
-        }
-
-        const response = NextResponse.json(
-            { message: "Logged out successfully" },
-            { status: 200 }
-        )
-
-        response.cookies.delete("access_token")
-        response.cookies.delete("refresh_token")
-
-        return response
-
-    } catch {
-        return NextResponse.json(
-            { message: "Internal server error" },
-            { status: 500 }
-        )
-    }
+    return response
 }

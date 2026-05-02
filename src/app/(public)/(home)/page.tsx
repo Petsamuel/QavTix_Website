@@ -31,17 +31,11 @@ export default async function Homepage() {
     <main>
       <HeroSection categories={categoriesResult.data} />
       <EventCategorySection />
-      <Suspense fallback={
-        <div className="my-8 global-px">
-          <EventCardLoaderContainer />
-        </div>
-      }>
-        <HomepagePageCW
-          featuredEvents={featuredEvents}
-          nearbyEvents={nearbyEvents}
-          topLocations={topLocations}
-        />
-      </Suspense>
+      <HomepagePageCW
+        featuredEvents={featuredEvents}
+        nearbyEvents={nearbyEvents}
+        topLocations={topLocations}
+      />
     </main>
   )
 }

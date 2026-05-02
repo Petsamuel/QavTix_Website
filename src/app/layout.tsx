@@ -36,38 +36,31 @@ async function getLayoutData() {
     }
 }
 
-async function RootProviders({ children }: { children: React.ReactNode }) {
+export default async function MainRootLayout({ children }: { children: React.ReactNode }) {
+
     const { locationData, ticketSession, userData } = await getLayoutData()
 
     return (
-        <ReduxStoreProvider>
-            <TicketUserProvider user={userData} ticketSession={ticketSession}>
-                <AuthPersistor userData={userData} />
-                <AppSettings currency={locationData.currency} region={locationData.region} />
-                <CustomGlobalAlert />
-
-                <Header2 />
-                <Header />
-
-                {children}
-
-                <ModalRenderer />
-                <Footer />
-            </TicketUserProvider>
-        </ReduxStoreProvider>
-    )
-}
-
-export default function MainRootLayout({ children }: { children: React.ReactNode }) {
-    return (
         <html lang="en">
-            <body className={`${inter.className} min-h-screen h-screen`} suppressHydrationWarning>
-                <Suspense fallback={null}>
-                    <RootProviders>
-                        {children}
-                    </RootProviders>
-                </Suspense>
-            </body>
+            <Suspense fallback={null}>
+                <ReduxStoreProvider>
+                    <TicketUserProvider user={userData} ticketSession={ticketSession}>
+                        <body className={`${inter.className} min-h-screen h-screen`} suppressHydrationWarning>
+                            <AppSettings currency={locationData.currency} region={locationData.region} />
+                            <AuthPersistor userData={userData} />
+                            <CustomGlobalAlert />
+
+                            <Header2 />
+                            <Header />
+
+                            {children}
+
+                            <ModalRenderer />
+                            <Footer />
+                        </body>
+                    </TicketUserProvider>
+                </ReduxStoreProvider>
+            </Suspense>
         </html>
     )
 }
