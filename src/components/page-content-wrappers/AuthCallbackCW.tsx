@@ -31,14 +31,15 @@ export default function OAuthCallbackPage() {
                     SOCIAL_AUTH_PATH.replace("[provider]", provider),
                     {
                         code,
-                        callback_url: callbackUrl,
+                        redirect_uri: callbackUrl,
                     }
                 )
 
                 dispatch(setUser(data.user))
 
-                if (data.user.role === "host") {
-                    window.location.href = `host.${process.env.NEXT_PUBLIC_APP_DOMAIN}`
+                if (data.user?.role === "host") {
+                    const protocol = process.env.NODE_ENV === "production" ? "https://" : "http://"
+                    window.location.href = `${protocol}host.${process.env.NEXT_PUBLIC_APP_DOMAIN?.replace(/^https?:\/\//, "")}`
                 } else {
                     router.push(NAV_LINKS.HOME.href)
                 }

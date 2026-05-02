@@ -7,7 +7,8 @@ export function buildGoogleUrl(): string {
         response_type: "code",
         scope:         "openid email profile",
         state:         "google",
-        access_type:   "offline",
+        access_type:   "online",
+        prompt:        "consent",
     })
     return `https://accounts.google.com/o/oauth2/v2/auth?${params}`
 }
