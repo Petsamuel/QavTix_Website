@@ -1,9 +1,5 @@
-"use cache"
-
 import { CATEGORIES_ENDPOINT, CATEGORY_PAGE_ENDPOINT } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
-import { CACHE_TAGS } from "@/cache-tags"
-import { cacheLife, cacheTag } from "next/cache"
 
 export interface ApiCategory {
     id: number
@@ -17,8 +13,6 @@ export interface GetCategoriesResult {
 }
 
 export async function getCategories(): Promise<GetCategoriesResult> {
-    cacheLife("hours")
-    cacheTag(CACHE_TAGS.CATEGORIES)
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/${CATEGORIES_ENDPOINT}`,
@@ -39,8 +33,6 @@ interface CategoryPageResult {
 }
 
 export async function getCategoryPage(categoryPath: string): Promise<CategoryPageResult> {
-    cacheLife("minutes")
-    cacheTag(CACHE_TAGS.CATEGORIES)
     try {
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "")}/${CATEGORY_PAGE_ENDPOINT.replace("[category_name]", categoryPath)}`
         const res = await fetch(url)

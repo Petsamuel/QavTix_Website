@@ -9,7 +9,7 @@ import {
 } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { getServerAxios } from "@/lib/axios"
-import { cacheLife, cacheTag, revalidateTag } from "next/cache"
+import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 
 
@@ -38,9 +38,6 @@ export async function getTrendingHosts(): Promise<GetTrendingHostsResult> {
 async function _getTrendingHosts(
     accessToken: string | undefined,
 ): Promise<GetTrendingHostsResult> {
-    "use cache"
-    cacheLife("minutes")
-    cacheTag(CACHE_TAGS.HOSTS)
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/${TRENDING_HOSTS_ENDPOINT}`,

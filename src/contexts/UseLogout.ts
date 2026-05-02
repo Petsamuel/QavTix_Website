@@ -1,15 +1,20 @@
 "use client"
 
 import { useState } from "react"
-import { logOut } from "@/actions/auth"
+import { useRouter } from "next/navigation"
 
 export function useLogOut() {
     const [isLoggingOut, setIsLoggingOut] = useState(false)
+    const router = useRouter()
 
     const handleLogOut = async () => {
         if (isLoggingOut) return
         setIsLoggingOut(true)
-        await logOut()
+
+        await fetch("/api/auth/logout", { method: "POST" })
+        setIsLoggingOut(false)
+
+        router.push(process.env.NEXT_PUBLIC_APP_DOMAIN || "/")
     }
 
     return { handleLogOut, isLoggingOut }

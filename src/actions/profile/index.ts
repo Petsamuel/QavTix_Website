@@ -4,8 +4,8 @@ import { GET_PROFILE_ENDPOINT } from "@/endpoints"
 import { getAuthToken } from "@/helper-fns/getAuthToken"
 
 interface ProfileResult {
-    success:  boolean
-    data?:    AuthUser
+    success: boolean
+    data?: AuthUser
     message?: string
 }
 
@@ -15,7 +15,6 @@ export async function getProfile(): Promise<ProfileResult> {
 }
 
 async function _getProfile(token: string | undefined): Promise<ProfileResult> {
-    "use cache"
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/${GET_PROFILE_ENDPOINT}`,

@@ -56,7 +56,7 @@ export function OrganizationGeneralStep() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <TextInput1
                 showLabel
-                label="Full name"
+                label="Full Name (as shown on your ID)"
                 placeholder="Enter contact person's full name"
                 required
                 {...register('fullName')}

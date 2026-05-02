@@ -1,5 +1,3 @@
-import { cacheLife, cacheTag } from "next/cache"
-import { CACHE_TAGS } from "@/cache-tags"
 import {
     FEATURED_EVENTS_ENDPOINT,
     EVENTS_NEARBY_ENDPOINT,
@@ -53,9 +51,6 @@ async function _getFeaturedEvents(
     token: string | undefined,
     country?: string,
 ): Promise<PublicPagesEvent[]> {
-    "use cache"
-    cacheLife("minutes")
-    cacheTag(CACHE_TAGS.EVENT_CARDS)
 
     const base = process.env.NEXT_PUBLIC_API_BASE_URL
 
@@ -85,9 +80,6 @@ async function _getTrendingEvents(
     token: string | undefined,
     country?: string,
 ): Promise<PublicPagesEvent[]> {
-    "use cache"
-    cacheLife("minutes")
-    cacheTag(CACHE_TAGS.EVENT_CARDS)
 
     const base = process.env.NEXT_PUBLIC_API_BASE_URL
 
@@ -118,9 +110,6 @@ async function _getNearbyEvents(
     city: string,
     country?: string,
 ): Promise<PublicPagesEvent[]> {
-    "use cache"
-    cacheLife("minutes")
-    cacheTag(CACHE_TAGS.EVENT_CARDS)
 
     const base = process.env.NEXT_PUBLIC_API_BASE_URL
     const cityParams = new URLSearchParams({ city })
@@ -152,10 +141,6 @@ export async function getTopLocations(): Promise<TopLocation[]> {
 }
 
 async function _getTopLocations(token: string | undefined): Promise<TopLocation[]> {
-    "use cache"
-    cacheLife("hours")  // locations change rarely
-    cacheTag(CACHE_TAGS.EVENT_CARDS)
-
     const base = process.env.NEXT_PUBLIC_API_BASE_URL
     const data = await apiFetch<{ data: TopLocation[] }>(`${base}/${TOP_LOCATIONS_ENDPOINT}`, token)
     return data?.data ?? (Array.isArray(data) ? data as TopLocation[] : [])
@@ -172,9 +157,6 @@ async function _getLocationPage(
     token: string | undefined,
     city: string,
 ): Promise<{ success: boolean; data?: LocationPageData; message?: string }> {
-    "use cache"
-    cacheLife("minutes")
-    cacheTag(CACHE_TAGS.EVENT_CARDS)
 
     try {
         const res = await fetch(
@@ -200,9 +182,6 @@ async function _getEventDetails(
     token: string | undefined,
     eventID: string,
 ): Promise<{ success: boolean; data?: EventDetails; message?: string }> {
-    "use cache"
-    cacheLife("minutes")
-    cacheTag(CACHE_TAGS.EVENT_DETAILS)
 
     try {
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`
@@ -240,9 +219,6 @@ async function _getMarketplaceEventDetails(
     statusCode?: number
     errorCode?: string | number | null
 }> {
-    "use cache"
-    cacheLife("minutes")
-    cacheTag(CACHE_TAGS.EVENT_DETAILS)
 
     try {
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${MARKETPLACE_EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`

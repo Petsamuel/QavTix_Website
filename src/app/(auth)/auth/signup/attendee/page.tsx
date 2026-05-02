@@ -9,7 +9,7 @@ import { space_grotesk } from "@/lib/fonts";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function AttendeeSignUpPage(){
+export default function AttendeeSignUpPage() {
 
     const router = useRouter()
     const [successfulSignUp, setSuccessfulSignUp] = useState(false)
@@ -23,7 +23,7 @@ export default function AttendeeSignUpPage(){
                     <h2 className={`${space_grotesk.className} text-secondary-9 text-2xl md:text-3xl lg:text-[2rem] font-bold mb-2`}>Sign up with your email</h2>
                     <p className="text-neutral-7 text-sm">You are one step away! Let’s get you started.</p>
 
-                    <div className="mt-10 flex gap-4 flex-wrap justify-between">
+                    <div className="mt-10 flex gap-4 flex-wrap">
                         <SocialAuthButtons />
                     </div>
 
@@ -33,7 +33,7 @@ export default function AttendeeSignUpPage(){
                         <hr className="h-1 border-neutral-5 flex-1" />
                     </div>
 
-                    <AttendeeEmailSignUpForm successfulSignUp={successfulSignUp} setSuccessfulSignUp={setSuccessfulSignUp}  />
+                    <AttendeeEmailSignUpForm successfulSignUp={successfulSignUp} setSuccessfulSignUp={setSuccessfulSignUp} />
 
                     <p className="text-sm text-neutral-7 mt-6 mb-8 text-center">Already have an account?<button onClick={() => router.push(NAV_LINKS.SIGN_IN.href)} className="font-medium text-accent-6 ms-1">Sign In</button></p>
                 </main>
