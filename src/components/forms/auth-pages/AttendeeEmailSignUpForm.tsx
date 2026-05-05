@@ -18,7 +18,7 @@ import FormCheckbox1 from "@/components/custom-utils/inputs/FormCheckbox1"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 
-export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfulSignUp  }:{ successfulSignUp: boolean,  setSuccessfulSignUp: Dispatch<SetStateAction<boolean>> }) {
+export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfulSignUp }: { successfulSignUp: boolean, setSuccessfulSignUp: Dispatch<SetStateAction<boolean>> }) {
 
     const [submitError, setSubmitError] = useState<string | null>(null)
 
@@ -44,7 +44,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfu
         setSubmitError(null)
 
         try {
-            await axios.post(ATTENDEE_SIGNUP_PATH, {...values, agree_to_terms: values.agreedToTerms})
+            await axios.post(ATTENDEE_SIGNUP_PATH, { ...values, agree_to_terms: values.agreedToTerms })
 
             const { data }: { data: { user: AuthUser } } = await axios.get(GET_PROFILE_PATH, {
                 params: { role: "attendee" },
@@ -114,7 +114,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfu
 
                 {submitError && (
                     <p className="flex items-center gap-1.5 mt-2 text-sm text-red-500">
-                        <Icon icon="mage:exclamation-circle" className="size-4 shrink-0" />
+                        <Icon icon="bx:error-alt" className="size-4 shrink-0" />
                         {submitError}
                     </p>
                 )}

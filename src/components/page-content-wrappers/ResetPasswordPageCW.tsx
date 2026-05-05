@@ -21,11 +21,11 @@ import PasswordStrengthIndicator from "@/components/custom-utils/PasswordStrengt
 const OTP_EXPIRY_SECONDS = 180
 
 const resetPasswordSchema = z.object({
-    password:        z.string().min(8, "Password must be at least 8 characters"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
 }).refine(d => d.password === d.confirmPassword, {
     message: "Passwords do not match",
-    path:    ["confirmPassword"],
+    path: ["confirmPassword"],
 })
 
 type ResetPasswordValues = z.infer<typeof resetPasswordSchema>
@@ -34,16 +34,16 @@ type Step = "otp" | "new-password"
 
 export default function ResetPasswordPageCW() {
 
-    const [email,           setEmail]           = useState<string | null>(null)
-    const [resetToken,      setResetToken]      = useState<string | null>(null)
-    const [step,            setStep]            = useState<Step>("otp")
-    const [otp,             setOtp]             = useState<string[]>(Array(6).fill(""))
-    const [otpError,        setOtpError]        = useState<string | null>(null)
-    const [otpSubmitting,   setOtpSubmitting]   = useState(false)
+    const [email, setEmail] = useState<string | null>(null)
+    const [resetToken, setResetToken] = useState<string | null>(null)
+    const [step, setStep] = useState<Step>("otp")
+    const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
+    const [otpError, setOtpError] = useState<string | null>(null)
+    const [otpSubmitting, setOtpSubmitting] = useState(false)
     const [resetSuccessful, setResetSuccessful] = useState(false)
-    const [resending,       setResending]       = useState(false)
-    const [timerKey,        setTimerKey]        = useState(0)
-    const [timerExpired,    setTimerExpired]    = useState(false)
+    const [resending, setResending] = useState(false)
+    const [timerKey, setTimerKey] = useState(0)
+    const [timerExpired, setTimerExpired] = useState(false)
 
     useEffect(() => {
         const stored = resetEmailStore.get()
@@ -108,7 +108,7 @@ export default function ResetPasswordPageCW() {
             resetEmailStore.clear()
             setResetSuccessful(true)
         }
-    } 
+    }
 
 
     return (
@@ -159,7 +159,7 @@ export default function ResetPasswordPageCW() {
 
                             {otpError && (
                                 <p className="flex items-center gap-1.5 text-sm text-red-500 -mt-6">
-                                    <Icon icon="mage:exclamation-circle" className="size-4 shrink-0" />
+                                    <Icon icon="bx:error-alt" className="size-4 shrink-0" />
                                     {otpError}
                                 </p>
                             )}

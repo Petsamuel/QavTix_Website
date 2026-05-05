@@ -108,7 +108,7 @@ export default function SignInForm() {
 
                 {submitError && (
                     <p className="flex items-center gap-1.5 mt-2 text-sm text-red-500">
-                        <Icon icon="mage:exclamation-circle" className="size-4 shrink-0" />
+                        <Icon icon="bx:error-alt" className="size-4 shrink-0" />
                         {submitError}
                     </p>
                 )}
