@@ -99,28 +99,32 @@ export default function Header2() {
 
                         {!isAuthenticated && (
                             <>
-                                {authLinks.map(link => (
-                                    <Link
-                                        key={link.href}
-                                        href={link.href}
-                                        className={`
-                                            px-4 py-2 rounded-lg text-sm transition-all duration-150
-                                            ${isActive(link.href) ? 'text-primary-7 font-medium' : 'text-neutral-8 hover:text-primary-6'}
-                                            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-neutral-4 focus:ring-offset-2
-                                        `}
-                                    >
-                                        {link.label}
-                                    </Link>
-                                ))}
-                                {ctaLinks.map(link => (
-                                    <LiquidLink
-                                        key={link.href}
-                                        href={link.href}
-                                        className="bg-primary-6 w-fit py-4 px-5 h-12"
-                                    >
-                                        {link.label}
-                                    </LiquidLink>
-                                ))}
+                                {authLinks.map(link => {
+                                    return (
+                                        <Link
+                                            key={link.href}
+                                            href={link.href}
+                                            className={`
+                                                px-4 py-2 rounded-lg text-sm transition-all duration-150
+                                                ${isActive(link.href) ? 'text-primary-7 font-medium' : 'text-neutral-8 hover:text-primary-6'}
+                                                active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-neutral-4 focus:ring-offset-2
+                                            `}
+                                        >
+                                            {link.label}
+                                        </Link>
+                                    )
+                                })}
+                                {ctaLinks.map(link => {
+                                    return (
+                                        <LiquidLink
+                                            key={link.href}
+                                            href={link.href}
+                                            className="bg-primary-6 w-fit py-4 px-5 h-12"
+                                        >
+                                            {link.label}
+                                        </LiquidLink>
+                                    )
+                                })}
                             </>
                         )}
 

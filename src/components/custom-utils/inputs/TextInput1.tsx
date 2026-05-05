@@ -14,7 +14,7 @@ interface ITextInput1Props {
     [key: string]: any;
 }
 
-export default function TextInput1({ 
+export default function TextInput1({
     type = 'text',
     placeholder,
     icon,
@@ -25,23 +25,23 @@ export default function TextInput1({
     value,
     onChange,
     errorDataTestId,
-    ...props 
+    ...props
 }: ITextInput1Props) {
     return (
         <div className="w-full">
             {
                 label && showLabel &&
-                <label className="block text-sm font-medium text-neutral-9 mb-2">
+                <label className="block text-sm capitalize font-medium text-neutral-9 mb-2">
                     {label} {required && <span className="">*</span>}
                 </label>
             }
-            <div 
+            <div
                 className={`
                     relative flex items-center gap-3 px-4 py-3.5 
                     rounded-[6px] border h-14 text-sm transition-all duration-200
                     bg-white
-                    ${error 
-                        ? 'border-red-400 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500' 
+                    ${error
+                        ? 'border-red-400 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500'
                         : 'border-neutral-5 focus-within:border-primary-6 focus-within:shadow-sm'
                     }
                 `}
@@ -56,12 +56,11 @@ export default function TextInput1({
                 />
                 {icon && (
                     <Icon
-                        icon={icon} 
-                        className={`size-6 shrink-0 transition-colors ${
-                            error 
-                                ? 'text-red-400' 
+                        icon={icon}
+                        className={`size-6 shrink-0 transition-colors ${error
+                                ? 'text-red-400'
                                 : 'text-neutral-8 peer-focus:text-primary-6'
-                        }`} 
+                            }`}
                     />
                 )}
             </div>

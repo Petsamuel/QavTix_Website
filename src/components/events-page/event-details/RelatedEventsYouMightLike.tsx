@@ -41,7 +41,7 @@ export default function RelatedEventsYouMightLike({ events }: { events: PublicPa
         const autoplay = getAutoplay()
         if (!autoplay) return
         if (typeof autoplay.play === 'function') {
-            autoplay.play()
+            autoplay.play(true)
         }
     }, [getAutoplay])
 

@@ -14,15 +14,35 @@ const STEPS = [
     "Redirecting to checkout...",
 ]
 
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
+import { showAuthPrompt } from "@/lib/redux/slices/showAuthPromptSlice"
+
 export default function GroupSplitPaymentPage() {
 
     const token = useParams().token || "";
     const router = useRouter()
+    const dispatch = useAppDispatch()
+    const { isAuthenticated } = useAppSelector(s => s.auth)
+    
+    const [isMounted, setIsMounted] = useState(false)
     const [status, setStatus] = useState<Status>("loading")
     const [message, setMessage] = useState<string>(STEPS[0])
     const [stepIndex, setStepIndex] = useState(0)
 
     useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    useEffect(() => {
+        if (!isMounted) return
+        
+        if (!isAuthenticated) {
+            dispatch(showAuthPrompt("Sign in to join this split payment"))
+            setStatus("error")
+            setMessage("Authentication required to join split payment")
+            return
+        }
+
         if (!token) {
             setStatus("error")
             setMessage("Missing payment token")
@@ -79,7 +99,7 @@ export default function GroupSplitPaymentPage() {
             setStatus("error")
             setMessage("Unexpected error processing payment token")
         })
-    }, [token, router])
+    }, [token, router, isMounted, isAuthenticated, dispatch])
 
     return (
         <div className="min-h-screen bg-neutral-1 flex flex-col items-center justify-center px-4">

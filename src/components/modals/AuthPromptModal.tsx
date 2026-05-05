@@ -23,12 +23,14 @@ export default function AuthPromptModal() {
 
     const handleSignIn = () => {
         close()
-        router.push(AUTH_ROUTES.SIGN_IN.href)
+        const returnTo = typeof window !== 'undefined' ? window.location.href : ""
+        router.push(`${AUTH_ROUTES.SIGN_IN.href}?returnTo=${encodeURIComponent(returnTo)}`)
     }
 
     const handleSignUp = () => {
         close()
-        router.push(AUTH_ROUTES.SIGN_UP.href)
+        const returnTo = typeof window !== 'undefined' ? window.location.href : ""
+        router.push(`${AUTH_ROUTES.SIGN_UP.href}?returnTo=${encodeURIComponent(returnTo)}`)
     }
 
     return (

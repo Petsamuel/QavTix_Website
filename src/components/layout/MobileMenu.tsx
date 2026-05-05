@@ -238,13 +238,13 @@ export default function MobileMenu({
                                         className="p-4 flex items-center gap-4 border-t border-neutral-3"
                                     >
                                         <Link
-                                            href={NAV_LINKS.SIGN_IN.href}
+                                            href={`${NAV_LINKS.SIGN_IN.href}`}
                                             className="font-semibold text-neutral-8 hover:text-primary transition-colors"
                                         >
                                             Sign in
                                         </Link>
                                         <LiquidLink
-                                            href={NAV_LINKS.SIGN_UP.href}
+                                            href={`${NAV_LINKS.SIGN_UP.href}`}
                                             className="w-fit px-6 py-3 rounded-full text-center font-medium bg-primary text-white hover:bg-primary-7 active:scale-[0.98] transition-all shadow-md"
                                         >
                                             Get started

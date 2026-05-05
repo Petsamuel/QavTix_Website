@@ -14,6 +14,7 @@ import { getInitialsFromName } from '@/helper-fns/getInitialFromName'
 import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
 import { formatEventDate } from '@/helper-fns/date-utils'
 import { Skeleton } from '../ui/skeleton'
+import { formatPrice } from '@/helper-fns/formatPrice'
 
 
 interface Props {
@@ -148,7 +149,7 @@ export default function FeaturedEventsSection({ events }: Props) {
 
                                                 <div className="text-right">
                                                     <p className={`${space_grotesk.className} font-medium text-lg text-secondary-9`}>
-                                                        {event.price}
+                                                        {formatPrice(parseInt(event.price), event.currency)}
                                                     </p>
                                                 </div>
                                             </div>

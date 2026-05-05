@@ -1,6 +1,6 @@
 "use server"
 
-import { CANCEL_TICKET_ENDPOINT, CHECKOUT_ENDPOINT, CHECKOUT_VERIFY_ENDPOINT, SPLIT_PAYMENT_TOKEN_CHECKOUT_ENDPOINT, SPLIT_PAYMENT_TOKEN_VERIFY_ENDPOINT, VALIDATE_PROMO_CODE_ENDPOINT } from "@/endpoints"
+import { CANCEL_TICKET_ENDPOINT, CHECKOUT_ENDPOINT, CHECKOUT_VERIFY_ENDPOINT, SPLIT_PAYMENT_TOKEN_VERIFY_ENDPOINT, VALIDATE_PROMO_CODE_ENDPOINT } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { getServerAxios } from "@/lib/axios"
 import { getEventDetails } from "../getters"
@@ -9,26 +9,26 @@ import { CACHE_TAGS } from "@/cache-tags"
 
 
 interface InitializePaymentResult {
-    success:      boolean
+    success: boolean
     checkout_url?: string
-    message?:     string
+    message?: string
 }
 
 interface VerifyPaymentPayload {
     reference: string
     save_card: boolean
-    country:   string
+    country: string
 }
 
 interface VerifyPaymentResult {
-    success:  boolean
-    data?:    {
-        flow:           string
-        order_id:       string
-        status:         string
+    success: boolean
+    data?: {
+        flow: string
+        order_id: string
+        status: string
         split_complete: boolean
-        paid_count:     number
-        total:          number
+        paid_count: number
+        total: number
     }
     message?: string
 }
@@ -75,17 +75,17 @@ export async function verifyPayment(
 
 
 interface ValidatePromoCodePayload {
-    code:     string
+    code: string
     event_id: string
 }
 
 interface ValidatePromoCodeResult {
-    success:  boolean
-    data?:    {
-        type:        string
-        code:        string
+    success: boolean
+    data?: {
+        type: string
+        code: string
         percentage?: number
-        amount?:     number
+        amount?: number
         description: string
     }
     message?: string
@@ -153,7 +153,7 @@ export async function confirmSplitPaymentToken(token: string): Promise<SplitPaym
 export async function checkoutFromSplitPaymentToken(token: string): Promise<SplitPaymentTokenResult> {
     try {
         const axiosInstance = await getServerAxios()
-        const endpoint = SPLIT_PAYMENT_TOKEN_CHECKOUT_ENDPOINT.replace("[token]", token)
+        const endpoint = CHECKOUT_VERIFY_ENDPOINT.replace("[token]", token)
         const { data: json } = await axiosInstance.post(endpoint, { token })
 
         const checkout_url = json.data?.checkout_url ?? json.checkout_url
@@ -182,8 +182,8 @@ export async function checkoutFromSplitPaymentToken(token: string): Promise<Spli
 
 
 interface CancelTicketResult {
-    success:    boolean
-    message?:   string
+    success: boolean
+    message?: string
     failedIDs?: string[]
 }
 

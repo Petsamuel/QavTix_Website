@@ -24,8 +24,14 @@ export default function TicketStatusSection({ event }: Props) {
         (t) => t.status === "active"
     ) ?? false
 
+
+    const hasReservedTicket = event.user_ticket_summary?.tickets?.some(
+        (t) => t.status === "reserved" as EventStatus
+    ) ?? false
+
+
     // Only show cancelled state when there are tickets BUT NONE are active
-    const allTicketsCancelled = 
+    const allTicketsCancelled =
         event.user_ticket_summary?.tickets && event.user_ticket_summary.tickets.length > 0 && !hasActiveTicket
 
     useEffect(() => {
@@ -42,7 +48,7 @@ export default function TicketStatusSection({ event }: Props) {
     }
 
     // All tickets are cancelled
-    if (isAuthenticated && user && allTicketsCancelled) {
+    if (isAuthenticated && user && allTicketsCancelled && !hasReservedTicket) {
         return <CancelledTicketCard event={event} />
     }
 

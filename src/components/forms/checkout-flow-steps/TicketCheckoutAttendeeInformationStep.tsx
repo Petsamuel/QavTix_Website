@@ -123,7 +123,10 @@ export default function TicketCheckoutAttendeeInformationStep() {
         <>
             {!isAuthenticated && (
                 <p className="text-sm text-neutral-7 mb-8" data-testid="guest-signin-prompt">
-                    <Link href={AUTH_ROUTES.SIGN_IN} className="font-medium text-accent-6">
+                    <Link 
+                        href={`${AUTH_ROUTES.SIGN_IN.href}?returnTo=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`} 
+                        className="font-medium text-accent-6"
+                    >
                         Sign in
                     </Link>{' '}
                     for a quicker, smoother experience
