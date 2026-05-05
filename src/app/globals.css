@@ -307,3 +307,15 @@
     transform: scale(1.35);
   }
 }
+
+
+iframe[id^="inline-background-"],
+iframe[id^="inline-checkout-"] {
+  z-index: 2147483647 !important;
+  position: fixed !important;
+}
+
+/* Force Radix/Shadcn Overlays to stay behind Paystack */
+[data-radix-portal] {
+  z-index: 9999 !important;
+}

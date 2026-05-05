@@ -21,7 +21,7 @@ export default function MarketplaceAuthError() {
 
             <div className="flex flex-col sm:flex-row gap-4">
                 <Link
-                    href={AUTH_ROUTES.SIGN_IN.href}
+                    href={`${AUTH_ROUTES.SIGN_IN.href}?returnTo=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
                     className="px-8 py-3 rounded-full bg-primary-6 text-white font-medium hover:bg-primary-7 transition-colors"
                 >
                     Login to continue

@@ -20,7 +20,7 @@ export function AnimatedDialogForPrompt({
         {/* Overlay - smooth fade only (no blur on mobile) */}
         <DialogPrimitive.Overlay
           className={cn(
-            "fixed inset-0 bg-black/50 z-200",
+            "fixed inset-0 bg-black/60 z-50",
             // Open
             "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-300 data-[state=open]:ease-out",
             // Close
@@ -43,10 +43,10 @@ export function AnimatedDialogForPrompt({
             "data-[state=closed]:duration-400 data-[state=closed]:ease-in",
             "data-[state=closed]:zoom-out-[0.75]",
             "data-[state=closed]:slide-out-to-bottom-8",
-            "z-200 w-102.5 max-h-[80vh] p-6 md:p-8 rounded-[2.5em] overflow-auto flex flex-col"
+            "z-50 w-102.5 max-h-[80vh] p-6 md:p-8 rounded-[2.5em] overflow-auto flex flex-col"
           )}
         >
-            {children}
+          {children}
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

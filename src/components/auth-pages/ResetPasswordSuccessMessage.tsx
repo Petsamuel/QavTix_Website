@@ -5,18 +5,32 @@ import Link from "next/link";
 import { AnimatedDialog } from "../custom-utils/AnimatedDialog";
 import { DialogDescription, DialogTitle } from "../ui/dialog"
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function ResetPasswordSuccessMessage() {
 
+    const [countdown, setCountdown] = useState(5)
     const router = useRouter()
 
     useEffect(() => {
+        // Reset countdown when component mounts
+        setCountdown(5)
+
+        // Decrement every second
+        const tick = setInterval(() => {
+            setCountdown(prev => Math.max(0, prev - 1))
+        }, 1000)
+
+        // Redirect after 5 seconds
         const timer = setTimeout(() => {
             router.push(AUTH_ROUTES.SIGN_IN.href)
-        }, 3000)
-        return () => clearTimeout(timer)
+        }, 5000)
+
+        return () => {
+            clearInterval(tick)
+            clearTimeout(timer)
+        }
     }, [router])
 
     return (
@@ -49,6 +63,9 @@ export default function ResetPasswordSuccessMessage() {
                     <Link href={AUTH_ROUTES.SIGN_IN.href} className="text-primary-6 font-medium ms-1">
                         Log in
                     </Link>
+                    <p className="mt-4 text-xs text-neutral-5 animate-pulse">
+                        Redirecting to login in {countdown}s…
+                    </p>
                 </DialogDescription>
             </div>
         </AnimatedDialog>

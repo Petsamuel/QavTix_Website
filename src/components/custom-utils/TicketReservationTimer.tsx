@@ -9,7 +9,7 @@ import ReservationTimeExpiredPrompt from '../modals/ReservationTimeExpiredPrompt
 const RESERVATION_DURATION = 10 * 60 // 10 minutes in seconds
 
 export default function TicketReservationTimer() {
-    const { resetCheckout } = useCheckout()
+    const { resetCheckout, currentStep } = useCheckout()
     const router = useRouter()
     const [timeLeft, setTimeLeft] = useState<number | null>(null)
     const [hasExpired, setHasExpired] = useState(false)
@@ -22,6 +22,14 @@ export default function TicketReservationTimer() {
             hasStarted.current = true
         }
     }, [])
+
+    // Reset timer when checkout is restarted (i.e. returns to step 1)
+    useEffect(() => {
+        if (currentStep === 1) {
+            setTimeLeft(RESERVATION_DURATION)
+            setHasExpired(false)
+        }
+    }, [currentStep])
 
     useEffect(() => {
         if (timeLeft === null || timeLeft <= 0) return
