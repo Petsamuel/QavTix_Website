@@ -171,9 +171,8 @@ export function IndividualGeneralStep() {
 
             <TextInput1
                 showLabel
-                label="Postal Code/Zip Code"
+                label="Postal/Zip Code (Optional)"
                 placeholder="Enter your postal/zip code"
-                required
                 {...register('postalCode')}
                 error={errors.postalCode?.message}
                 data-testid="postal-code"

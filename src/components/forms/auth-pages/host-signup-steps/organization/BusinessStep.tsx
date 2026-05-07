@@ -13,9 +13,12 @@ import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepF
 import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
 
 const BUSINESS_TYPES = [
-    { value: 'llc', label: 'LLC' },
+    { value: 'llc', label: 'Limited Liability Company' },
     { value: 'corporation', label: 'Corporation' },
-    { value: 'partnership', label: 'Partnership' },
+    { value: 'sole proprietorship', label: 'Sole Proprietorship' },
+    { value: 'nonprofit', label: 'Nonprofit Organization' },
+    { value: 'cooperative', label: 'Cooperative' },
+    { value: 'llp', label: 'LLP' },
 ]
 
 export function OrganizationBusinessStep() {
@@ -123,9 +126,8 @@ export function OrganizationBusinessStep() {
 
             <TextInput1
                 showLabel
-                label="Postal code"
-                placeholder="Enter your postal code"
-                required
+                label="Postal/Zip Code (Optional)"
+                placeholder="Enter your postal/zip code"
                 {...register('postalCode')}
                 error={errors.postalCode?.message}
                 data-testid="postal-code"

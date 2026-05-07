@@ -37,7 +37,7 @@ export default function PhoneNumberInput({
     error,
     placeholder = '8123456789',
     defaultCountry = 'US',
-    label = "Phone Number (Optional)",
+    label = "Phone Number",
     className
 }: PhoneNumberInputProps) {
 

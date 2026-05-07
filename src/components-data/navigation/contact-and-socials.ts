@@ -1,32 +1,31 @@
 export const SOCIAL_LINKS = {
   FACEBOOK: {
     label: "Facebook",
-    href: "https://facebook.com/qavtix",
+    href: "https://web.facebook.com/qavtixhq",
     icon: "ri:facebook-fill"
   },
   TWITTER: {
     label: "Twitter",
-    href: "https://twitter.com/qavtix",
+    href: "https://x.com/qavtixhq",
     icon: "streamline-logos:x-twitter-logo-solid"
   },
   INSTAGRAM: {
     label: "Instagram",
-    href: "https://instagram.com/qavtix",
+    href: "https://www.instagram.com/qavtixhq/",
     icon: "mdi:instagram"
   },
 } as const
 
-
 export const ADDITIONAL_SOCIAL_LINKS = {
   LINKEDIN: {
     label: "Linkedin",
-    href: "https://linkedin.com/qavtix",
+    href: "https://www.linkedin.com/company/qavtixhq/",
     icon: "ri:linkedin-fill"
   },
-  TELEGRAM: {
-    label: "Telegram",
-    href: "https://telegram.com/qavtix",
-    icon: "mingcute:telegram-fill"
+  TIKTOK: {
+    label: "TikTok",
+    href: "https://www.tiktok.com/@qavtixhq",
+    icon: "ic:baseline-tiktok"
   },
 } as const
 
