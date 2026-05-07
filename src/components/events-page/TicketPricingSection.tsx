@@ -23,7 +23,7 @@ export default function TicketPricingSection({
     const router = useRouter()
 
     const [showAll, setShowAll] = useState(false)
-    const { isAuthenticated } = useAppSelector(store => store.auth)
+    const { isAuthenticated, user } = useAppSelector(store => store.auth)
     const [showAgeRestrictionModal, setShowAgeRestrictionModal] = useState(false)
 
     const visibleTickets = showAll ? event.tickets : event.tickets.slice(0, initialVisibleCount)
@@ -60,8 +60,15 @@ export default function TicketPricingSection({
             <div className="mt-8">
                 <LiquidLink
                     onClick={() => {
-                        event.age_restriction && isAuthenticated ? setShowAgeRestrictionModal(true) :
-                            router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id.toString()))
+                        const userAge = user?.dob
+                            ? new Date().getFullYear() - new Date(user.dob).getFullYear()
+                            : null;
+
+                        const isUnderAge = event.age_restriction && isAuthenticated && userAge !== null && event.minimum_age !== null && userAge < event.minimum_age;
+
+                        isUnderAge
+                            ? setShowAgeRestrictionModal(true)
+                            : router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id.toString()));
                     }}
                     className="bg-primary-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
                 >

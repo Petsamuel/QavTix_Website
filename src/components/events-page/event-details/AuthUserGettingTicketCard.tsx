@@ -16,6 +16,8 @@ import { formatLocation } from '@/components/custom-utils/cards/resources/event-
 import ShareEventModal from '@/components/modals/ShareEventModal'
 import { useRouter } from 'next/navigation'
 import LiquidLink from '@/components/custom-utils/buttons/LiquidGlassLink'
+import AccessDeniedModal from '@/components/modals/AccessDeniedModal'
+import { useAppSelector } from '@/lib/redux/hooks'
 
 
 export default function AuthUserGettingTicketCard({ event }: { event: EventDetails }) {
@@ -26,6 +28,8 @@ export default function AuthUserGettingTicketCard({ event }: { event: EventDetai
     const router = useRouter()
     const eventUrl = `${process.env.NEXT_PUBLIC_APP_DOMAIN}${EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}`
 
+    const { isAuthenticated, user: authUser } = useAppSelector(store => store.auth)
+    const [showAgeRestrictionModal, setShowAgeRestrictionModal] = useState(false)
 
     const handleShare = () => {
         setShowShare(true)
@@ -99,7 +103,17 @@ export default function AuthUserGettingTicketCard({ event }: { event: EventDetai
             </div>
 
             <LiquidLink
-                href={`${EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id)}?returnTo=${encodeURIComponent(eventUrl)}`}
+                onClick={() => {
+                    const userAge = authUser?.dob
+                        ? new Date().getFullYear() - new Date(authUser.dob).getFullYear()
+                        : null;
+
+                    const isUnderAge = event.age_restriction && isAuthenticated && userAge !== null && event.minimum_age !== null && userAge < event.minimum_age;
+
+                    isUnderAge
+                        ? setShowAgeRestrictionModal(true)
+                        : router.push(eventUrl)
+                }}
                 className="bg-primary-6 w-fit mt-4 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
             >
                 Get more tickets
@@ -119,6 +133,8 @@ export default function AuthUserGettingTicketCard({ event }: { event: EventDetai
                 shareUrl={eventUrl}
                 title={event.title}
             />
+
+            <AccessDeniedModal open={showAgeRestrictionModal} setOpen={setShowAgeRestrictionModal} eventID={event.id.toString()} />
         </div>
     )
 }

@@ -3,13 +3,13 @@ import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { NextRequest, NextResponse } from "next/server"
 
 const PROVIDER_ENDPOINTS: Record<string, string> = {
-    google:   "auth/social/google/",
+    google: "auth/social/google/",
     facebook: "auth/social/facebook/",
-    apple:    "auth/social/apple/",
+    apple: "auth/social/apple/",
 }
 
 export async function POST(
-    req:     NextRequest,
+    req: NextRequest,
     context: { params: Promise<{ provider: string }> },
 ) {
     const { provider } = await context.params
@@ -21,7 +21,6 @@ export async function POST(
 
     try {
         const body = await req.json()
-        
         // Map callback_url to redirect_uri if needed by backend
         const backendPayload = {
             ...body,
@@ -29,10 +28,13 @@ export async function POST(
         }
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${endpoint}`, {
-            method:  "POST",
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify(backendPayload),
+            body: JSON.stringify(backendPayload),
         })
+
+
+        console.log(res)
 
         const text = await res.text()
         let json: any
@@ -63,7 +65,7 @@ export async function POST(
         // Handle both nested { data: { user, tokens } } and root-level { user, access, refresh }
         const data = json.data ?? json
         const user = data.user
-        
+
         // Normalize tokens structure
         const accessToken = data.tokens?.access ?? data.access ?? data.access_token
         const refreshToken = data.tokens?.refresh ?? data.refresh ?? data.refresh_token
@@ -90,4 +92,4 @@ export async function POST(
         console.log(`[social-auth:${provider}] caught error:`, err)
         return NextResponse.json({ message: "Internal server error" }, { status: 500 })
     }
-}
+}

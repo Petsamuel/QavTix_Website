@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react"
 import axios, { AxiosError } from "axios"
 import { useAppDispatch } from "@/lib/redux/hooks"
 import { setUser } from "@/lib/redux/slices/authUserSlice"
-import { NAV_LINKS } from "@/components-data/navigation/navLinks"
+import { AUTH_ROUTES, NAV_LINKS } from "@/components-data/navigation/navLinks"
 import { SOCIAL_AUTH_PATH } from "@/apiPaths"
 
 export default function OAuthCallbackPage() {
@@ -63,7 +63,7 @@ export default function OAuthCallbackPage() {
                 </div>
                 <p className="text-sm font-medium text-neutral-9">{error}</p>
                 <button
-                    onClick={() => router.back()}
+                    onClick={() => router.push(AUTH_ROUTES.SIGN_IN.href)}
                     className="text-sm text-primary font-medium hover:underline"
                 >
                     Go back and try again

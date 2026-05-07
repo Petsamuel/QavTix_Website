@@ -113,8 +113,8 @@ export function OrganizationBusinessStep() {
 
             <TextInput1
                 showLabel
-                label="NIN (National Identification Number)"
-                placeholder="Enter your 11-digit NIN"
+                label="National Identification Number"
+                placeholder="Enter your identification number"
                 required
                 {...register('nin')}
                 error={errors.nin?.message}
@@ -131,14 +131,21 @@ export function OrganizationBusinessStep() {
                 data-testid="postal-code"
             />
 
-            <FormTextarea1
-                label="Description"
-                placeholder="Let your audience meet you"
-                required
-                {...register('description')}
-                error={errors.description?.message}
-                data-testid="description"
-            />
+            <div>
+                <FormTextarea1
+                    label="Headline (Optional)"
+                    placeholder="Let your audience meet you"
+                    {...register('description')}
+                    error={errors.description?.message}
+                    data-testid="description"
+                    maxLength={220}
+                />
+                <div className="flex justify-end mt-1">
+                    <span className="text-xs text-neutral-6 font-medium">
+                        {watch('description')?.length || 0}/220
+                    </span>
+                </div>
+            </div>
 
             <div>
                 <label className="block text-sm font-medium text-neutral-9 mb-2">
@@ -153,8 +160,8 @@ export function OrganizationBusinessStep() {
                                     placeholder="https://website.com or social media link"
                                     data-testid={`relevant-link-${index}`}
                                     className={`w-full px-4 py-3 text-sm rounded-[6px] h-14 transition-all outline-none bg-white text-neutral-9 placeholder:text-neutral-6 ${errors.relevantLinks?.[index]
-                                            ? 'border border-red-400 focus:border-red-500'
-                                            : 'border-[1.5px] border-neutral-5 focus:border-[1.5px] focus:border-primary hover:border-neutral-6'
+                                        ? 'border border-red-400 focus:border-red-500'
+                                        : 'border-[1.5px] border-neutral-5 focus:border-[1.5px] focus:border-primary hover:border-neutral-6'
                                         }`}
                                 />
                                 {errors.relevantLinks?.[index] && (
