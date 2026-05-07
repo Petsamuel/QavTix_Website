@@ -14,7 +14,7 @@ export function useLogOut() {
         await fetch("/api/auth/logout", { method: "POST" })
         setIsLoggingOut(false)
 
-        router.push(process.env.NEXT_PUBLIC_APP_DOMAIN || "/")
+        window.location.href = process.env.NEXT_PUBLIC_APP_DOMAIN || "/"
     }
 
     return { handleLogOut, isLoggingOut }

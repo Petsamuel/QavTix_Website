@@ -14,22 +14,22 @@ import { MobileBottomSheet } from '@/components/custom-utils/EventFilterDropdown
 import FilterButtonsActions1 from '@/components/custom-utils/buttons/event-search/FilterActionButtons1'
 
 interface CategoryFilterProps {
-    value?:      string[]
-    onChange:    (value: string[]) => void
+    value?: string[]
+    onChange: (value: string[]) => void
     categories?: Category[]
-    filterFor?:  'homepage' | 'eventPage'
+    filterFor?: 'homepage' | 'eventPage'
     showCount?: boolean
 }
 
 export default function CategoryFilter({
-    value      = [],
+    value = [],
     onChange,
     categories = [],
-    filterFor  = "homepage",
+    filterFor = "homepage",
     showCount = true
 }: CategoryFilterProps) {
 
-    const [isOpen,             setIsOpen]             = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
     const [selectedCategories, setSelectedCategories] = useState<string[]>(value)
     const isTablet = useMediaQuery('(min-width: 768px)')
 
@@ -60,7 +60,7 @@ export default function CategoryFilter({
     const handleClear = () => setSelectedCategories([])
 
     const hasActiveFilter = value.length > 0
-    const displayText     = hasActiveFilter ? `${value.length} selected` : 'Event category'
+    const displayText = hasActiveFilter ? `${value.length} selected` : 'Event category'
 
     const categoryList = (
         <div className="space-y-1 max-h-[50vh] overflow-y-auto md:max-h-[unset]">

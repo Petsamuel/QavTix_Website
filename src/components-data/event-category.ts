@@ -2,22 +2,22 @@ export const EventCategory = {
   ConcertAndMusic: {
     value: "concert_and_music",
     label: "Concerts & Music",
-    path: "category"
+    path: "concerts_and_music"
   },
   SportAndFitness: {
     value: "sport_and_fitness",
     label: "Sports & Fitness",
-    path: "sports-and-fitness"
+    path: "sports_and_fitness"
   },
   ArtAndTheater: {
     value: "art_and_theater",
     label: "Arts & Theater",
-    path: "arts-and-theater"
+    path: "arts_and_theater"
   },
   FoodAndDrinking: {
     value: "food_and_drinking",
     label: "Food & Dining",
-    path: "food-and-dining"
+    path: "food_and_drinking"
   },
   Festivals: {
     value: "festivals",
@@ -27,17 +27,17 @@ export const EventCategory = {
   BusinessAndNetworking: {
     value: "business_and_networking",
     label: "Business & Networking",
-    path: "business-and-networking"
+    path: "business_and_networking"
   },
   TravelsAndTours: {
     value: "travels_and_tours",
     label: "Travel & Tours",
-    path: "travels-and-tours"
+    path: "travels_and_tours"
   },
   NightlifeAndParties: {
     value: "nightlife_and_parties",
     label: "Nightlife & Parties",
-    path: "nightlife-and-parties"
+    path: "nightlife_and_parties"
   },
 } as const;
 

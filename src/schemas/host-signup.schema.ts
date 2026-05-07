@@ -21,8 +21,8 @@ export const individualGeneralSchema = z.object({
 
 export const individualBusinessSchema = z.object({
     brandName: z.string().min(2, 'Brand name is required').max(100, 'Brand name cannot exceed 100 characters'),
-    nin: z.string().min(11, 'NIN must be 11 digits').max(11, 'NIN must be 11 digits').regex(/^\d+$/, 'NIN must be numeric'),
-    description: z.string().min(10, 'Description must be at least 10 characters').max(1000, 'Description cannot exceed 1,000 characters'),
+    nin: z.string().min(6, 'Identification number must be at least 6 digits').max(15, 'Identification number cannot exceed 15 digits').regex(/^\d+$/, 'Identification number must be numeric'),
+    description: z.string().max(220, 'Headline cannot exceed 220 characters').optional(),
     relevantLinks: z.array(z.object({ link: z.url({ message: 'Invalid URL' }).max(2048, 'URL is too long') })).max(10, 'You can add up to 10 links'),
     eventCategories: z.array(z.string()).min(1, 'Select at least one category').max(10, 'You can select up to 10 categories'),
 })
@@ -47,11 +47,11 @@ export const organizationGeneralSchema = z.object({
 export const organizationBusinessSchema = z.object({
     businessName: z.string().min(2, 'Business name is required').max(200, 'Business name cannot exceed 200 characters'),
     businessType: z.string().min(1, 'Please select business type').max(100, 'Invalid business type'),
-    nin: z.string().min(11, 'NIN must be 11 digits').max(11, 'NIN must be 11 digits').regex(/^\d+$/, 'NIN must be numeric'),
+    nin: z.string().min(6, 'Identification number must be at least 6 digits').max(15, 'Identification number cannot exceed 15 digits').regex(/^\d+$/, 'Identification number must be numeric'),
     registrationNumber: z.string().min(1, 'Registration number is required').max(50, 'Registration number cannot exceed 50 characters'),
     taxId: z.string().min(1, 'Tax ID is required').max(50, 'Tax ID cannot exceed 50 characters'),
     postalCode: z.string().min(1, 'Postal code is required').max(20, 'Postal code cannot exceed 20 characters'),
-    description: z.string().min(10, 'Description must be at least 10 characters').max(1000, 'Description cannot exceed 1,000 characters'),
+    description: z.string().max(220, 'Headline cannot exceed 220 characters').optional(),
     relevantLinks: z.array(z.object({ link: z.url({ message: 'Invalid URL' }).max(2048, 'URL is too long') })).max(10, 'You can add up to 10 links'),
     eventCategories: z.array(z.string()).min(1, 'Select at least one category').max(10, 'You can select up to 10 categories'),
 })

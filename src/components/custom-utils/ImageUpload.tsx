@@ -44,9 +44,9 @@ export function ImageUpload({
       return
     }
     if (value instanceof File) {
-      const reader = new FileReader()
-      reader.onload = (e) => setPreview(e.target?.result as string)
-      reader.readAsDataURL(value)
+      const objectUrl = URL.createObjectURL(value)
+      setPreview(objectUrl)
+      return () => URL.revokeObjectURL(objectUrl)
     }
   }, [value])
 
@@ -90,7 +90,7 @@ export function ImageUpload({
   return (
     <div className={cn('w-full', className)}>
       {label && (
-        <label className="block text-sm font-medium text-secondary-9 mb-2">
+        <label className="block text-sm font-medium text-secondary-9 mb-2 capitalize">
           {label}
         </label>
       )}
@@ -105,6 +105,8 @@ export function ImageUpload({
             alt="Upload preview"
             fill
             className={cn('object-cover', aspectRatio === 'profile' && 'rounded-full')}
+            style={{ objectFit: 'cover' }}
+            unoptimized={preview.startsWith('data:') || preview.startsWith('blob:')}
           />
           <button
             type="button"
@@ -159,7 +161,7 @@ export function BannerImageUpload(props: Omit<ImageUploadProps, 'aspectRatio' | 
     <ImageUpload
       {...props}
       aspectRatio="banner"
-      label="Account cover image"
+      label="Account Cover Image"
       description="Upload an account cover image for your profile"
       placeholder="Upload an account cover image"
       maxSize={5}

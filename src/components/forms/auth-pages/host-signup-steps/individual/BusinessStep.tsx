@@ -68,22 +68,29 @@ export function IndividualBusinessStep() {
 
             <TextInput1
                 showLabel
-                label="NIN (National Identification Number)"
-                placeholder="Enter your 11-digit NIN"
+                label="National Identification Number"
+                placeholder="Enter your identification number"
                 required
                 {...register('nin')}
                 error={errors.nin?.message}
                 data-testid="nin"
             />
 
-            <FormTextarea1
-                label="Description"
-                placeholder="Let your audience meet you"
-                required
-                {...register('description')}
-                error={errors.description?.message as string}
-                data-testid="description"
-            />
+            <div>
+                <FormTextarea1
+                    label="Headline (Optional)"
+                    placeholder="Let your audience meet you"
+                    {...register('description')}
+                    error={errors.description?.message as string}
+                    data-testid="description"
+                    maxLength={220}
+                />
+                <div className="flex justify-end mt-1">
+                    <span className="text-xs text-neutral-6 font-medium">
+                        {watch('description')?.length || 0}/220
+                    </span>
+                </div>
+            </div>
 
             <div>
                 <label className="block text-sm font-medium text-neutral-9 mb-2">

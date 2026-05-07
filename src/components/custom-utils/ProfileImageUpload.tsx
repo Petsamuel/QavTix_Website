@@ -19,35 +19,31 @@ export default function ProfileImageUpload({
     disabled = false,
 }: ProfileImageUploadProps) {
 
-  const [preview, setPreview] = useState<string | null>(null)
-  const [isDragging, setIsDragging] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
+    const [preview, setPreview] = useState<string | null>(null)
+    const [isDragging, setIsDragging] = useState(false)
+    const inputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    if (!value) {
-      setPreview(null)
-      return
-    }
-    if (typeof value === 'string') {
-      setPreview(value)
-      return
-    }
-    if (value instanceof File) {
-      const reader = new FileReader()
-      reader.onload = (e) => setPreview(e.target?.result as string)
-      reader.readAsDataURL(value)
-    }
-  }, [value])
+    useEffect(() => {
+        if (!value) {
+            setPreview(null)
+            return
+        }
+        if (typeof value === 'string') {
+            setPreview(value)
+            return
+        }
+        if (value instanceof File) {
+            const objectUrl = URL.createObjectURL(value)
+            setPreview(objectUrl)
+            return () => URL.revokeObjectURL(objectUrl)
+        }
+    }, [value])
 
     const handleFile = (file: File) => {
         if (file.size > 2 * 1024 * 1024) {
             alert("Image must be less than 2MB")
             return
         }
-
-        const reader = new FileReader()
-        reader.onload = (e) => setPreview(e.target?.result as string)
-        reader.readAsDataURL(file)
 
         onChange(file)
     }
@@ -67,7 +63,7 @@ export default function ProfileImageUpload({
 
     return (
         <div className="w-full">
-            <label className="block text-sm font-medium text-secondary-9 mb-2">
+            <label className="block text-sm font-medium text-secondary-9 mb-2 capitalize">
                 Profile Image
             </label>
 
@@ -79,6 +75,8 @@ export default function ProfileImageUpload({
                         alt="Profile preview"
                         fill
                         className="object-cover"
+                        style={{ objectFit: 'cover' }}
+                        unoptimized={preview.startsWith('data:') || preview.startsWith('blob:')}
                     />
                     <button
                         type="button"
