@@ -211,6 +211,7 @@ interface EventDetails {
     event_status: string
     attendees_count: number
     age_restriction: boolean,
+    minimum_age: number | null,
     is_following: boolean,
     is_favorite: boolean
     user_ticket_summary?: UserTicketSummary
