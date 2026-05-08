@@ -23,11 +23,11 @@ import { NAV_LINKS } from "@/components-data/navigation/navLinks"
 const PAGE_SIZE = 12
 
 interface Props {
-    query:                string
-    initialEvents:        PublicPagesEvent[]
-    initialCount:         number
-    initialFilters:       Partial<FilterValues>
-    categories:           ApiCategory[]
+    query: string
+    initialEvents: PublicPagesEvent[]
+    initialCount: number
+    initialFilters: Partial<FilterValues>
+    categories: ApiCategory[]
     paginationClassName?: string
 }
 
@@ -48,12 +48,12 @@ export function SearchResultSection({
         goToPage,
     } = usePublicEvents(
         {
-            endpoint:     SEARCH_EVENTS_ENDPOINT,
+            endpoint: SEARCH_EVENTS_ENDPOINT,
             query,
             initialItems: initialEvents,
             initialCount: initialCount,
             initialPages: Math.ceil(initialCount / PAGE_SIZE) || 1,
-            initialNext:  initialCount > PAGE_SIZE,
+            initialNext: initialCount > PAGE_SIZE,
         },
         filters,
     )
@@ -67,14 +67,14 @@ export function SearchResultSection({
         !!query.trim() ||
         (filters.categories?.length ?? 0) > 0 ||
         !!filters.location?.country ||
-        !!filters.priceRange        ||
+        !!filters.priceRange ||
         !!filters.dateRange?.from
 
-    const showEmpty  = !isLoading && !isError && items.length === 0 && hasActiveSearch
+    const showEmpty = !isLoading && !isError && items.length === 0 && hasActiveSearch
     const showPrompt = !isLoading && !isError && items.length === 0 && !hasActiveSearch
 
     return (
-        <section className="w-full py-8 mt-12 md:mt-20 global-px">
+        <section className="w-full py-8 my-12 md:mt-20 global-px">
 
             {/* Filters */}
             <div className="flex flex-wrap gap-4 mb-8">
