@@ -41,7 +41,7 @@ export const CONTACT_LINKS = {
     EMAIL: {
       icon: "mynaui:mail",
       text: "info@qavtix.com",
-      href: "mailto:info@qavtix.com"
+      href: "https://mail.google.com/mail/?view=cm&fs=1&to=info@qavtix.com"
     },
     PHONE: {
       icon: "fluent-mdl2:phone",

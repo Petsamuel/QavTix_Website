@@ -12,9 +12,9 @@ export async function generateMetadata(
     { params }: { params: Promise<{ host_id: string }> }
 ): Promise<Metadata> {
     const { host_id } = await params
- 
+
     return buildPageMetadata(
-        `Host Profile`, 
+        `Host Profile`,
         undefined,
         `/host/profile/${host_id}`,
     )
@@ -28,6 +28,7 @@ export default async function HostProfilePage({ params }: Props) {
     if (!result.success || !result.data) {
         return <HostNotFound />
     }
+
 
     return <HostPageWrapper host={result.data} />
 }
