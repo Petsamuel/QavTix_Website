@@ -37,9 +37,16 @@ export default function ContactUsForm(){
         if (result.success) {
             dispatch(showAlert({
                 title: "Message sent!",
-                description: "We\'ve received your message and will get back to you soon.",
+                description: "We\'ve received your message and will redirect you to Gmail to finalize.",
                 variant: "success",
             }))
+            
+            // Construct Gmail URL
+            const subject = encodeURIComponent(`Message from ${data.fullName} via QavTix Contact Form`)
+            const body = encodeURIComponent(`Name: ${data.fullName}\nEmail: ${data.email}\n\nMessage:\n${data.message}`)
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=info@qavtix.com&su=${subject}&body=${body}`
+            
+            window.open(gmailUrl, '_blank')
             reset()
         } else {
             dispatch(showAlert({
