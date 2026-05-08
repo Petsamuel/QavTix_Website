@@ -4,6 +4,7 @@ import { useCheckoutAttendeeInfoForm } from "@/contexts/CheckoutAttendeeInfoForm
 import { useCheckout } from "@/contexts/CheckoutFlowProvider"
 import { useSplitPayment } from "@/contexts/SplitPaymentContextProvider"
 import { useRouter } from "next/navigation"
+import { useRef } from "react"
 import ActionButton1 from "./ActionButton1"
 
 interface IMultiStepFormButtonDuo {
@@ -16,6 +17,7 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
     const { splitError } = useSplitPayment()
     const { form } = useCheckoutAttendeeInfoForm()
     const buttonIsDisabled = !!isSubmitting || isProcessing || !!splitError || (attendeeInfo.shareWithGroup && !attendeeInfo.attendees?.length)
+    const buttonsRef = useRef<HTMLDivElement>(null)
 
     const handleContinue = async () => {
         if (currentStep === 2) {
@@ -45,10 +47,19 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
             })
         }
         nextStep()
+
+        // When advancing to step 3 (payment), scroll the action buttons into view
+        if (currentStep === 2) {
+            setTimeout(() => scrollToButtons(), 200)
+        }
     }
 
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    const scrollToButtons = () => {
+        buttonsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
     }
 
     const handleCancel = () => {
@@ -58,6 +69,10 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
                 return
             }
             router.back()
+        } else if (currentStep === 3) {
+            // Going back from payment step — scroll to buttons so user sees the form
+            prevStep()
+            setTimeout(() => scrollToButtons(), 200)
         } else if (currentStep > 1) {
             scrollToTop()
             setTimeout(() => {
@@ -71,7 +86,7 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
             {/* Marker element for scrolling */}
             <div id="checkout-top" className="absolute top-0 left-0" />
             
-            <div className="flex gap-4 md:gap-6">
+            <div ref={buttonsRef} className="flex gap-4 md:gap-6">
                 <button
                     type="button"
                     onClick={handleCancel}

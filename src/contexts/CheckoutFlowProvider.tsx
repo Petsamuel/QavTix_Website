@@ -185,8 +185,10 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         return null
     }, [tickets.length, totalTickets])
 
-    // SCROLL TO TOP WHENEVER THE USER MOVES BETWEEN STEPS
+    // SCROLL TO TOP WHEN MOVING BETWEEN STEPS — EXCEPT STEP 3 (PAYMENT)
+    // ON STEP 3 THE ACTION BUTTONS SCROLL THEMSELVES INTO VIEW INSTEAD
     useEffect(() => {
+        if (currentStep === 3) return
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }, [currentStep])
 
