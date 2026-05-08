@@ -34,9 +34,9 @@ export default function HostProfilePageHeader({ host }: Props) {
         host.followers_count,
     )
 
-    const socialLinks = host.relevant_links.flatMap(obj =>
-        Object.entries(obj)
-            .filter(([, url]) => url && url !== "string")
+    const socialLinks = (host.relevant_links || []).flatMap(obj =>
+        Object.entries(obj || {})
+            .filter(([, url]) => typeof url === "string" && url.trim().length > 0)
             .map(([platform, url]) => ({ platform, url }))
     )
 

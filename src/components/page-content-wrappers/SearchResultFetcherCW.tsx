@@ -19,7 +19,6 @@ export default async function SearchResultFetcher({
 }: {
     searchParams: Promise<SearchPageParams>
 }) {
-    // ✅ All awaiting happens here, safely inside <Suspense>
     const params = await searchParams
 
     const query = params.q ?? ""

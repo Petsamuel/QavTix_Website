@@ -1,21 +1,24 @@
-import { currencies } from "@/components-data/settings.data"
+import { currencies, REGION_CURRENCY_MAP } from "@/components-data/settings.data"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useUserSettings } from "@/lib/custom-hooks/useUserSettings"
 import { cn } from "@/lib/utils"
+
+const getFlagForCurrency = (code: string) => {
+    const entry = Object.values(REGION_CURRENCY_MAP).find(e => e.currency.code === code)
+    return entry?.region.flag ?? ""
+}
 
 export default function CurrencySwitcher({ className }: { className?: string }) {
     const { currency, isPending, updateCurrency } = useUserSettings()
 
     const handleCurrencyChange = (v: string) => {
         const currencyObj = currencies.find(curr => curr.code === v)
-        if (currencyObj) {
-            updateCurrency(currencyObj)
-        }
+        if (currencyObj) updateCurrency(currencyObj)
     }
 
     return (
-        <Select 
-            value={currency.code} 
+        <Select
+            value={currency.code}
             onValueChange={handleCurrencyChange}
             disabled={isPending}
         >
@@ -31,7 +34,7 @@ export default function CurrencySwitcher({ className }: { className?: string }) 
                 {currencies.map((curr) => (
                     <SelectItem key={curr.code} value={curr.code}>
                         <span className="flex items-center gap-2">
-                            <span>{curr.symbol}</span>
+                            <span>{getFlagForCurrency(curr.code)}</span>
                             <span>{curr.code}</span>
                         </span>
                     </SelectItem>
