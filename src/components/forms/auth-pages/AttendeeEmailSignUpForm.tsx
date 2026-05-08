@@ -17,6 +17,7 @@ import { ATTENDEE_SIGNUP_PATH, GET_PROFILE_PATH } from "@/apiPaths"
 import FormCheckbox1 from "@/components/custom-utils/inputs/FormCheckbox1"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import PasswordStrengthIndicator from "../../custom-utils/PasswordStrengthIndicator"
 
 export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfulSignUp }: { successfulSignUp: boolean, setSuccessfulSignUp: Dispatch<SetStateAction<boolean>> }) {
 
@@ -29,6 +30,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfu
         handleSubmit,
         control,
         reset,
+        watch,
         formState: { errors, isSubmitting },
     } = useForm<AttendeeSignUpFormValues>({
         defaultValues: {
@@ -39,6 +41,8 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfu
         },
         resolver: zodResolver(attendeeSignUpSchema),
     })
+
+    const password = watch("password")
 
     const onSubmit: SubmitHandler<AttendeeSignUpFormValues> = async (values) => {
         setSubmitError(null)
@@ -53,8 +57,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfu
 
             dispatch(setUser(data.user))
             reset()
-            window.open(process.env.NEXT_PUBLIC_ATTENDEE_SITE, '_blank')
-            window.location.href = '/'
+            window.location.href = `${process.env.NEXT_PUBLIC_ATTENDEE_SITE}`
         } catch (error) {
             if (error instanceof AxiosError) {
                 setSubmitError(handleApiError(error.response?.data))
@@ -107,10 +110,13 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfu
                     error={errors.password?.message}
                     autoComplete="new-password"
                     onInput={() => setSubmitError(null)}
-                    helperText="Must be at least 8 characters"
                     data-testid="signup-password"
                     className={cn(successfulSignUp && "blur-3xl")}
                 />
+
+                <div className="mt-3">
+                    <PasswordStrengthIndicator password={password} />
+                </div>
 
                 {submitError && (
                     <p className="flex items-center gap-1.5 mt-2 text-sm text-red-500">

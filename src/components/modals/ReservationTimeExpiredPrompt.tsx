@@ -1,31 +1,36 @@
-import { useRouter } from 'next/navigation'
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { space_grotesk } from '@/lib/fonts'
 import { CustomIcons } from '@/components/Svg-Icons'
-import { Dispatch, SetStateAction, useState } from 'react'
-import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
+import { useState } from 'react'
 import { AnimatedDialogForPrompt } from '../custom-utils/AnimatedDialogForPrompts'
 import { canRestartCheckout } from '@/actions/checkout'
 import { useCheckout } from '@/contexts/CheckoutFlowProvider'
 import ActionButton1 from '../custom-utils/buttons/ActionButton1'
 
 
-export default function ReservationTimeExpiredPrompt({ open }: { open: boolean, setOpen?: Dispatch<SetStateAction<boolean>> }) {
+interface Props {
+    open: boolean
+    onRestart: () => void
+    onCancel: () => void
+}
 
-    const router = useRouter()
-    const { event, resetCheckout } = useCheckout()
+export default function ReservationTimeExpiredPrompt({ open, onRestart, onCancel }: Props) {
+
+    const { event } = useCheckout()
     const [isChecking, setIsChecking] = useState(false)
 
     const handleCanRestartPurchase = async () => {
         setIsChecking(true)
-        const result = await canRestartCheckout(event.id)
 
-        if (result) {
-            resetCheckout()
-        }
-        else {
-            router.push(EVENT_ROUTES.EVENTS.href)
+        const canRestart = await canRestartCheckout(event.id)
+
+        if (canRestart) {
+            // Tickets are still available — reset checkout state and close modal
+            onRestart()
+        } else {
+            // Sold out or unavailable — send user away
+            onCancel()
         }
 
         setIsChecking(false)
@@ -52,7 +57,7 @@ export default function ReservationTimeExpiredPrompt({ open }: { open: boolean, 
 
                 <div className="flex gap-3 justify-center">
                     <Button
-                        onClick={() => router.back()}
+                        onClick={onCancel}
                         className="h-14 flex-1 text-secondary-8 bg-white hover:shadow flex items-center gap-2 justify-center px-6 py-3 rounded-[30px] border-2 border-secondary-3 font-medium text-sm hover:bg-neutral-2 hover:border-secondary-5 active:bg-neutral-3 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-neutral-4 focus:ring-offset-2 transition-all duration-150"
                     >
                         Cancel
@@ -60,7 +65,7 @@ export default function ReservationTimeExpiredPrompt({ open }: { open: boolean, 
 
                     <ActionButton1
                         buttonText='Restart Purchase'
-                        action={() => handleCanRestartPurchase()}
+                        action={handleCanRestartPurchase}
                         isLoading={isChecking}
                         className='h-14 text-sm! whitespace-nowrap flex-1 rounded-[30px]'
                     />

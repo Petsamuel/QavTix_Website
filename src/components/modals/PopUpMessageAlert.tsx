@@ -17,12 +17,12 @@ import Image from "next/image"
 
 export default function PopUpMessageAlertModal() {
     const dispatch = useDispatch()
-    const router   = useRouter()
+    const router = useRouter()
 
     const { alerts, isOpen } = useAppSelector((state) => state.popupAlert)
 
     const [currentIndex, setCurrentIndex] = useState(0)
-    const [direction,    setDirection]    = useState<"left" | "right">("right")
+    const [direction, setDirection] = useState<"left" | "right">("right")
     const { handleLogOut, isLoggingOut } = useLogOut()
 
     useEffect(() => {
@@ -30,8 +30,8 @@ export default function PopUpMessageAlertModal() {
     }, [isOpen])
 
     const currentAlert = alerts[currentIndex] ?? null
-    const config       = currentAlert ? POPUP_MESSAGE_ALERT_CONFIG[currentAlert.type] : null
-    const iconSrc      = config?.icon ?? null
+    const config = currentAlert ? POPUP_MESSAGE_ALERT_CONFIG[currentAlert.type] : null
+    const iconSrc = config?.icon ?? null
 
     const goTo = (index: number) => {
         if (index < 0 || index >= alerts.length) return
@@ -59,8 +59,8 @@ export default function PopUpMessageAlertModal() {
 
     if (!isOpen || alerts.length === 0 || !currentAlert || !config || !iconSrc) return null
 
-    const isFirst             = currentIndex === 0
-    const isLast              = currentIndex === alerts.length - 1
+    const isFirst = currentIndex === 0
+    const isLast = currentIndex === alerts.length - 1
     const isProfileIncomplete = currentAlert.type === "profile_incomplete"
 
     return (
@@ -120,9 +120,9 @@ export default function PopUpMessageAlertModal() {
                         <div className="flex justify-center items-center mt-7 mb-4">
                             {
                                 currentAlert.type === "profile_incomplete" ?
-                                <Image width={80} height={100} src="/images/vectors/setup-profile.png" alt="profile-icon" className="w-20 object-contain h-20 aspect-square pointer-events-none" />
-                                :
-                                <Icon icon={iconSrc} className="size-24" strokeWidth={2} />
+                                    <Image width={80} height={100} src="/images/vectors/setup-profile.png" alt="profile-icon" className="w-20 object-contain h-20 aspect-square pointer-events-none" />
+                                    :
+                                    <Icon icon={iconSrc} className="size-24" strokeWidth={2} />
                             }
                         </div>
 
@@ -149,22 +149,6 @@ export default function PopUpMessageAlertModal() {
                                     >
                                         {currentAlert.buttonText}
                                         <Icon icon="si:arrow-right-fill" width="24" height="24" />
-                                    </Button>
-                                )}
-
-                                {isProfileIncomplete && (
-                                    <Button
-                                        onClick={() => {
-                                            handleLogOut()
-                                            dispatch(closePopupAlertModal())
-                                            router.refresh()
-                                        }}
-                                        disabled={isLoggingOut}
-                                        variant="outline"
-                                        className="border-neutral-6 text-secondary-7 hover:text-red-500 hover:bg-transparent hover:border-red-300 px-8 py-3 rounded-lg transition-colors inline-flex items-center gap-1.5 disabled:opacity-50"
-                                    >
-                                        <Icon icon="hugeicons:logout-01" width="18" height="18" />
-                                        {isLoggingOut ? "Signing out..." : "Sign out"}
                                     </Button>
                                 )}
                             </div>

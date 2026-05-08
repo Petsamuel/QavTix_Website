@@ -10,6 +10,7 @@ import { showAlert } from '@/lib/redux/slices/alertSlice'
 import { AttendeeInformationData, SplitMode } from '@/schemas/checkout-flow.schema'
 import { usePathname } from 'next/navigation'
 import { createContext, useState, ReactNode, useEffect, useContext, useMemo, useCallback, Dispatch, SetStateAction } from 'react'
+import { CURRENCY_CHECKOUT_FEES, PLATFORM_FEE_PERCENT } from '@/components-data/currencies'
 
 
 // SHAPE OF A SINGLE TICKET IN THE CHECKOUT FLOW — NORMALISED FROM THE RAW EVENT TICKET
@@ -52,7 +53,8 @@ interface CheckoutState {
     isSplitPayment: boolean  // TRACKS IF THE SUCCESSFUL PAYMENT WAS A SPLIT PAYMENT
     discount: Discount | null
     subtotal: number
-    total: number   // SUBTOTAL MINUS ANY DISCOUNT
+    platformFee: number
+    total: number   // SUBTOTAL MINUS ANY DISCOUNT PLUS FEES
     discountAmount: number
     totalTickets: number   // SUM OF ALL SELECTED TICKET QUANTITIES
     selectedTickets: CheckoutTicket[]  // ONLY TICKETS WITH QUANTITY > 0
@@ -155,7 +157,15 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
             : Math.min(subtotal, discount.amount ?? 0)
     }, [discount, subtotal])
 
-    const total = useMemo(() => Math.max(0, subtotal - discountAmount), [subtotal, discountAmount])
+    const platformFee = useMemo(() => {
+        if (subtotal === 0) return 0
+        const currency = event.currency || 'NGN'
+        const fixedFee = CURRENCY_CHECKOUT_FEES[currency] || 0
+        const percentageFee = subtotal * (PLATFORM_FEE_PERCENT / 100)
+        return percentageFee + fixedFee
+    }, [subtotal, event.currency])
+
+    const total = useMemo(() => Math.max(0, (subtotal - discountAmount) + platformFee), [subtotal, discountAmount, platformFee])
 
     const totalTickets = useMemo(
         () => tickets.reduce((sum, t) => sum + t.quantity, 0),
@@ -503,6 +513,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         isSplitPayment,
         discount,
         subtotal,
+        platformFee,
         total,
         discountAmount,
         totalTickets,
