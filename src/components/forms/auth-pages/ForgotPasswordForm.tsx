@@ -52,10 +52,10 @@ export default function ForgotPasswordForm() {
         >
             <div>
                 <label className="text-sm font-medium text-neutral-10 mb-2 block">
-                    Email Or Phone Number
+                    Email
                 </label>
                 <TextInput1
-                    placeholder="Enter Email or Phone number"
+                    placeholder="Enter your email"
                     {...register("email")}
                     error={errors.email?.message}
                     onInput={() => setSubmitError(null)}

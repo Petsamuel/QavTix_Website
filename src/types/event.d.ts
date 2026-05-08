@@ -105,6 +105,7 @@ interface IEvent {
     currency: string
     organizer_display_name: string
     organizer_description: string
+    organizer_profile_picture: string
     public_email: string
     phone_number: string
     refund_policy: RefundPolicy
@@ -202,6 +203,7 @@ interface EventDetails {
     currency: string
     organizer_display_name: string
     organizer_description: string
+    organizer_profile_picture: string
     organizer_id: string
     public_email: string
     phone_number: string

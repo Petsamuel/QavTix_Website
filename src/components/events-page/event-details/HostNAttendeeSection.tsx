@@ -55,7 +55,7 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                 "md:justify-start md:gap-6"
             )}>
                 <div className="flex items-center gap-2">
-                    <CustomAvatar id={event.organizer_id} name={event.organizer_display_name} size="size-12" />
+                    <CustomAvatar profileImg={event.organizer_profile_picture} id={event.organizer_id} name={event.organizer_display_name} size="size-12" />
                     <div>
                         <p className="text-xs text-neutral-7">Hosted by</p>
                         <Link

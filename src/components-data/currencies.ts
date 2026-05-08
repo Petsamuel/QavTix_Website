@@ -21,6 +21,16 @@ export const CURRENCIES: CurrencyMeta[] = [
     { code: "USD", name: "USD", locale: "en-US",  region: "americas" },
 ]
 
+export const PLATFORM_FEE_PERCENT = 7.5
+
+export const CURRENCY_CHECKOUT_FEES: Record<string, number> = {
+    "NGN": 100,
+    "GHS": 5,
+    "KES": 50,
+    "ZAR": 10,
+    "USD": 1
+}
+
 // Fast O(1) locale lookup — used by formatPrice
 export const LOCALE_MAP: Record<string, string> = Object.fromEntries(
     CURRENCIES.map(c => [c.code, c.locale])

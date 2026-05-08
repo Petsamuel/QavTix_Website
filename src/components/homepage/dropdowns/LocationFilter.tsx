@@ -35,16 +35,21 @@ export default function LocationFilter({
         state: value?.state || ''
     }))
 
+    const sortedCountries = useMemo(() => 
+        [...countries].sort((a, b) => a.label.localeCompare(b.label)),
+    [countries])
+
     const states = useMemo(() => {
         if (!location.country) return []
         const countryCode = resolveCountryCode(location.country)
-        return countryCode ? getStates(countryCode) : []
+        const rawStates = countryCode ? getStates(countryCode) : []
+        return [...rawStates].sort((a, b) => a.label.localeCompare(b.label))
     }, [location.country, getStates])
 
     const displayText = useMemo(() => {
         if (!value?.country && !value?.state) return 'Location'
 
-        const countryName = countries.find(c => c.value === value.country)?.label
+        const countryName = sortedCountries.find(c => c.value === value.country)?.label
         const stateName = states.find(s => s.label.toLowerCase() === value.state.toLowerCase())?.label
 
         return countryName && stateName
@@ -83,7 +88,7 @@ export default function LocationFilter({
                 <LocationFilterSelect
                     value={location.country}
                     onValueChange={handleCountryChange}
-                    options={countries}
+                    options={sortedCountries}
                     placeholder="Select country"
                 />
             </div>
