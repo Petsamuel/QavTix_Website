@@ -19,6 +19,8 @@ export default function TicketStatusSection({ event }: Props) {
     const { isAuthenticated } = useAppSelector(store => store.auth)
     const hasTicket = useHasTicketForEvent(event.id)
 
+    console.log(event.user_ticket_summary)
+
     // Check if user has at least ONE active ticket
     const hasActiveTicket = event.user_ticket_summary?.tickets?.some(
         (t) => t.status === "active"

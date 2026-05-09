@@ -41,13 +41,24 @@ export default function SignInForm() {
             const role = loginData?.user?.role ?? loginData?.role ?? ""
             const safeReturn = validateReturnTo(returnTo)
 
+            const hostSite = process.env.NEXT_PUBLIC_HOST_SITE ?? ''
+            const attendeeSite = process.env.NEXT_PUBLIC_ATTENDEE_SITE ?? ''
+            const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? ''
+
+            // Prioritize public returnTo (App Domain) — Role doesn't matter
+            if (safeReturn && safeReturn.startsWith(appDomain)) {
+                window.location.href = safeReturn
+                return
+            }
+
+            // Handle Host redirection
             if (role === "host") {
-                const hostSite = process.env.NEXT_PUBLIC_HOST_SITE ?? ''
-                const destination = safeReturn?.startsWith(hostSite) ? safeReturn : hostSite
+                const destination = (safeReturn && safeReturn.startsWith(hostSite)) ? safeReturn : hostSite
                 window.location.href = destination
                 return
             }
 
+            // Handle Attendee redirection (requires profile fetch for Redux state)
             const { data }: { data: { user: AuthUser } } = await axios.get(GET_PROFILE_PATH, {
                 params: { role },
                 withCredentials: true,
@@ -55,14 +66,8 @@ export default function SignInForm() {
 
             dispatch(setUser(data.user))
 
-            const attendeeSite = process.env.NEXT_PUBLIC_ATTENDEE_SITE ?? ''
-            const appDomain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? ''
-
-            if (safeReturn && (safeReturn.startsWith(attendeeSite) || safeReturn.startsWith(appDomain))) {
-                window.location.href = safeReturn
-            } else {
-                window.location.href = attendeeSite
-            }
+            const destination = (safeReturn && safeReturn.startsWith(attendeeSite)) ? safeReturn : appDomain
+            window.location.href = destination
 
         } catch (error) {
             console.log(error)

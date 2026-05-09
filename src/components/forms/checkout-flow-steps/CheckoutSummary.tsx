@@ -176,24 +176,22 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
 
 
     const DesktopSummary = () => (
-        <section className="hidden md:flex w-full min-h-screen flex-col justify-between">
-            <div className=''>
-                <h2 className={cn('text-2xl mt-10 font-medium text-secondary-9 mb-8', space_grotesk.className)}>
-                    Payment Summary
-                </h2>
+        <section className="hidden md:flex w-full flex-col">
+            <h2 className={cn('text-2xl mt-10 font-medium text-secondary-9 mb-8', space_grotesk.className)}>
+                Payment Summary
+            </h2>
 
-                <PromoCode />
+            <PromoCode />
 
-                <div className="mt-8">
-                    <TicketsList />
-                </div>
-
-                <div className="border-t-[1.4px] border-neutral-5 my-6" />
-
-                <PriceBreakdown showTooltips={true} />
+            <div className="mt-8">
+                <TicketsList />
             </div>
 
-            <div className="pt-6 border-t border-neutral-3">
+            <div className="border-t-[1.4px] border-neutral-5 my-6" />
+
+            <PriceBreakdown showTooltips={true} />
+
+            <div className="pt-6 border-t border-neutral-3 mt-6">
                 <TotalRow />
                 <div className="mt-8">
                     <CheckoutFlowActionBtns />

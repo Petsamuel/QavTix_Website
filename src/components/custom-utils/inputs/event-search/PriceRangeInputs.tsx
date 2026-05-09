@@ -6,15 +6,13 @@ import { Input } from '@/components/ui/input'
 interface PriceRangeInputsProps {
     min: number
     max: number
-    currency: string
     onMinChange: (value: number) => void
     onMaxChange: (value: number) => void
 }
 
-function PriceInput({ value, label, currency, onChange }: {
+function PriceInput({ value, label, onChange }: {
     value: number
     label: string
-    currency: string
     onChange: (value: number) => void
 }) {
     const [text, setText] = useState(value > 0 ? String(value) : '')
@@ -47,19 +45,16 @@ function PriceInput({ value, label, currency, onChange }: {
             <label className="absolute left-4 top-2 text-xs font-medium text-neutral-7 pointer-events-none">
                 {label}
             </label>
-            <span className="absolute left-4 bottom-3 text-neutral-7 text-base font-medium">
-                {currency}
-            </span>
         </div>
     )
 }
 
-export function PriceRangeInputs({ min, max, currency, onMinChange, onMaxChange }: PriceRangeInputsProps) {
+export function PriceRangeInputs({ min, max, onMinChange, onMaxChange }: PriceRangeInputsProps) {
     return (
         <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-3">
-            <PriceInput value={min} label="Minimum amount" currency={currency} onChange={onMinChange} />
+            <PriceInput value={min} label="Minimum amount" onChange={onMinChange} />
             <span className="text-neutral-6 text-sm pb-4">to</span>
-            <PriceInput value={max} label="Maximum amount" currency={currency} onChange={onMaxChange} />
+            <PriceInput value={max} label="Maximum amount" onChange={onMaxChange} />
         </div>
     )
 }

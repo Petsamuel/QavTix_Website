@@ -24,7 +24,7 @@ export default async function SearchResultFetcher({
     const query = params.q ?? ""
     const countryLabel = params.country ? resolveCountryLabel(params.country) : undefined
     const stateLabel = params.state && params.country
-        ? resolveStateLabel(params.state, params.country)
+        ? params.state === "FC" && params.country === "NG" ? "Abuja" : resolveStateLabel(params.state, params.country)
         : params.state
 
     const initialFilters: Partial<FilterValues> = {

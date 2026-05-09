@@ -98,6 +98,7 @@ export const MARKETPLACE_ROUTES = {
 
 export const LEGAL_LINKS = {
   PRIVACY: { label: "Privacy Policy", href: "/legal/privacy-policy" },
+  REFUND: { label: "Refund Policy", href: "/legal/refund-policy" },
   TERMS: { label: "Terms of Use", href: "/legal/terms-of-use" },
   COMMISSION: { label: "Commission", href: "/legal/commission" }
 } as const;

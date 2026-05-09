@@ -45,6 +45,8 @@ export default function HostProfilePageHeader({ host }: Props) {
         host.followers_count,
     )
 
+    console.log(host)
+
     const socialLinks = (host.relevant_links || [])
         .map(obj => obj?.url)
         .filter((url): url is string => typeof url === "string" && url.trim().length > 0)
@@ -142,12 +144,12 @@ export default function HostProfilePageHeader({ host }: Props) {
                         <div className="mt-10 md:mt-0 flex flex-wrap justify-between items-center gap-5">
                             <div className="flex gap-6 font-medium text-neutral-8 items-center">
                                 <span className={`${space_grotesk.className} flex flex-col gap-1`}>
-                                    <span className="text-neutral-7">{followersCount.toLocaleString()}</span>
+                                    <span className="text-neutral-7">{followersCount.toLocaleString() || "--"}</span>
                                     <span>Followers</span>
                                 </span>
                                 <hr className="w-px h-8 border border-neutral-6" />
                                 <span className="flex flex-col gap-1">
-                                    <span className="text-neutral-7">{host.events_count}</span>
+                                    <span className="text-neutral-7">{host.events_count || "--"}</span>
                                     <span>Events</span>
                                 </span>
                             </div>

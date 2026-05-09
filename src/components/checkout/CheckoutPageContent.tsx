@@ -17,9 +17,9 @@ interface ICheckoutPageContent {
     setShowCloseLeaveCheckoutPrompt: Dispatch<SetStateAction<boolean>>
 }
 
-export default function CheckoutPageContent({ 
-    showCloseLeaveCheckoutPrompt, 
-    setShowCloseLeaveCheckoutPrompt 
+export default function CheckoutPageContent({
+    showCloseLeaveCheckoutPrompt,
+    setShowCloseLeaveCheckoutPrompt
 }: ICheckoutPageContent) {
 
     const { currentStep, canProceedToCheckout, checkoutComplete, isSplitPayment } = useCheckout()
@@ -27,29 +27,29 @@ export default function CheckoutPageContent({
 
     useEffect(() => {
         if (!canProceedToCheckout() || checkoutComplete) return
-        
+
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             e.preventDefault()
         }
 
         window.addEventListener('beforeunload', handleBeforeUnload)
         return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-    }, [canProceedToCheckout, checkoutComplete ])
+    }, [canProceedToCheckout, checkoutComplete])
 
     useEffect(() => {
-        if (!canProceedToCheckout() || showCloseLeaveCheckoutPrompt || checkoutComplete ) return;
+        if (!canProceedToCheckout() || showCloseLeaveCheckoutPrompt || checkoutComplete) return;
 
         const handlePopState = (e: PopStateEvent) => {
             e.preventDefault()
-            
+
             window.history.pushState(null, '', window.location.href)
-            
+
             // Show the confirmation modal
             setShowCloseLeaveCheckoutPrompt(true)
         }
 
         window.history.pushState(null, '', window.location.href)
-        
+
         window.addEventListener('popstate', handlePopState)
 
         return () => {
@@ -58,36 +58,36 @@ export default function CheckoutPageContent({
     }, [canProceedToCheckout, checkoutComplete, showCloseLeaveCheckoutPrompt])
 
     return (
-        !checkoutComplete ? 
-        <section className={cn("md:flex w-full min-h-screen gap-6 lg:gap-16 items-stretch pb-44 md:pb-0")}>
-            <div className="md:w-[50%] lg:flex-1 lg:w-auto flex flex-col">
-                {!showMobileSummary && (
-                    <div className="my-10 md:-mt-10">
-                        <CheckoutFormStepIndicator />
-                    </div>
-                )}
-                <CheckoutPageContentWrapper showMobileSummary={showMobileSummary}>
-                    {currentStep === 1 ? (
-                        <TicketPreviewStep />
-                    ) : currentStep === 2 ? (
-                        <TicketCheckoutAttendeeInformationStep />
-                    ) : null}
-                </CheckoutPageContentWrapper>
-            </div>
-            
-            <div className="md:w-[40%] flex">
-                <CheckoutSummary 
-                    showMobileSummary={showMobileSummary} 
-                    setShowMobileSummary={setShowMobileSummary} 
-                />
-            </div>
+        !checkoutComplete ?
+            <section className={cn("md:flex w-full h-auto gap-6 lg:gap-16 pb-44 md:pb-0")}>
+                <div className="md:w-[50%] lg:flex-1 lg:w-auto flex flex-col">
+                    {!showMobileSummary && (
+                        <div className="my-10 md:-mt-10">
+                            <CheckoutFormStepIndicator />
+                        </div>
+                    )}
+                    <CheckoutPageContentWrapper showMobileSummary={showMobileSummary}>
+                        {currentStep === 1 ? (
+                            <TicketPreviewStep />
+                        ) : currentStep === 2 ? (
+                            <TicketCheckoutAttendeeInformationStep />
+                        ) : null}
+                    </CheckoutPageContentWrapper>
+                </div>
 
-            <LeaveCheckoutPrompt 
-                open={showCloseLeaveCheckoutPrompt} 
-                setOpen={setShowCloseLeaveCheckoutPrompt} 
-            />
-        </section>
-        :
-        isSplitPayment ? <CheckoutSplitPaymentSuccessMessage /> : <CheckoutSuccessMessage />
+                <div className="md:w-[40%] flex">
+                    <CheckoutSummary
+                        showMobileSummary={showMobileSummary}
+                        setShowMobileSummary={setShowMobileSummary}
+                    />
+                </div>
+
+                <LeaveCheckoutPrompt
+                    open={showCloseLeaveCheckoutPrompt}
+                    setOpen={setShowCloseLeaveCheckoutPrompt}
+                />
+            </section>
+            :
+            isSplitPayment ? <CheckoutSplitPaymentSuccessMessage /> : <CheckoutSuccessMessage />
     )
 }
