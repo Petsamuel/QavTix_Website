@@ -81,14 +81,14 @@ export default function RelatedEventsYouMightLike({ events }: { events: PublicPa
                 </div>
 
                 <div>
-                    <div className="pl-4 md:pl-10 lg:pl-16" ref={emblaRef}>
-                        <div className="flex gap-4 md:gap-6">
+                    <div className="pl-4 md:pl-10 lg:pl-16 overflow-hidden" ref={emblaRef}>
+                        <div className="flex -ml-4 md:-ml-6">
                             {events.map((event) => (
                                 <div
                                     key={event.id}
                                     onMouseEnter={pauseAutoPlay}
                                     onMouseLeave={play}
-                                    className="flex-[0_0_270px] min-w-0"
+                                    className="flex-[0_0_286px] md:flex-[0_0_294px] min-w-0 pl-4 md:pl-6"
                                 >
                                     <EventsCard1 {...fromPublicPagesEvent(event)} />
                                 </div>
