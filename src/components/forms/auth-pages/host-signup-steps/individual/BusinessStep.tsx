@@ -87,7 +87,7 @@ export function IndividualBusinessStep() {
                 />
                 <div className="flex justify-end mt-1">
                     <span className="text-xs text-neutral-6 font-medium">
-                        {watch('description')?.length || 0}/220
+                        {watch('description')?.length || 0}/280
                     </span>
                 </div>
             </div>

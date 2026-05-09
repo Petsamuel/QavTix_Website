@@ -39,7 +39,7 @@ export default function PlanningAnEventSection() {
             </div>
 
             <div className="max-w-[90%] mt-10 md:mt-0 sm:max-w-[30em] mx-auto md:mx-0 md:max-w-[unset] md:w-[45%]">
-                <Image src="/images/vectors/illustration-img1.svg" alt="" aria-hidden="true" width={700} height={700} />
+                <Image src="/images/vectors/illustration-img1.svg" alt="" priority aria-hidden="true" width={700} height={700} />
             </div>
         </section>
     )

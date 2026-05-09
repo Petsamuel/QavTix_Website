@@ -22,6 +22,17 @@ const PLATFORM_ICONS: Record<string, string> = {
     linkedin: "hugeicons:linkedin-01",
 }
 
+function getPlatformFromUrl(url: string) {
+    const lowerUrl = url.toLowerCase()
+    if (lowerUrl.includes('facebook.com')) return 'facebook'
+    if (lowerUrl.includes('instagram.com')) return 'instagram'
+    if (lowerUrl.includes('x.com') || lowerUrl.includes('twitter.com')) return 'twitter'
+    if (lowerUrl.includes('tiktok.com')) return 'tiktok'
+    if (lowerUrl.includes('linkedin.com')) return 'linkedin'
+    if (lowerUrl.includes('youtube.com')) return 'youtube'
+    return 'website'
+}
+
 interface Props {
     host: HostDetails
 }
@@ -34,11 +45,10 @@ export default function HostProfilePageHeader({ host }: Props) {
         host.followers_count,
     )
 
-    const socialLinks = (host.relevant_links || []).flatMap(obj =>
-        Object.entries(obj || {})
-            .filter(([, url]) => typeof url === "string" && url.trim().length > 0)
-            .map(([platform, url]) => ({ platform, url }))
-    )
+    const socialLinks = (host.relevant_links || [])
+        .map(obj => obj?.url)
+        .filter((url): url is string => typeof url === "string" && url.trim().length > 0)
+        .map((url) => ({ platform: getPlatformFromUrl(url), url }))
 
     const followBtn = (className?: string) => (
         <FollowButton
@@ -91,7 +101,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                     </div>
 
                     <div className="md:flex justify-between items-start gap-10">
-                        <div className="flex-1 max-w-xl">
+                        <div className="flex-1 max-w-xl min-w-0">
                             <div className='flex items-center gap-2 mb-3'>
                                 <h1 className={`${space_grotesk.className} text-2xl font-medium text-secondary-9`}>
                                     {host.host}
@@ -107,7 +117,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                                     )}
                                 />
                             </div>
-                            <p className="text-neutral-7">{host.description}</p>
+                            <p className="text-neutral-7 wrap-break-words overflow-hidden">{host.description}</p>
 
                             {socialLinks.length > 0 && (
                                 <div className="flex gap-3 mt-5">
