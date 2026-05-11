@@ -24,7 +24,8 @@ export const footerData = {
       links: [
         LEGAL_LINKS.PRIVACY,
         LEGAL_LINKS.REFUND,
-        LEGAL_LINKS.TERMS
+        LEGAL_LINKS.TERMS,
+        LEGAL_LINKS.TICKET_SERVICE,
       ]
     }
   ],
@@ -36,6 +37,7 @@ export const footerData = {
   legal: [
     LEGAL_LINKS.PRIVACY,
     LEGAL_LINKS.REFUND,
-    LEGAL_LINKS.TERMS
+    LEGAL_LINKS.TERMS,
+    LEGAL_LINKS.TICKET_SERVICE,
   ]
 }

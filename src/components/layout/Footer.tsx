@@ -17,7 +17,6 @@ export default function Footer() {
         pathName !== "/_not-found" &&
         !pathName.match("/auth") &&
         !pathName.match("/checkout") &&
-        !pathName.match("/legal") &&
         <div className="px-4 md:px-8 py-4">
             <footer className="w-full rounded-3xl relative bg-primary-1 px-6 lg:px-16 py-12">
                 <div className="max-w-7xl mx-auto">

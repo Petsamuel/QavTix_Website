@@ -197,7 +197,7 @@ export function IndividualGeneralStep() {
                                     Terms of Service
                                 </Link>
                                 {' '}and understand the{' '}
-                                <Link href={LEGAL_LINKS.COMMISSION.href} className="text-accent-6 font-medium hover:underline">
+                                <Link href={LEGAL_LINKS.TICKET_SERVICE.href} className="text-accent-6 font-medium hover:underline">
                                     Commission structure
                                 </Link>.
                             </span>

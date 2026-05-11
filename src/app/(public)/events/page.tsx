@@ -26,6 +26,8 @@ export default async function EventsPage() {
             getTrendingHosts(),
         ])
 
+    console.log(trendingEvents)
+
     return (
         <main>
             <Suspense fallback={<EventPageLoader />}>
