@@ -18,10 +18,10 @@ function FeatureCard({ icon, iconBg, iconColor, textColor, cardBg, title, descri
         <div className={`rounded-3xl p-6 ${cardBg} backdrop-blur-2xl group flex flex-col justify-between gap-6`}>
             <div>
                 <div className={`w-10 h-10 rounded-full ${iconBg} flex items-center justify-center mb-3 group-hover:scale-110 transition-all ease-linear duration-200`}>
-                    <Icon 
-                        icon={icon} 
-                        width="26" 
-                        height="26" 
+                    <Icon
+                        icon={icon}
+                        width="26"
+                        height="26"
                         className={`${iconColor}`}
                     />
                 </div>
@@ -39,7 +39,7 @@ function FeatureCard({ icon, iconBg, iconColor, textColor, cardBg, title, descri
 }
 
 
-const features : FeatureCardProps[] = [
+const features: FeatureCardProps[] = [
     {
         icon: 'hugeicons:money-security',
         iconColor: 'text-neutral-8',
