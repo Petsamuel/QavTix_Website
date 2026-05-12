@@ -21,12 +21,12 @@ export default function RegionSwitcher({ className }: { className?: string }) {
     }
 
     return (
-        <Select value={region.code} onValueChange={handleRegionChange}>
+        <Select value={region.code} onValueChange={handleRegionChange} disabled={true}>
             <SelectTrigger
-                disabled={isPending}
+                disabled={true}
                 className={cn(
                     className,
-                    "disabled:opacity-65 text-xs disabled:cursor-not-allowed w-28 bg-white rounded-lg border-neutral-3 hover:border-neutral-4 focus:border-primary-6"
+                    "disabled:opacity-100 text-xs disabled:cursor-default w-28 bg-white rounded-lg border-neutral-3"
                 )}
             >
                 <SelectValue>

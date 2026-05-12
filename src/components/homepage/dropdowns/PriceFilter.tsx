@@ -37,7 +37,7 @@ export default function PriceFilter({
     const defaultMax = 500000
     const hasActiveFilter = value && (value.min > 0 || value.max < defaultMax)
     const displayText = hasActiveFilter
-        ? `${currency}${value.min.toLocaleString()} - ${currency}${value.max.toLocaleString()}`
+        ? `${value.min.toLocaleString()} - ${value.max.toLocaleString()}`
         : 'Price'
 
     const triggerVariant = filterFor === "homepage" ? 'default' : 'compact'
