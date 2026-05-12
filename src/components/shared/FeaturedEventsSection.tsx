@@ -109,16 +109,19 @@ export default function FeaturedEventsSection({ events }: Props) {
                                         }
 
                                         {/* Status badge — top left */}
-                                        <span className={cn(
-                                            "absolute top-3 hidden group-hover:block left-3 z-10 py-1 px-2 rounded-2xl text-center text-xs font-medium capitalize shadow-sm",
-                                            statusStyles[event.event_status as keyof StatusStylesRecord]?.bg,
-                                            statusStyles[event.event_status as keyof StatusStylesRecord]?.text,
-                                        )}>
+                                        <span
+                                            suppressHydrationWarning
+                                            className={cn(
+                                                "absolute top-3 hidden group-hover:block left-3 z-10 py-1 px-2 rounded-2xl text-center text-xs font-medium capitalize shadow-sm",
+                                                statusStyles[event.event_status as keyof StatusStylesRecord]?.bg,
+                                                statusStyles[event.event_status as keyof StatusStylesRecord]?.text,
+                                            )}
+                                        >
                                             {statusStyles[event.event_status as keyof StatusStylesRecord]?.label ?? event.event_status}
                                         </span>
 
                                         {/* Featured icon — top right */}
-                                        <span className="absolute top-3 right-3 z-10 flex items-center justify-center size-8 rounded-full bg-white/60 shadow-sm">
+                                        <span suppressHydrationWarning className="absolute top-3 right-3 z-10 flex items-center justify-center size-8 rounded-full bg-white/60 shadow-sm">
                                             <Icon icon="mdi:feature-highlight" width="20" height="20" className="text-accent-6" />
                                         </span>
 
