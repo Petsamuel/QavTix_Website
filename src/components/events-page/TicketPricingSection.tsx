@@ -72,7 +72,7 @@ export default function TicketPricingSection({
                     }}
                     className="bg-primary-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
                 >
-                    Get a ticket
+                    Get Tickets
                 </LiquidLink>
             </div>
 

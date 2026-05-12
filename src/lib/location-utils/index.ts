@@ -1,9 +1,9 @@
 'use server'
 
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { COOKIE_KEYS } from '@/components-data/cookie-keys'
 import { Currency, Region } from '../redux/slices/settingsSlice';
-import { DEFAULT_LOCATION } from '@/components-data/settings.data';
+import { DEFAULT_LOCATION, REGION_CURRENCY_MAP } from '@/components-data/settings.data';
 
 export async function setLocationAction(data: { region?: Region; currency?: Currency }) {
   const cookieStore = await cookies()
@@ -32,6 +32,14 @@ export async function setLocationAction(data: { region?: Region; currency?: Curr
 
 export async function getOrDetectLocation() {
   const cookieStore = await cookies()
+  const headersList = await headers()
+
+  const ipCountry = headersList.get('x-vercel-ip-country') || headersList.get('cf-ipcountry') || ''
+  const detectedLocation = REGION_CURRENCY_MAP[ipCountry.toUpperCase()]
+
+  if (detectedLocation) {
+      return detectedLocation
+  }
 
   const regionStr = cookieStore.get(COOKIE_KEYS.USER_REGION)?.value
   const currencyStr = cookieStore.get(COOKIE_KEYS.USER_CURRENCY)?.value
