@@ -15,6 +15,8 @@ import { EVENT_ROUTES } from '@/components-data/navigation/navLinks'
 import { formatEventDate } from '@/helper-fns/date-utils'
 import { Skeleton } from '../ui/skeleton'
 import { formatPrice } from '@/helper-fns/formatPrice'
+import { statusStyles, StatusStylesRecord } from '@/components/custom-utils/cards/resources/event-status-styles'
+import { cn } from '@/lib/utils'
 
 
 interface Props {
@@ -105,6 +107,20 @@ export default function FeaturedEventsSection({ events }: Props) {
                                                 :
                                                 <Skeleton className="rounded-4xl bg-neutral-4 w-full h-full transition-transform duration-400 lg:group-hover:scale-103" />
                                         }
+
+                                        {/* Status badge — top left */}
+                                        <span className={cn(
+                                            "absolute top-3 hidden group-hover:block left-3 z-10 py-1 px-2 rounded-2xl text-center text-xs font-medium capitalize shadow-sm",
+                                            statusStyles[event.event_status as keyof StatusStylesRecord]?.bg,
+                                            statusStyles[event.event_status as keyof StatusStylesRecord]?.text,
+                                        )}>
+                                            {statusStyles[event.event_status as keyof StatusStylesRecord]?.label ?? event.event_status}
+                                        </span>
+
+                                        {/* Featured icon — top right */}
+                                        <span className="absolute top-3 right-3 z-10 flex items-center justify-center size-8 rounded-full bg-white/60 shadow-sm">
+                                            <Icon icon="mdi:feature-highlight" width="20" height="20" className="text-accent-6" />
+                                        </span>
 
                                         <div className="absolute inset-x-0 -bottom-1 bg-white p-5 w-full group-hover:scale-103 border-b rounded-b-4xl lg:rounded-b-sm transform transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] translate-y-0 opacity-100 lg:translate-y-full lg:opacity-0 lg:group-hover:translate-y-0 md:group-hover:opacity-100">
                                             <span className="bg-accent-1 w-fit block text-accent-7 font-medium py-1 px-2 rounded-2xl text-xs">
