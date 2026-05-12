@@ -17,9 +17,9 @@ interface PriceRange {
 }
 
 interface PriceFilterProps {
-    value?:     PriceRange | null
-    onChange:   (value: PriceRange | null) => void
-    currency?:  string
+    value?: PriceRange | null
+    onChange: (value: PriceRange | null) => void
+    currency?: string
     filterFor?: FilterFor
 }
 
@@ -27,16 +27,16 @@ export default function PriceFilter({
     value,
     onChange,
     filterFor = "homepage",
-    currency  = '₦',
+    currency = '₦',
 }: PriceFilterProps) {
 
-    const [isOpen,      setIsOpen]      = useState(false)
-    const [priceRange,  setPriceRange]  = useState<PriceRange>(value || { min: 0, max: 10000 })
+    const [isOpen, setIsOpen] = useState(false)
+    const [priceRange, setPriceRange] = useState<PriceRange>(value || { min: 0, max: 10000 })
     const isTablet = useMediaQuery('(min-width: 768px)')
 
-    const defaultMax      = 500000
+    const defaultMax = 500000
     const hasActiveFilter = value && (value.min > 0 || value.max < defaultMax)
-    const displayText     = hasActiveFilter
+    const displayText = hasActiveFilter
         ? `${currency}${value.min.toLocaleString()} - ${currency}${value.max.toLocaleString()}`
         : 'Price'
 
@@ -44,19 +44,18 @@ export default function PriceFilter({
 
     const handleApply = () => { onChange(priceRange); setIsOpen(false) }
     const handleClear = () => { setPriceRange({ min: 0, max: 10000 }); onChange(null) }
-    const handleQuickPrice  = (price: number) => setPriceRange(price === 0 ? { min: 0, max: 0 } : { min: 0, max: price })
+    const handleQuickPrice = (price: number) => setPriceRange(price === 0 ? { min: 0, max: 0 } : { min: 0, max: price })
     const handleSliderChange = (values: number[]) => setPriceRange({ min: values[0], max: values[1] })
 
     const filterContent = (
         <>
-            <QuickPriceButtons currency={currency} selectedMax={priceRange.max} onSelect={handleQuickPrice} />
+            <QuickPriceButtons selectedMax={priceRange.max} onSelect={handleQuickPrice} />
             <div className="pt-4 pb-2">
                 <Slider min={0} max={defaultMax} step={1000} value={[priceRange.min, priceRange.max]} onValueChange={handleSliderChange} />
             </div>
             <PriceRangeInputs
                 min={priceRange.min}
                 max={priceRange.max}
-                currency={currency}
                 onMinChange={(v) => setPriceRange(prev => ({ ...prev, min: v }))}
                 onMaxChange={(v) => setPriceRange(prev => ({ ...prev, max: v }))}
             />

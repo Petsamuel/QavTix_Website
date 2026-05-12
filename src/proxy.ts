@@ -2,13 +2,10 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { accessCookieOptions, COOKIE_KEYS } from '@/components-data/cookie-keys'
 import { DEFAULT_LOCATION, REGION_CURRENCY_MAP } from '@/components-data/settings.data'
-import { REFRESH_TOKEN_ENDPOINT, TOKEN_VERIFY_ENDPOINT } from '@/endpoints'
+import { REFRESH_TOKEN_ENDPOINT } from '@/endpoints'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
-// Pages that browsers hit while not yet signed in.
-// A host with a valid host_access_token visiting these
-// should be bounced straight to their dashboard.
 const AUTH_PAGE_PATTERNS = [
     /^\/sign-in/,
     /^\/sign-up/,
@@ -20,16 +17,45 @@ function isAuthPage(pathname: string) {
     return AUTH_PAGE_PATTERNS.some((pattern) => pattern.test(pathname))
 }
 
-async function verifyToken(token: string): Promise<boolean> {
+/**
+ * Decodes a JWT and checks if it's expired or close to expiring.
+ * Returns true if expired or invalid.
+ */
+function isTokenExpiredLocally(token: string): boolean {
     try {
-        const res = await fetch(`${API_BASE_URL}/${TOKEN_VERIFY_ENDPOINT}`, {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ token }),
-        })
-        return res.ok
+        const payloadBase64 = token.split('.')[1]
+        if (!payloadBase64) return true
+
+        const decoded = JSON.parse(atob(payloadBase64))
+        const exp = decoded.exp
+        if (!exp) return true
+
+        // Return true if token expires in less than 30 seconds
+        const currentTime = Math.floor(Date.now() / 1000)
+        return exp < currentTime + 30
     } catch {
-        return false
+        return true
+    }
+}
+
+async function refreshAccessToken(
+    refreshToken: string,
+): Promise<{ success: true; accessToken: string } | { success: false; networkError: boolean }> {
+    try {
+        const res = await fetch(`${API_BASE_URL}/${REFRESH_TOKEN_ENDPOINT}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh: refreshToken }),
+        })
+
+        if (res.ok) {
+            const { data } = await res.json()
+            return { success: true, accessToken: data.access }
+        }
+
+        return { success: false, networkError: false }
+    } catch {
+        return { success: false, networkError: true }
     }
 }
 
@@ -38,7 +64,7 @@ export async function proxy(request: NextRequest) {
     const response = NextResponse.next()
 
     // ── Region / currency detection ───────────────────────────────────────
-    const hasRegion   = request.cookies.has(COOKIE_KEYS.USER_REGION)
+    const hasRegion = request.cookies.has(COOKIE_KEYS.USER_REGION)
     const hasCurrency = request.cookies.has(COOKIE_KEYS.USER_CURRENCY)
 
     if (!hasRegion || !hasCurrency) {
@@ -50,14 +76,14 @@ export async function proxy(request: NextRequest) {
         const detected = REGION_CURRENCY_MAP[country] || DEFAULT_LOCATION
 
         const regionCookieOptions = {
-            path:     '/',
-            maxAge:   365 * 24 * 60 * 60,
+            path: '/',
+            maxAge: 365 * 24 * 60 * 60,
             sameSite: 'lax' as const,
-            secure:   process.env.NODE_ENV === 'production',
+            secure: process.env.NODE_ENV === 'production',
         }
 
         if (!hasRegion)
-            response.cookies.set(COOKIE_KEYS.USER_REGION,   JSON.stringify(detected.region),   regionCookieOptions)
+            response.cookies.set(COOKIE_KEYS.USER_REGION, JSON.stringify(detected.region), regionCookieOptions)
         if (!hasCurrency)
             response.cookies.set(COOKIE_KEYS.USER_CURRENCY, JSON.stringify(detected.currency), regionCookieOptions)
     }
@@ -72,14 +98,12 @@ export async function proxy(request: NextRequest) {
         const hostAccessToken = request.cookies.get('host_access_token')?.value
 
         if (hostAccessToken) {
-            const hostTokenValid = await verifyToken(hostAccessToken)
-
-            if (hostTokenValid) {
+            if (!isTokenExpiredLocally(hostAccessToken)) {
                 const hostSite = process.env.NEXT_PUBLIC_HOST_SITE ?? '/'
                 return NextResponse.redirect(hostSite)
             }
 
-            // Token present but invalid — clear stale host cookies and continue
+            // Token present but expired — clear stale host cookies and continue
             const cleared = NextResponse.next()
             cleared.cookies.delete('host_access_token')
             cleared.cookies.delete('host_refresh_token')
@@ -89,37 +113,36 @@ export async function proxy(request: NextRequest) {
 
     // ── Attendee token management ─────────────────────────────────────────
     // The proxy only ever manages attendee tokens. Host cookies are ignored.
-    const accessToken  = request.cookies.get('access_token')?.value
+    const accessToken = request.cookies.get('access_token')?.value
     const refreshToken = request.cookies.get('refresh_token')?.value
 
-    if (accessToken) {
-        const valid = await verifyToken(accessToken)
-        if (valid) return response
-        // Fall through to refresh if invalid
+    // Access token exists and is still valid — fast path, no network call
+    if (accessToken && !isTokenExpiredLocally(accessToken)) {
+        return response
     }
 
+    // Access token missing or expiring — try refresh
     if (refreshToken) {
-        try {
-            const refreshRes = await fetch(`${API_BASE_URL}/${REFRESH_TOKEN_ENDPOINT}`, {
-                method:  'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ refresh: refreshToken }),
-            })
-
-            if (refreshRes.ok) {
-                const { data } = await refreshRes.json()
-                response.cookies.set('access_token', data.access, accessCookieOptions)
-                return response
-            }
-
-            // Refresh failed — clear the dead attendee session
+        // Don't bother calling the API if the refresh token is also expired
+        if (isTokenExpiredLocally(refreshToken)) {
             response.cookies.delete('access_token')
             response.cookies.delete('refresh_token')
             return response
+        }
 
-        } catch {
+        const result = await refreshAccessToken(refreshToken)
+
+        if (result.success) {
+            response.cookies.set('access_token', result.accessToken, accessCookieOptions)
             return response
         }
+
+        if (result.networkError) return response  // backend down — let them through
+
+        // Refresh failed with a server error — clear the dead attendee session
+        response.cookies.delete('access_token')
+        response.cookies.delete('refresh_token')
+        return response
     }
 
     return response

@@ -98,14 +98,17 @@ export const MARKETPLACE_ROUTES = {
 
 export const LEGAL_LINKS = {
   PRIVACY: { label: "Privacy Policy", href: "/legal/privacy-policy" },
-  TERMS: { label: "Terms of Use", href: "/legal/terms-of-use" },
-  COMMISSION: { label: "Commission", href: "/legal/commission" }
+  REFUND: { label: "Refund Policy", href: "/legal/refund-policy" },
+  TERMS: { label: "Terms of Service", href: "/legal/terms-of-service" },
+  TICKET_SERVICE: { label: "Ticket Services Agreement", href: "/legal/ticket-services-agreement" },
 } as const;
 
 
 export const FOOTER_LEGAL_LINKS = {
   PRIVACY: LEGAL_LINKS.PRIVACY,
-  TERMS: LEGAL_LINKS.TERMS
+  TERMS: LEGAL_LINKS.TERMS,
+  REFUND: LEGAL_LINKS.REFUND,
+  TICKET_SERVICE: LEGAL_LINKS.TICKET_SERVICE,
 }
 
 

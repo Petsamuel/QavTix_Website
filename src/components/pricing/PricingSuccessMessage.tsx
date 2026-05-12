@@ -12,18 +12,18 @@ import { DialogDescription, DialogTitle } from "../ui/dialog"
 
 const SUCCESS_COPY = {
     host: {
-        heading:     "You're all set!",
+        heading: "You're all set!",
         description: "You can start creating events and accessing premium tools immediately.",
-        cta:         "Go to dashboard",
-        ctaHref:     "/dashboard",
-        icon:        "hugeicons:calendar-add-02",
+        cta: "Go to dashboard",
+        ctaHref: "/dashboard",
+        icon: "hugeicons:calendar-add-02",
     },
     attendee: {
-        heading:     "You're all set!",
+        heading: "You're all set!",
         description: "Your membership is active. Enjoy early access, exclusive deals, and boosted rewards from your next ticket purchase.",
-        cta:         "Browse events",
-        ctaHref:     "/events",
-        icon:        "hugeicons:ticket-02",
+        cta: "Browse events",
+        ctaHref: "/events",
+        icon: "hugeicons:ticket-02",
     },
 } as const
 
@@ -32,10 +32,10 @@ export default function PricingSuccessMessage() {
     const copy = SUCCESS_COPY[accountType]
 
     return (
-        <AnimatedDialog open={true} onOpenChange={(o) => { if (!o) resetSuccess() }} className="rounded-3xl! max-w-sm!" childrenContainerStyles="px-5 py-10">
+        <AnimatedDialog open={true} onOpenChange={(o) => { if (!o) resetSuccess() }} className="rounded-3xl! md:max-w-sm!" childrenContainerStyles="px-5 py-10">
             <div className="text-center">
                 <Image
-                    src="/images/vectors/transaction-success.svg"
+                    src="/images/vectors/scan-verified.svg"
                     alt="Payment successful"
                     width={160} height={160}
                     className="mx-auto mb-6"
@@ -48,7 +48,7 @@ export default function PricingSuccessMessage() {
                     </span>
                 )}
 
-                <DialogTitle className={cn(space_grotesk.className, "text-2xl font-bold text-secondary-9 mb-2")}>
+                <DialogTitle className={cn(space_grotesk.className, "text-2xl font-bold text-secondary-8 mb-2")}>
                     {copy.heading}
                 </DialogTitle>
                 <DialogDescription className="text-sm text-neutral-7 leading-relaxed">

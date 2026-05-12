@@ -59,6 +59,7 @@ export default async function EventCategoryPage({ params }: Props) {
                     { label: "Events",      value: total_events      },
                     { label: "Subscribers", value: total_subscribers },
                 ]}
+                subscribeKey={categoryPath}
             />
 
             {

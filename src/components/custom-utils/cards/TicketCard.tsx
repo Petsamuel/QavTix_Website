@@ -14,14 +14,14 @@ export function TicketCard({
     ticketKey,
 }: TicketCardProps) {
 
-    const { 
-        tickets, 
-        incrementTicket, 
+    const {
+        tickets,
+        incrementTicket,
         isMarketplace,
         decrementTicket,
     } = useCheckout()
 
-    const ticket  = tickets.find(v => v._key === ticketKey)
+    const ticket = tickets.find(v => v._key === ticketKey)
 
     if (!ticket) return null;
 
@@ -63,7 +63,7 @@ export function TicketCard({
                         <button
                             type="button"
                             onClick={() => decrementTicket(ticketKey)}
-                            disabled={ticket.quantity === 0  || isMarketplace}
+                            disabled={ticket.quantity === 0 || isMarketplace}
                             className="w-8 h-8 rounded-lg bg-secondary-6 text-white flex items-center justify-center hover:bg-secondary-7 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                         >
                             <Icon icon="mynaui:minus" width="24" height="24" />
@@ -74,7 +74,13 @@ export function TicketCard({
                         <button
                             type="button"
                             onClick={() => incrementTicket(ticketKey)}
-                            disabled={!ticket.available || ticket.soldOut || isMarketplace}
+                            disabled={
+                                !ticket.available ||
+                                ticket.soldOut ||
+                                isMarketplace ||
+                                (ticket.quantity >= (ticket.totalStock || 0)) ||
+                                (ticket.quantity >= (ticket.maxQuantity))
+                            }
                             className="w-8 h-8 rounded-lg bg-secondary-6 text-white flex items-center justify-center hover:bg-secondary-7 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                         >
                             <Icon icon="mynaui:plus" width="24" height="24" />

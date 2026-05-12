@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { usePricingCheckout } from "@/contexts/PricingCheckoutContext"
 
 interface PricingCardProps {
-    plan:  PricingPlan
+    plan: PricingPlan
     index: number
 }
 
@@ -27,7 +27,7 @@ function PriceSkeleton() {
 
 
 interface InlineBillingToggleProps {
-    billingCycle:    "monthly" | "annual"
+    billingCycle: "monthly" | "annual"
     setBillingCycle: (cycle: "monthly" | "annual") => void
 }
 
@@ -81,14 +81,14 @@ export default function PricingCard({ plan, index }: PricingCardProps) {
     } = usePricingCheckout()
 
     const isCustom = plan.price === 0 && plan.currency === "Custom"
-    const isFree   = plan.price === 0 && !isCustom
+    const isFree = plan.price === 0 && !isCustom
 
     // THIS CARD IS THE ONE ACTIVELY RUNNING THE PAYSTACK FLOW
     const isThisCardProcessing = processingPlanId === plan.id
 
     // ALL OTHER CARDS ARE DISABLED WHILE ANY PAYMENT IS IN FLIGHT
     const isAnyProcessing = status === "processing"
-    const isDisabled      = isAnyProcessing && !isThisCardProcessing
+    const isDisabled = isAnyProcessing && !isThisCardProcessing
 
     // ANNUAL: 10 MONTHS BILLED, 2 MONTHS FREE
     const displayPrice = billingCycle === "annual" && !isFree && !isCustom
@@ -96,30 +96,30 @@ export default function PricingCard({ plan, index }: PricingCardProps) {
         : plan.price
 
     const cardVariants: Variants = {
-        hidden:  { opacity: 0, y: 60, scale: 0.95 },
+        hidden: { opacity: 0, y: 60, scale: 0.95 },
         visible: {
             opacity: 1, y: 0, scale: 1,
             transition: {
                 duration: 0.6,
-                delay:    index * 0.15,
-                ease:     [0.25, 0.46, 0.45, 0.94] as const,
+                delay: index * 0.15,
+                ease: [0.25, 0.46, 0.45, 0.94] as const,
             },
         },
     }
 
     const featuresContainerVariants: Variants = {
-        hidden:  { opacity: 0 },
+        hidden: { opacity: 0 },
         visible: {
             opacity: 1,
             transition: {
-                delayChildren:   0.3 + index * 0.15,
+                delayChildren: 0.3 + index * 0.15,
                 staggerChildren: 0.08,
             },
         },
     }
 
     const featureVariants: Variants = {
-        hidden:  { opacity: 0, x: -20, y: 10 },
+        hidden: { opacity: 0, x: -20, y: 10 },
         visible: {
             opacity: 1, x: 0, y: 0,
             transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] as const },
@@ -223,7 +223,7 @@ export default function PricingCard({ plan, index }: PricingCardProps) {
                             "w-full py-4 rounded-4xl text-sm font-medium transition-all",
                             "disabled:cursor-not-allowed",
                             plan.buttonVariant === "primary"
-                                ? "bg-primary-6 hover:bg-primary-7 text-white disabled:bg-primary-4"
+                                ? "bg-primary-6 hover:bg-primary-7 text-white disabled:bg-primary-7 disabled:cursor-not-allowed disabled:opacity-70"
                                 : "bg-secondary-6 hover:bg-secondary-7 text-white disabled:bg-secondary-4"
                         )}
                     >
