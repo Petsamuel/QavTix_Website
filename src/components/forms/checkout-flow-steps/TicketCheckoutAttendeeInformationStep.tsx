@@ -27,7 +27,7 @@ import { formatPrice } from '@/helper-fns/formatPrice'
 
 export default function TicketCheckoutAttendeeInformationStep() {
 
-    const { event, total, selectedTickets }   = useCheckout()
+    const { event, total, selectedTickets } = useCheckout()
     const { isAuthenticated, user } = useAppSelector(s => s.auth)
     const { form } = useCheckoutAttendeeInfoForm()
 
@@ -55,16 +55,16 @@ export default function TicketCheckoutAttendeeInformationStep() {
 
     const { fields, append, remove } = useFieldArray({ control, name: 'attendees' })
 
-    const splitPaymentEnabled   = watch('splitPayment')
+    const splitPaymentEnabled = watch('splitPayment')
     const shareWithGroupEnabled = watch('shareWithGroup')
 
     // Auto-fill form fields for authenticated users on mount
     useEffect(() => {
         if (!isAuthenticated || !user) return
-        if (user.full_name) setValue('name',  user.full_name,  { shouldValidate: true })
-        if (user.email) setValue('email', user.email,      { shouldValidate: true })
-        if (user.phone_number) setValue('phone', user.phone_number,      { shouldValidate: true })
-        if (user.dob) setValue('dateOfBirth', user.dob,      { shouldValidate: true })
+        if (user.full_name) setValue('name', user.full_name, { shouldValidate: true })
+        if (user.email) setValue('email', user.email, { shouldValidate: true })
+        if (user.phone_number) setValue('phone', user.phone_number, { shouldValidate: true })
+        if (user.dob) setValue('dateOfBirth', user.dob, { shouldValidate: true })
     }, [isAuthenticated, user, setValue])
 
     // Sync split payment toggle into context
@@ -84,9 +84,9 @@ export default function TicketCheckoutAttendeeInformationStep() {
     useEffect(() => {
         if (splitError) {
             dispatch(showAlert({
-                title:       'Split Payment Error',
+                title: 'Split Payment Error',
                 description: splitError,
-                variant:     'destructive',
+                variant: 'destructive',
             }))
         }
     }, [splitError, dispatch])
@@ -102,11 +102,11 @@ export default function TicketCheckoutAttendeeInformationStep() {
 
     const handleAddAttendee = () => {
         append({
-            attendeeID:  nextAttendeeId,
-            name:        '',
-            email:       '',
-            phone:       '',
-            amount:      0,
+            attendeeID: nextAttendeeId,
+            name: '',
+            email: '',
+            phone: '',
+            amount: 0,
             dateOfBirth: event.age_restriction ? '' : '2000-01-01',
         })
         addAttendee()
@@ -123,8 +123,8 @@ export default function TicketCheckoutAttendeeInformationStep() {
         <>
             {!isAuthenticated && (
                 <p className="text-sm text-neutral-7 mb-8" data-testid="guest-signin-prompt">
-                    <Link 
-                        href={`${AUTH_ROUTES.SIGN_IN.href}?returnTo=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`} 
+                    <Link
+                        href={`${AUTH_ROUTES.SIGN_IN.href}?returnTo=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
                         className="font-medium text-accent-6"
                     >
                         Sign in
@@ -168,7 +168,7 @@ export default function TicketCheckoutAttendeeInformationStep() {
                 </div>
 
                 {/* Email + Phone */}
-                <div className="md:grid grid-cols-2 gap-4">
+                <div className="grid grid-col md:grid-cols-2 gap-4">
                     <FormInput2
                         label="Email Address"
                         placeholder="e.g. jon.doe@gmail.com"
@@ -335,7 +335,7 @@ export default function TicketCheckoutAttendeeInformationStep() {
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent className="font-normal space-y-2 text-secondary-7">
-                                                    <SelectItem value="equal"  className="hover:bg-accent-4! text-xs">Equal Split</SelectItem>
+                                                    <SelectItem value="equal" className="hover:bg-accent-4! text-xs">Equal Split</SelectItem>
                                                     <SelectItem value="manual" className="hover:bg-accent-4! text-xs">Manual Input</SelectItem>
                                                 </SelectContent>
                                             </Select>
@@ -434,7 +434,7 @@ export default function TicketCheckoutAttendeeInformationStep() {
 
                                 {
                                     errors.attendees && typeof errors.attendees.message === 'string' && (
-                                       <ErrorPara error={errors.attendees.message} data-testid="attendees-error" />
+                                        <ErrorPara error={errors.attendees.message} data-testid="attendees-error" />
                                     )
                                 }
                             </div>

@@ -59,8 +59,8 @@ export function SearchResultSection({
     )
 
     const availableCategories = useMemo(
-        () => deriveCategories(categories, items),
-        [categories, items]
+        () => deriveCategories(categories, initialEvents),
+        [categories, initialEvents]
     )
 
     const hasActiveSearch =

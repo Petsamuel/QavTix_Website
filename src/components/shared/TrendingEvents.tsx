@@ -66,8 +66,8 @@ export function TrendingEvents({
 
     
     const availableCategories = useMemo(
-        () => deriveCategories(categories, items),
-        [categories, items]
+        () => deriveCategories(categories, initialEvents),
+        [categories, initialEvents]
     )
 
     return (

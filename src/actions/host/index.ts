@@ -41,12 +41,19 @@ async function _getTrendingHosts(
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/${TRENDING_HOSTS_ENDPOINT}`,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+            accessToken
+                ? {
+                    // Authenticated: bypass cache so follow/unfollow state is fresh
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    cache: "no-store",
+                }
+                : {
+                    // Guest: cache 5 minutes — shared across all unauthenticated users
+                    next: { revalidate: 300, tags: [CACHE_TAGS.HOSTS] },
                 },
-            },
         )
 
         const json = await res.json()
