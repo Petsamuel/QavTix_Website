@@ -1,8 +1,6 @@
 import { getOrDetectLocation } from "@/lib/location-utils"
-import { getGuestTicketSession } from "@/actions/util/get-ticket-session"
-import { GET_PROFILE_ENDPOINT } from "@/endpoints"
 import { DEFAULT_LOCATION } from "@/components-data/settings.data"
-import { getServerAxios } from "@/lib/axios"
+import { getProfile } from "@/actions/profile"
 import AppSettings from "@/components/custom-utils/persistors/AppSettings"
 import AuthPersistor from "@/components/custom-utils/persistors/AuthPersistor"
 import { TicketUserProvider } from "@/contexts/TicketUserProvider"
@@ -12,28 +10,32 @@ import Header from "@/components/layout/Header"
 import Header2 from "@/components/layout/Header2"
 import ModalRenderer from "@/components/modals/ModalRenderer"
 import Footer from "@/components/layout/Footer"
+import { getAuthToken } from "@/helper-fns/getAuthToken"
 
 async function getLayoutData() {
-    const axiosInstance = await getServerAxios()
-    const [locationResult, ticketSessionResult, profileResult] = await Promise.allSettled([
+    const token = await getAuthToken()
+
+    const [locationResult, profileResult] = await Promise.allSettled([
         getOrDetectLocation(),
-        getGuestTicketSession(),
-        axiosInstance.get(GET_PROFILE_ENDPOINT).then(r => r.data),
+        // Only hit the profile API when the user is logged in
+        token ? getProfile() : Promise.resolve({ success: false as const, data: undefined }),
     ])
 
     return {
         locationData: locationResult.status === "fulfilled" ? locationResult.value : DEFAULT_LOCATION,
-        ticketSession: ticketSessionResult.status === "fulfilled" ? ticketSessionResult.value : null,
-        userData: profileResult.status === "fulfilled" ? profileResult.value?.data ?? null : null,
+        userData:
+            profileResult.status === "fulfilled" && profileResult.value.success
+                ? profileResult.value.data ?? null
+                : null,
     }
 }
 
 export default async function LayoutDataProvider({ children }: { children: React.ReactNode }) {
-    const { locationData, ticketSession, userData } = await getLayoutData()
+    const { locationData, userData } = await getLayoutData()
 
     return (
         <ReduxStoreProvider>
-            <TicketUserProvider user={userData} ticketSession={ticketSession}>
+            <TicketUserProvider user={userData} ticketSession={null}>
                 <AppSettings currency={locationData.currency} region={locationData.region} />
                 <AuthPersistor userData={userData} />
                 <CustomGlobalAlert />

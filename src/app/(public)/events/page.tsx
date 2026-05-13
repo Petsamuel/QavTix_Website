@@ -4,10 +4,7 @@ import { getCategories } from "@/actions/filters"
 import { getTrendingHosts } from "@/actions/host"
 import { Metadata } from "next"
 import { buildPageMetadata } from "@/metadata"
-import { Suspense } from "react"
-import EventPageLoader from "@/components/loaders/EventPagesLoader"
 import { getUserLocation } from "@/actions/getters/client"
-
 
 export const metadata: Metadata = buildPageMetadata(
     "Browse Events",
@@ -15,48 +12,36 @@ export const metadata: Metadata = buildPageMetadata(
     "/events",
 )
 
-// app/events/page.tsx
 export default async function EventsPage() {
-    const [featuredEvents, trendingEvents, topLocations, categoriesResult, hostsResult] =
-        await Promise.all([
-            getFeaturedEvents(),
-            getTrendingEvents(),
-            getTopLocations(),
-            getCategories(),
-            getTrendingHosts(),
-        ])
+    const { city, country } = await getUserLocation()
 
-    console.log(trendingEvents)
+    const [
+        featuredEvents,
+        trendingEvents,
+        nearbyEvents,
+        topLocations,
+        categoriesResult,
+        hostsResult,
+    ] = await Promise.all([
+        getFeaturedEvents(country),
+        getTrendingEvents(country),
+        getNearbyEvents(city, country),
+        getTopLocations(),
+        getCategories(),
+        getTrendingHosts(),
+    ])
 
     return (
         <main>
-            <Suspense fallback={<EventPageLoader />}>
-                <DynamicEventsSection
-                    featuredEvents={featuredEvents}
-                    trendingEvents={trendingEvents}
-                    topLocations={topLocations}
-                    categories={categoriesResult.data}
-                    hosts={hostsResult.data ?? []}
-                />
-            </Suspense>
+            <EventsPageCW
+                featuredEvents={featuredEvents}
+                trendingEvents={trendingEvents}
+                nearbyEvents={nearbyEvents}
+                topLocations={topLocations}
+                categories={categoriesResult.data}
+                hosts={hostsResult.data ?? []}
+                userCity={city}
+            />
         </main>
-    )
-}
-
-async function DynamicEventsSection({ featuredEvents, trendingEvents, topLocations, categories, hosts }: any) {
-    const { city, country } = await getUserLocation()
-
-    const nearbyEvents = await getNearbyEvents(city, country)
-
-    return (
-        <EventsPageCW
-            featuredEvents={featuredEvents}
-            trendingEvents={trendingEvents}
-            nearbyEvents={nearbyEvents}
-            topLocations={topLocations}
-            categories={categories}
-            hosts={hosts}
-            userCity={city}
-        />
     )
 }

@@ -8,7 +8,6 @@ import HeroSection from "@/components/homepage/HeroSection";
 import EventCategorySection from "@/components/shared/EventCategorySection";
 import { getUserLocation } from "@/actions/getters/client";
 
-
 export const metadata: Metadata = buildPageMetadata(
   "Discover Events Near You",
   "Find and book tickets for concerts, festivals, sports, and business events near you. QavTix makes event discovery effortless.",
