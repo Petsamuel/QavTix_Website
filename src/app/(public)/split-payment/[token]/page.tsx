@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
-import { validateSplitPaymentToken, initializeSplitPaymentFromToken } from "@/actions/checkout"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
+import { initializeSplitPaymentFromToken, verifyPayment } from "@/actions/checkout"
 import Logo from "@/components/layout/Logo"
 
 type Status = "loading" | "error" | "success"
@@ -19,7 +19,11 @@ import { showAuthPrompt } from "@/lib/redux/slices/showAuthPromptSlice"
 
 export default function GroupSplitPaymentPage() {
 
-    const token = useParams().token || "";
+    const params = useParams()
+    const token = params.token || "";
+    const searchParams = useSearchParams()
+    const reference = searchParams.get("reference") || searchParams.get("trxref")
+
     const router = useRouter()
     const dispatch = useAppDispatch()
     const { isAuthenticated } = useAppSelector(s => s.auth)
@@ -50,23 +54,33 @@ export default function GroupSplitPaymentPage() {
         }
 
         const run = async () => {
-            setStatus("loading")
-            setStepIndex(0)
-            setMessage(STEPS[0])
+            // IF RETURNING FROM PAYMENT
+            if (reference) {
+                setStatus("loading")
+                setMessage("Verifying your payment...")
+                
+                const result = await verifyPayment({
+                    reference,
+                    save_card: false,
+                    country: "NG" // Default to NG for now or get from context if possible
+                })
 
-            const validation = await validateSplitPaymentToken(token as string)
-
-            setStepIndex(1)
-            setMessage(STEPS[1])
-
-            if (!validation.success) {
-                setStatus("error")
-                setMessage(validation.message ?? "Unable to validate token")
+                if (result.success) {
+                    setStatus("success")
+                    setMessage("Payment verified! Your ticket has been updated.")
+                    // Optional: redirect to success page after a delay
+                    setTimeout(() => router.push("/"), 3000)
+                } else {
+                    setStatus("error")
+                    setMessage(result.message ?? "Payment verification failed")
+                }
                 return
             }
 
-            setStepIndex(2)
-            setMessage(STEPS[2])
+            // INITIALIZING PAYMENT
+            setStatus("loading")
+            setStepIndex(0)
+            setMessage(STEPS[2]) // Jump to generating checkout link
 
             const checkoutResult = await initializeSplitPaymentFromToken(token as string)
             if (!checkoutResult.success) {

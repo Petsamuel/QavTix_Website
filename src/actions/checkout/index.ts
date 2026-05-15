@@ -125,31 +125,6 @@ interface SplitPaymentTokenResult {
     message?: string
 }
 
-export async function validateSplitPaymentToken(token: string): Promise<SplitPaymentTokenResult> {
-    try {
-        const axiosInstance = await getServerAxios()
-        const endpoint = SPLIT_PAYMENT_TOKEN_ENDPOINT.replace("[token]", token)
-        const { data: json } = await axiosInstance.get(endpoint)
-
-        return { success: true, data: json.data ?? json }
-
-    } catch (error: any) {
-        const status = error?.response?.status
-        let message = handleApiError(error?.response?.data)
-
-        if (status === 400) {
-            message = "Already paid or expired"
-        } else if (status === 404) {
-            message = "Invalid token"
-        }
-
-        console.log("[validateSplitPaymentToken] status:", status)
-        console.log("[validateSplitPaymentToken] body:", JSON.stringify(error?.response?.data))
-
-        return { success: false, message }
-    }
-}
-
 export async function initializeSplitPaymentFromToken(token: string): Promise<SplitPaymentTokenResult> {
     try {
         const axiosInstance = await getServerAxios()
