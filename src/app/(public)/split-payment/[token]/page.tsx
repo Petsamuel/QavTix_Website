@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { confirmSplitPaymentToken, checkoutFromSplitPaymentToken } from "@/actions/checkout"
+import { validateSplitPaymentToken, initializeSplitPaymentFromToken } from "@/actions/checkout"
 import Logo from "@/components/layout/Logo"
 
 type Status = "loading" | "error" | "success"
@@ -54,7 +54,7 @@ export default function GroupSplitPaymentPage() {
             setStepIndex(0)
             setMessage(STEPS[0])
 
-            const validation = await confirmSplitPaymentToken(token as string)
+            const validation = await validateSplitPaymentToken(token as string)
 
             setStepIndex(1)
             setMessage(STEPS[1])
@@ -68,7 +68,7 @@ export default function GroupSplitPaymentPage() {
             setStepIndex(2)
             setMessage(STEPS[2])
 
-            const checkoutResult = await checkoutFromSplitPaymentToken(token as string)
+            const checkoutResult = await initializeSplitPaymentFromToken(token as string)
             if (!checkoutResult.success) {
                 setStatus("error")
                 setMessage(checkoutResult.message ?? "Unable to get checkout URL")
