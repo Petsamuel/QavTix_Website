@@ -51,6 +51,7 @@ export default function TicketCheckoutAttendeeInformationStep() {
         nextAttendeeId,
         getRemainingAmount,
         splitError,
+        showSplitError,
     } = useSplitPayment()
 
     const { fields, append, remove } = useFieldArray({ control, name: 'attendees' })
@@ -79,18 +80,6 @@ export default function TicketCheckoutAttendeeInformationStep() {
         }
     }, [shareWithGroupEnabled, setValue])
 
-    // Propagate split validation errors via alert dispatch
-    const dispatch = useAppDispatch()
-    useEffect(() => {
-        if (splitError) {
-            dispatch(showAlert({
-                title: 'Split Payment Error',
-                description: splitError,
-                variant: 'destructive',
-            }))
-        }
-    }, [splitError, dispatch])
-
     // Sync attendee amounts from context to form for equal split
     useEffect(() => {
         if (splitMode === 'equal') {
@@ -110,6 +99,7 @@ export default function TicketCheckoutAttendeeInformationStep() {
             dateOfBirth: event.age_restriction ? '' : '2000-01-01',
         })
         addAttendee()
+        form.clearErrors('attendees')
         window.scrollBy({ top: 200, behavior: 'smooth' })
     }
 
@@ -141,6 +131,7 @@ export default function TicketCheckoutAttendeeInformationStep() {
                 {/* Name + Date of Birth */}
                 <div className={cn('md:grid gap-4', event.age_restriction ? 'grid-cols-2' : 'grid-cols-1')}>
                     <FormInput2
+                        id="name"
                         label="Name"
                         placeholder="e.g. Jon Doe"
                         required
@@ -153,6 +144,7 @@ export default function TicketCheckoutAttendeeInformationStep() {
                     />
                     {event.age_restriction && (
                         <FormInput2
+                            id="dateOfBirth"
                             label="Date of birth"
                             placeholder="DD/MM/YY"
                             required
@@ -170,6 +162,7 @@ export default function TicketCheckoutAttendeeInformationStep() {
                 {/* Email + Phone */}
                 <div className="grid grid-col md:grid-cols-2 gap-4">
                     <FormInput2
+                        id="email"
                         label="Email Address"
                         placeholder="e.g. jon.doe@gmail.com"
                         required
@@ -181,6 +174,7 @@ export default function TicketCheckoutAttendeeInformationStep() {
                         readOnly={isAuthenticated}
                     />
                     <FormInput2
+                        id="phone"
                         label="Phone Number"
                         placeholder="e.g. +234 806 123 4567"
                         required
@@ -382,7 +376,7 @@ export default function TicketCheckoutAttendeeInformationStep() {
                                             <div className="flex justify-between text-sm text-secondary-8">
                                                 <span className="text-neutral-7">Amount per person:</span>
                                                 <span className="font-medium">
-                                                    {formatPrice(total / (attendees.length + 1), event.currency)}
+                                                    {formatPrice(attendees[0]?.amount ?? (total / (attendees.length + 1)), event.currency)}
                                                 </span>
                                             </div>
                                         ) : (
@@ -401,15 +395,15 @@ export default function TicketCheckoutAttendeeInformationStep() {
                                                 </div>
                                             </>
                                         )}
-                                        {splitError && (
-                                            <p className="text-xs text-red-500 mt-2" data-testid="split-error-text">
+                                        {splitError && showSplitError && (
+                                            <p id="split-error" className="text-xs text-red-500 mt-2" data-testid="split-error-text">
                                                 {splitError}
                                             </p>
                                         )}
                                     </div>
                                 )}
 
-                                <div className="space-y-8 mt-6">
+                                <div id="attendees" className="space-y-8 mt-6">
                                     <AnimatePresence mode="popLayout">
                                         {attendees.map((attendee, index) => (
                                             <motion.div
@@ -448,10 +442,13 @@ export default function TicketCheckoutAttendeeInformationStep() {
                     control={control}
                     render={({ field }) => (
                         <FormCheckbox1
-                            id="agreed-to-terms"
+                            id="agreeToTerms"
                             {...field}
                             checked={field.value}
-                            onCheckedChange={field.onChange}
+                            onCheckedChange={(checked) => {
+                                field.onChange(checked)
+                                if (checked) form.clearErrors('agreeToTerms')
+                            }}
                             error={errors.agreeToTerms?.message}
                             className="mt-10 hidden md:block"
                             data-testid="checkbox-agree-terms"

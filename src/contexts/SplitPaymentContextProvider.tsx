@@ -21,6 +21,8 @@ interface SplitPaymentContextType {
     getTotalAssignedAmount: () => number
     getRemainingAmount: () => number
     splitError: string | null
+    showSplitError: boolean
+    setShowSplitError: (show: boolean) => void
     isSplitValid: boolean
 }
 
@@ -32,6 +34,7 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
     const [splitMode, setSplitMode] = useState<SplitMode>('equal')
     const [splitPaymentEnabled, setSplitPaymentEnabled] = useState(false)
     const [attendees, setAttendees] = useState<AttendeeFormData[]>([])
+    const [showSplitError, setShowSplitError] = useState(false)
 
     const totalAmount = total
     const totalTicketsSelected = selectedTickets.reduce((sum, ticket) => sum + ticket.quantity, 0)
@@ -76,7 +79,9 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
     const calculateEqualSplit = useCallback(() => {
         if (attendees.length === 0) return
         const amountPerAttendee = totalAmount / (attendees.length + 1) // +1 for initiator
-        setAttendees(prev => prev.map(a => ({ ...a, amount: amountPerAttendee })))
+        // Round UP to ensure attendees cover the fraction
+        const roundedAmount = Math.ceil(amountPerAttendee * 100) / 100
+        setAttendees(prev => prev.map(a => ({ ...a, amount: roundedAmount })))
     }, [attendees.length, totalAmount])
 
     const getTotalAssignedAmount = useCallback(() => {
@@ -90,25 +95,33 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
     }, [totalAmount, getTotalAssignedAmount])
 
     useEffect(() => {
-        if (!splitPaymentEnabled || attendees.length === 0) {
+        if (!splitPaymentEnabled) {
             setSplitError(null)
             return
         }
 
-        if (splitMode === 'manual') {
-            const assigned = getTotalAssignedAmount()
+        if (attendees.length === 0) {
+            setSplitError('You must add at least one attendee to split the payment.')
+            return
+        }
 
-            if (assigned <= 0) {
-                setSplitError('At least one group member must have a positive assigned amount.')
-            } else if (assigned >= totalAmount) {
-                setSplitError('Initiator must retain a positive remaining balance to pay.')
+
+        if (splitMode === 'manual') {
+            const hasInvalidAmount = attendees.some(a => !a.amount || a.amount <= 0)
+            const assigned = getTotalAssignedAmount()
+            const remaining = totalAmount - assigned
+
+            if (hasInvalidAmount) {
+                setSplitError('All group members must have a valid amount to pay in manual split mode.')
+            } else if (remaining < 1) {
+                setSplitError('Initiator must pay a meaningful amount (remaining balance must be at least 1).')
             } else {
                 setSplitError(null)
             }
         } else {
             setSplitError(null)
         }
-    }, [splitPaymentEnabled, splitMode, attendees, totalAmount, getTotalAssignedAmount])
+    }, [splitPaymentEnabled, splitMode, attendees, totalAmount, getTotalAssignedAmount, totalTicketsSelected])
 
     useEffect(() => {
         if (splitMode === 'equal' && attendees.length > 0) {
@@ -135,6 +148,8 @@ export function SplitPaymentProvider({ children }: { children: ReactNode }) {
             getTotalAssignedAmount,
             getRemainingAmount,
             splitError,
+            showSplitError,
+            setShowSplitError,
             isSplitValid: !splitError
         }}>
             {children}
