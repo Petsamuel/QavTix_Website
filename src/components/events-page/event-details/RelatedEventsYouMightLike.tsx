@@ -39,10 +39,8 @@ export default function RelatedEventsYouMightLike({ events }: { events: PublicPa
 
     const play = useCallback(() => {
         const autoplay = getAutoplay()
-        if (!autoplay) return
-        if (typeof autoplay.play === 'function') {
-            autoplay.play(true)
-        }
+        if (!autoplay || typeof autoplay.play !== 'function') return
+        autoplay.play()
     }, [getAutoplay])
 
     const [canScrollPrev, setCanScrollPrev] = useState(false)

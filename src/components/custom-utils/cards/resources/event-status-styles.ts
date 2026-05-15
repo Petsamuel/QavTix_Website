@@ -5,18 +5,18 @@ export type StatusStylesRecord = Record<
 
 export const statusStyles: StatusStylesRecord = {
   "filling-fast": {
-    bg: "bg-warning-tertiary",
-    text: "text-secondary-9",
+    bg: "bg-primary-1",
+    text: "text-primary-9",
     label: "Filling fast",
   },
   "selling-fast": {
-    bg: "bg-warning-tertiary",
-    text: "text-secondary-9",
+    bg: "bg-primary-1",
+    text: "text-primary-9",
     label: "Selling fast",
   },
   "near-capacity": {
-    bg: "bg-danger-tertiary",
-    text: "text-secondary-9",
+    bg: "bg-accent-1",
+    text: "text-accent-7",
     label: "Near capacity",
   },
   new: {
@@ -25,8 +25,8 @@ export const statusStyles: StatusStylesRecord = {
     label: "New",
   },
   "sold-out": {
-    bg: "bg-white border border-danger-default/20",
-    text: "text-danger-default",
+    bg: "bg-white border border-accent-6/20",
+    text: "text-accent-6",
     label: "Sold out",
   },
   "starts-soon": {
@@ -40,8 +40,8 @@ export const statusStyles: StatusStylesRecord = {
     label: "Draft",
   },
   active: {
-    bg: "bg-postive-tertiary",
-    text: "text-postive-default",
+    bg: "bg-primary-1",
+    text: "text-primary-9",
     label: "Active",
   },
   ended: {
@@ -50,13 +50,13 @@ export const statusStyles: StatusStylesRecord = {
     label: "Ended",
   },
   cancelled: {
-    bg: "bg-white border border-danger-default/20",
-    text: "text-danger-default",
+    bg: "bg-white border border-neutral-6/20",
+    text: "text-neutral-7",
     label: "Cancelled",
   },
   banned: {
-    bg: "bg-white border border-danger-default/20",
-    text: "text-danger-default",
+    bg: "bg-white border border-accent-6/20",
+    text: "text-accent-6",
     label: "Banned",
   },
 };

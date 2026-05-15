@@ -16,28 +16,28 @@ interface CheckoutAttendeeInfoFormContextType {
 const CheckoutAttendeeInfoFormContext = createContext<CheckoutAttendeeInfoFormContextType | undefined>(undefined)
 
 interface Props {
-    children:      ReactNode
+    children: ReactNode
     /** Passed from the server — drives whether dateOfBirth validation is active */
     ageRestricted: boolean
 }
 
 export function CheckoutAttendeeInfoFormProvider({ children, ageRestricted }: Props) {
     const form = useForm<AttendeeInformationData>({
-        resolver:       zodResolver(attendeeInformationSchema),
+        resolver: zodResolver(attendeeInformationSchema),
         reValidateMode: 'onChange',
-        mode:           'onChange',
+        mode: 'onSubmit',
         defaultValues: {
-            name:           '',
-            email:          '',
-            phone:          '',
+            name: '',
+            email: '',
+            phone: '',
             // If age-restricted, leave empty so Zod enforces it.
             // Otherwise default to a placeholder so the field passes validation silently.
-            dateOfBirth:    ageRestricted ? '' : '2000-01-01',
-            sendUpdates:    false,
+            dateOfBirth: ageRestricted ? '' : '2000-01-01',
+            sendUpdates: false,
             shareWithGroup: false,
-            keepInLoop:     false,
-            splitPayment:   false,
-            agreeToTerms:   false,
+            keepInLoop: false,
+            splitPayment: false,
+            agreeToTerms: false,
         },
     })
 

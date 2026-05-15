@@ -91,7 +91,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                                 getAvatarColor(String(host.id)),
                                 "text-white font-bold text-3xl md:text-5xl w-full h-full rounded-full flex items-center justify-center"
                             )}>
-                                {getInitialsFromName(host.host)}
+                                {getInitialsFromName(host.host || "User")}
                             </AvatarFallback>
                         </Avatar>
                     </div>
@@ -144,7 +144,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                         <div className="mt-10 md:mt-0 flex flex-wrap justify-between items-center gap-5">
                             <div className="flex gap-6 font-medium text-neutral-8 items-center">
                                 <span className={`${space_grotesk.className} flex flex-col gap-1`}>
-                                    <span className="text-neutral-7">{followersCount.toLocaleString() || "--"}</span>
+                                    <span className="text-neutral-7">{followersCount?.toLocaleString() ?? "--"}</span>
                                     <span>Followers</span>
                                 </span>
                                 <hr className="w-px h-8 border border-neutral-6" />

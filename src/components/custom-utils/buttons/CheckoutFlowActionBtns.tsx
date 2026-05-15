@@ -13,15 +13,23 @@ interface IMultiStepFormButtonDuo {
 
 export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormButtonDuo) {
     const router = useRouter()
-    const { currentStep, nextStep, attendeeInfo, updateAttendeeInfo, isProcessing, prevStep, canProceedToCheckout, clearTickets } = useCheckout()
-    const { splitError } = useSplitPayment()
+    const { currentStep, nextStep, updateAttendeeInfo, isProcessing, prevStep, canProceedToCheckout, clearTickets } = useCheckout()
+    const { splitError, setShowSplitError } = useSplitPayment()
     const { form } = useCheckoutAttendeeInfoForm()
-    const buttonIsDisabled = !!isSubmitting || isProcessing || !!splitError || (attendeeInfo.shareWithGroup && !attendeeInfo.attendees?.length)
+
+    const buttonIsDisabled = !!isSubmitting || isProcessing || !!splitError
     const buttonsRef = useRef<HTMLDivElement>(null)
 
     const handleContinue = async () => {
         if (currentStep === 2) {
             const isValid = await form.trigger()
+            const values = form.getValues()
+
+            if (values.shareWithGroup && splitError) {
+                setShowSplitError(true)
+                return
+            }
+
             if (!isValid) {
                 const firstError = Object.keys(form.formState.errors)[0]
                 const errorElement = document.getElementById(firstError)
@@ -33,11 +41,10 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
             }
 
             // Sync form values into checkout context before proceeding
-            const values = form.getValues()
             updateAttendeeInfo({
-                name:        values.name,
-                email:       values.email,
-                phone:       values.phone,
+                name: values.name,
+                email: values.email,
+                phone: values.phone,
                 dateOfBirth: values.dateOfBirth,
                 sendUpdates: values.sendUpdates,
                 shareWithGroup: values.shareWithGroup,
@@ -85,7 +92,7 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
         <>
             {/* Marker element for scrolling */}
             <div id="checkout-top" className="absolute top-0 left-0" />
-            
+
             <div ref={buttonsRef} className="flex gap-4 md:gap-6">
                 <button
                     type="button"
@@ -95,13 +102,13 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
                 >
                     <span>
                         {currentStep === 1 && canProceedToCheckout() ? "Clear" :
-                         currentStep === 1 && !canProceedToCheckout() ? "Cancel" :
-                         currentStep > 1 ? "Back" : "Cancel"}
+                            currentStep === 1 && !canProceedToCheckout() ? "Cancel" :
+                                currentStep > 1 ? "Back" : "Cancel"}
                     </span>
                 </button>
-                
 
-                <ActionButton1 
+
+                <ActionButton1
                     buttonText={currentStep === 1 ? "Continue" : "Checkout"}
                     action={() => handleContinue()}
                     isDisabled={buttonIsDisabled}
