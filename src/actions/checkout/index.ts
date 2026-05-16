@@ -1,6 +1,6 @@
 "use server"
 
-import { CANCEL_TICKET_ENDPOINT, CHECKOUT_ENDPOINT, CHECKOUT_VERIFY_ENDPOINT, SPLIT_PAYMENT_TOKEN_VERIFY_ENDPOINT, VALIDATE_PROMO_CODE_ENDPOINT } from "@/endpoints"
+import { CANCEL_TICKET_ENDPOINT, CHECKOUT_ENDPOINT, CHECKOUT_VERIFY_ENDPOINT, SPLIT_PAYMENT_TOKEN_ENDPOINT, SPLIT_PAYMENT_TOKEN_VERIFY_ENDPOINT, VALIDATE_PROMO_CODE_ENDPOINT } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { getServerAxios } from "@/lib/axios"
 import { getEventDetails } from "../getters"
@@ -125,35 +125,10 @@ interface SplitPaymentTokenResult {
     message?: string
 }
 
-export async function confirmSplitPaymentToken(token: string): Promise<SplitPaymentTokenResult> {
+export async function initializeSplitPaymentFromToken(token: string): Promise<SplitPaymentTokenResult> {
     try {
         const axiosInstance = await getServerAxios()
-        const endpoint = SPLIT_PAYMENT_TOKEN_VERIFY_ENDPOINT.replace("[token]", token)
-        const { data: json } = await axiosInstance.get(endpoint)
-
-        return { success: true, data: json.data ?? json }
-
-    } catch (error: any) {
-        const status = error?.response?.status
-        let message = handleApiError(error?.response?.data)
-
-        if (status === 400) {
-            message = "Already paid or expired"
-        } else if (status === 404) {
-            message = "Invalid token"
-        }
-
-        console.log("[confirmSplitPaymentToken] status:", status)
-        console.log("[confirmSplitPaymentToken] body:", JSON.stringify(error?.response?.data))
-
-        return { success: false, message }
-    }
-}
-
-export async function checkoutFromSplitPaymentToken(token: string): Promise<SplitPaymentTokenResult> {
-    try {
-        const axiosInstance = await getServerAxios()
-        const endpoint = CHECKOUT_VERIFY_ENDPOINT.replace("[token]", token)
+        const endpoint = SPLIT_PAYMENT_TOKEN_ENDPOINT.replace("[token]", token)
         const { data: json } = await axiosInstance.post(endpoint, { token })
 
         const checkout_url = json.data?.checkout_url ?? json.checkout_url
@@ -173,8 +148,8 @@ export async function checkoutFromSplitPaymentToken(token: string): Promise<Spli
             message = "Invalid token"
         }
 
-        console.log("[checkoutFromSplitPaymentToken] status:", status)
-        console.log("[checkoutFromSplitPaymentToken] body:", JSON.stringify(error?.response?.data))
+        console.log("[initializeSplitPaymentFromToken] status:", status)
+        console.log("[initializeSplitPaymentFromToken] body:", JSON.stringify(error?.response?.data))
 
         return { success: false, message }
     }

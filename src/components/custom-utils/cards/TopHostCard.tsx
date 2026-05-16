@@ -51,7 +51,7 @@ export default function TopHostCard({ host, onMouseOver, onMouseLeave, className
                         className={cn(
                             "shrink-0",
                             !host.is_subscribed && !host.is_verified && "hidden",
-                            (host.is_verified && host.is_subscribed) ? "text-[#FFCC00]" : host.is_verified ? "text-primary-5" : "text-neutral-5"
+                            host.is_subscribed && "text-[#FFCC00]" || host.is_verified && "text-primary-5"
                         )}
                     />
                 </div>

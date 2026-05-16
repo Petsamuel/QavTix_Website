@@ -4,17 +4,17 @@ export type StatusStylesRecord = Record<
 >
 
 export const statusStyles: StatusStylesRecord = {
-  "filling-fast": {
+  "filling_fast": {
     bg: "bg-primary-1",
     text: "text-primary-9",
     label: "Filling fast",
   },
-  "selling-fast": {
+  "selling_fast": {
     bg: "bg-primary-1",
     text: "text-primary-9",
     label: "Selling fast",
   },
-  "near-capacity": {
+  "near_capacity": {
     bg: "bg-accent-1",
     text: "text-accent-7",
     label: "Near capacity",
@@ -24,15 +24,20 @@ export const statusStyles: StatusStylesRecord = {
     text: "text-white",
     label: "New",
   },
-  "sold-out": {
+  "sold_out": {
     bg: "bg-white border border-accent-6/20",
     text: "text-accent-6",
     label: "Sold out",
   },
-  "starts-soon": {
+  "starts_soon": {
     bg: "bg-primary-1",
     text: "text-primary-9",
     label: "Starts soon",
+  },
+  started: {
+    bg: "bg-primary-1",
+    text: "text-primary-9",
+    label: "Started",
   },
   draft: {
     bg: "bg-neutral-3",

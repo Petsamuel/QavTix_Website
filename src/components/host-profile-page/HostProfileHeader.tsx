@@ -45,8 +45,6 @@ export default function HostProfilePageHeader({ host }: Props) {
         host.followers_count,
     )
 
-    console.log(host)
-
     const socialLinks = (host.relevant_links || [])
         .map(obj => obj?.url)
         .filter((url): url is string => typeof url === "string" && url.trim().length > 0)
@@ -115,7 +113,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                                     className={cn(
                                         "shrink-0",
                                         !host.is_subscribed && !host.is_verified && "hidden",
-                                        (host.is_verified && host.is_subscribed) ? "text-[#FFCC00]" : host.is_verified ? "text-primary-5" : "text-neutral-5"
+                                        host.is_subscribed && "text-[#FFCC00]" || host.is_verified && "text-primary-5"
                                     )}
                                 />
                             </div>

@@ -63,6 +63,16 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                             href={NAV_LINKS.HOST_PROFILE.href.replace('[host_id]', event.organizer_id)}
                         >
                             <strong className="font-normal whitespace-nowrap capitalize">{event.organizer_display_name}</strong>
+                            <Icon
+                                icon="ph:seal-check-fill"
+                                width="18"
+                                height="18"
+                                className={cn(
+                                    "shrink-0 ms-1",
+                                    !event.organizer_is_subscribed && !event.organizer_is_verified && "hidden",
+                                    event.organizer_is_subscribed && "text-[#FFCC00]" || event.organizer_is_verified && "text-primary-5"
+                                )}
+                            />
                             <Icon icon="line-md:chevron-right" width="20" height="20" />
                         </Link>
                     </div>

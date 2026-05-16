@@ -75,7 +75,7 @@ export default function CheckoutPageContent({
                     </CheckoutPageContentWrapper>
                 </div>
 
-                <div className="md:w-[40%] flex">
+                <div className="md:w-[40%] flex md:sticky md:top-0 h-fit">
                     <CheckoutSummary
                         showMobileSummary={showMobileSummary}
                         setShowMobileSummary={setShowMobileSummary}
