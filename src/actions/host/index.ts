@@ -73,15 +73,33 @@ async function _getTrendingHosts(
 }
 
 export async function getHostDetails(hostId: number | string): Promise<GetHostDetailsResult> {
+    const accessToken = (await cookies()).get("access_token")?.value
+    return _getHostDetails(hostId, accessToken)
+}
+
+async function _getHostDetails(
+    hostId: number | string,
+    accessToken: string | undefined,
+): Promise<GetHostDetailsResult> {
     try {
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${HOST_DETAILS_ENDPOINT.replace("[host_id]", String(hostId))}`
 
         const res = await fetch(url, {
-            cache: "force-cache",
-            next: {
-                tags: [`host-${hostId}`],
-                revalidate: 300,
-            },
+            ...(accessToken
+                ? {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    cache: "no-store",
+                }
+                : {
+                    cache: "force-cache",
+                    next: {
+                        tags: [`host-${hostId}`],
+                        revalidate: 300,
+                    },
+                }),
         })
 
         if (!res.ok) {
