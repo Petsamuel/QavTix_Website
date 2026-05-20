@@ -60,6 +60,7 @@ export default async function EventCategoryPage({ params }: Props) {
                     { label: "Subscribers", value: total_subscribers },
                 ]}
                 subscribeKey={categoryPath}
+                subscribeType="category"
             />
 
             {

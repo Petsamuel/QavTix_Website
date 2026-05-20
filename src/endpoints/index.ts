@@ -27,6 +27,7 @@ export const EVENTS_NEARBY_ENDPOINT = "public/events/nearby"
 export const TOP_LOCATIONS_ENDPOINT = "public/event/top-locations"
 export const LOCATION_PAGE_ENDPOINT = "public/locations/[loc]"
 export const CITY_SUBSCRIBE_ENDPOINT = "public/locations/subscribe/"
+export const CATEGORY_SUBSCRIBE_ENDPOINT = "public/categories/subscribe/"
 export const TRENDING_EVENTS_ENDPOINT = "public/event/trending"
 
 export const SEARCH_EVENTS_ENDPOINT = "public/search"
