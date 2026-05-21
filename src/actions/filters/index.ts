@@ -5,6 +5,7 @@ import { CACHE_TAGS } from "@/cache-tags"
 export interface ApiCategory {
     id: number
     name: string
+    slug: string
 }
 
 export interface GetCategoriesResult {

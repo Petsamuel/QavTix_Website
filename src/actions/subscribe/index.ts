@@ -32,7 +32,7 @@ export async function subscribeToCity(city: string, email: string): Promise<Subs
     }
 }
 
-export async function subscribeToCategory(category: string, email: string): Promise<SubscribeResult> {
+export async function subscribeToCategory(category: string | number, email: string): Promise<SubscribeResult> {
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/${CATEGORY_SUBSCRIBE_ENDPOINT}`,
