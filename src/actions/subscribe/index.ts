@@ -1,5 +1,9 @@
+"use server"
+
 import { CITY_SUBSCRIBE_ENDPOINT, CATEGORY_SUBSCRIBE_ENDPOINT } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
+import { CACHE_TAGS } from "@/cache-tags"
+import { revalidateTag } from "next/cache"
 
 interface SubscribeResult {
     success:  boolean
@@ -24,6 +28,7 @@ export async function subscribeToCity(city: string, email: string): Promise<Subs
             return { success: false, message: handleApiError(json) }
         }
 
+        revalidateTag(CACHE_TAGS.CATEGORIES, "max")
         return { success: true, message: json.message }
 
     } catch (err) {
@@ -50,6 +55,7 @@ export async function subscribeToCategory(category: string | number, email: stri
             return { success: false, message: handleApiError(json) }
         }
 
+        revalidateTag(CACHE_TAGS.CATEGORIES, "max")
         return { success: true, message: json.message }
 
     } catch (err) {
