@@ -7,6 +7,7 @@ import { space_grotesk } from '@/lib/fonts'
 import { subscribeToCity, subscribeToCategory } from '@/actions/subscribe'
 import { useAppDispatch } from '@/lib/redux/hooks'
 import { showAlert } from '@/lib/redux/slices/alertSlice'
+import { useRouter } from 'next/navigation'
 
 const emailSchema = z.email('Please enter a valid email address')
 
@@ -20,7 +21,7 @@ interface Props {
     description:   string
     stats:         HeroStat[]         // e.g. [{ label: "Events", value: 30 }, { label: "Subscribers", value: 230 }]
     imageSrc?:     string
-    subscribeKey?: string             // the city/category/tour key sent to the API
+    subscribeKey?: string | number             // the city/category/tour key sent to the API
     subscribeType?: "category" | "location"
 }
 
@@ -38,6 +39,7 @@ export default function EventSectionHero({
     const [email,        setEmail]        = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
     const dispatch = useAppDispatch()
+    const router = useRouter()
 
     const handleSubscribe = async () => {
         const validation = emailSchema.safeParse(email)
@@ -50,12 +52,13 @@ export default function EventSectionHero({
         setIsSubmitting(true)
         const result = subscribeType === "category"
             ? await subscribeToCategory(subscribeKey, email)
-            : await subscribeToCity(subscribeKey, email)
+            : await subscribeToCity(subscribeKey.toString(), email)
         setIsSubmitting(false)
 
         if (result.success) {
             dispatch(showAlert({ variant: "success", title: "", description: 'Successfully subscribed!' }))
             setEmail('')
+            router.refresh()
         } else {
             dispatch(showAlert({ variant: "destructive", title: "Request Failed", description: result.message ?? 'Something went wrong. Please try again.' }))
         }
