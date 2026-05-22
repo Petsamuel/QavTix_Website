@@ -24,6 +24,11 @@ export const statusStyles: StatusStylesRecord = {
     text: "text-white",
     label: "New",
   },
+  normal: {
+    bg: "bg-neutral-2",
+    text: "text-neutral-7",
+    label: "On Sale",
+  },
   "sold_out": {
     bg: "bg-white border border-accent-6/20",
     text: "text-accent-6",
