@@ -6,6 +6,11 @@ import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
+export async function checkHostAuth(): Promise<boolean> {
+    const cookiesStore = await cookies()
+    return !!cookiesStore.get("host_access_token")?.value
+}
+
 export const logOut = async () => {
     const cookiesStore = await cookies()
 
@@ -22,6 +27,7 @@ export const logOut = async () => {
 
     redirect(process.env.NEXT_PUBLIC_APP_DOMAIN || "/")
 }
+
 
 interface ActionResult {
     success: boolean

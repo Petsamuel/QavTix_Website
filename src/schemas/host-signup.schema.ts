@@ -46,7 +46,7 @@ export const organizationGeneralSchema = z.object({
 
 export const organizationBusinessSchema = z.object({
     businessName: z.string().min(2, 'Business name is required').max(200, 'Business name cannot exceed 200 characters'),
-    businessType: z.string().min(1, 'Please select business type').max(100, 'Invalid business type'),
+    businessType: z.string({ error: 'Business type is required' }).min(1, 'Business type is required').max(100, 'Invalid business type'),
     nin: z.string().min(6, 'Identification number must be at least 6 digits').max(15, 'Identification number cannot exceed 15 digits').regex(/^\d+$/, 'Identification number must be numeric'),
     registrationNumber: z.string().min(1, 'Registration number is required').max(50, 'Registration number cannot exceed 50 characters'),
     taxId: z.string().min(1, 'Tax ID is required').max(50, 'Tax ID cannot exceed 50 characters'),
