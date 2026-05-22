@@ -8,6 +8,7 @@ import { useSignup } from '@/contexts/HostSignupProvider'
 import { individualGeneralSchema, type IndividualGeneralData } from '@/schemas/host-signup.schema'
 import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
 import FormSelect1 from '@/components/custom-utils/inputs/FormSelect1'
+import SearchableSelect from '@/components/custom-utils/inputs/SearchableSelect'
 import FormCheckbox1 from '@/components/custom-utils/inputs/FormCheckbox1'
 import MultiStepFormButtonDuo from '@/components/custom-utils/buttons/MultiStepFormButtonDuo'
 import { space_grotesk } from '@/lib/fonts'
@@ -15,6 +16,7 @@ import { LEGAL_LINKS } from '@/components-data/navigation/navLinks'
 import { BannerImageUpload } from '@/components/custom-utils/ImageUpload'
 import ProfileImageUpload from '@/components/custom-utils/ProfileImageUpload'
 import PhoneNumberInput from '@/components/custom-utils/inputs/CustomPhoneInput'
+import { parsePhoneNumber } from 'react-phone-number-input'
 
 
 export function IndividualGeneralStep() {
@@ -25,6 +27,7 @@ export function IndividualGeneralStep() {
         handleSubmit,
         watch,
         control,
+        setValue,
         formState: { errors },
     } = useForm<IndividualGeneralData>({
         resolver: zodResolver(individualGeneralSchema),
@@ -86,7 +89,19 @@ export function IndividualGeneralStep() {
                 render={({ field }) => (
                     <PhoneNumberInput
                         value={field.value ?? undefined}
-                        onChange={(val) => field.onChange(val ?? '')}
+                        onChange={(val) => {
+                            field.onChange(val ?? '');
+                            if (val && val.startsWith('+')) {
+                                try {
+                                    const parsed = parsePhoneNumber(val);
+                                    if (parsed && parsed.country) {
+                                        setValue('country', parsed.country, { shouldDirty: true, shouldValidate: true });
+                                    }
+                                } catch (e) {
+                                    // ignore
+                                }
+                            }
+                        }}
                         error={errors.phone?.message}
                         defaultCountry="NG"
                         data-testid="phone"
@@ -147,14 +162,13 @@ export function IndividualGeneralStep() {
                     defaultValue=""
                     control={control}
                     render={({ field }) => (
-                        <FormSelect1
+                        <SearchableSelect
                             label="State"
                             required
                             options={states}
                             value={field.value}
                             onValueChange={field.onChange}
                             error={errors.state?.message}
-                            data-testid="state"
                         />
                     )}
                 />
