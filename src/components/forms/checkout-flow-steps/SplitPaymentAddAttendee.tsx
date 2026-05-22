@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import FormInput2 from '@/components/custom-utils/inputs/FormInput2'
 import { useTicketUser } from '@/contexts/TicketUserProvider'
+import { useFormState } from 'react-hook-form'
 import { AttendeeFormData } from '@/schemas/checkout-flow.schema'
 import { useSplitPayment } from '@/contexts/SplitPaymentContextProvider'
 import { space_grotesk } from '@/lib/fonts'
@@ -22,14 +23,15 @@ interface AttendeeCardProps {
 }
 
 export default function SplitPaymentAddAttendee({ attendee, index, canRemove, onRemove }: AttendeeCardProps) {
-    
-    const { groups, event: { age_restriction} } = useCheckout()
+
+    const { groups, event: { age_restriction } } = useCheckout()
     const { splitMode, updateAttendee, splitPaymentEnabled } = useSplitPayment()
     const { user } = useTicketUser()
     const [selectedGroup, setSelectedGroup] = useState<string>('')
-    
+
     const { form } = useCheckoutAttendeeInfoForm()
-    const { register, setValue, watch, clearErrors, formState: { errors } } = form
+    const { register, setValue, watch, clearErrors, control } = form
+    const { errors } = useFormState({ control })
 
     const attendeeErrors = (errors.attendees as any)?.[index]
 
@@ -51,10 +53,28 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, on
     const handleMemberSelect = (memberId: string) => {
         const member = filteredMembers[parseInt(memberId)]
         if (member) {
-            setValue(`attendees.${index}.name`, member.email)
             setValue(`attendees.${index}.email`, member.email)
-            setValue(`attendees.${index}.phone`, member.email)
-            updateAttendee(attendee.attendeeID, { name: member.email, email: member.email, phone: member.email })
+            clearErrors(`attendees.${index}.email` as any)
+
+            if (member.name) {
+                setValue(`attendees.${index}.name`, member.name)
+                clearErrors(`attendees.${index}.name` as any)
+            }
+            if (member.phone_number) {
+                setValue(`attendees.${index}.phone`, member.phone_number)
+                clearErrors(`attendees.${index}.phone` as any)
+            }
+            if (member.dob) {
+                setValue(`attendees.${index}.dateOfBirth`, member.dob)
+                clearErrors(`attendees.${index}.dateOfBirth` as any)
+            }
+            
+            updateAttendee(attendee.attendeeID, { 
+                email: member.email,
+                ...(member.name && { name: member.name }),
+                ...(member.phone_number && { phone: member.phone_number }),
+                ...(member.dob && { dateOfBirth: member.dob })
+            })
         }
     }
 
@@ -65,7 +85,7 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, on
                     <h3 className={`${space_grotesk.className} font-medium md:text-lg text-secondary-9`}>
                         Attendee {index + 2}
                     </h3>
-                    
+
                     {splitPaymentEnabled && (
                         <div className="flex items-center gap-2">
                             <span className="text-xs text-neutral-6">Amount:</span>
@@ -73,11 +93,12 @@ export default function SplitPaymentAddAttendee({ attendee, index, canRemove, on
                                 type="number"
                                 // We separate name and onChange from register to handle custom logic
                                 {...register(`attendees.${index}.amount` as const, { valueAsNumber: true })}
-                                value={amountValue} 
+                                value={amountValue}
                                 onChange={(e) => {
                                     const val = parseFloat(e.target.value) || 0
                                     // Update RHF state
-                                    setValue(`attendees.${index}.amount`, val, { shouldValidate: true })
+                                    setValue(`attendees.${index}.amount`, val)
+                                    clearErrors(`attendees.${index}.amount` as any)
                                     // Update SplitPayment Context
                                     updateAttendee(attendee.attendeeID, { amount: val })
                                 }}

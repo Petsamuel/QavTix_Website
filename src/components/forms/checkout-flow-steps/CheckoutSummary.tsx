@@ -17,51 +17,50 @@ import Link from 'next/link'
 
 
 const mobileSummaryVariants = {
-  hidden: {
-    opacity: 0,
-    y: 240,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.35,
-      ease: "linear" as const,
+    hidden: {
+        opacity: 0,
+        y: 240,
     },
-  },
-  exit: {
-    opacity: 0,
-    y: 240,
-    transition: {
-      duration: 0.4,
-      ease: "linear" as const,
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.35,
+            ease: "linear" as const,
+        },
     },
-  },
+    exit: {
+        opacity: 0,
+        y: 240,
+        transition: {
+            duration: 0.4,
+            ease: "linear" as const,
+        },
+    },
 }
 
 
 
 
-export default function CheckoutSummary({ showMobileSummary, setShowMobileSummary }:{ showMobileSummary: boolean, setShowMobileSummary: Dispatch<SetStateAction<boolean>> }) {
-    
+export default function CheckoutSummary({ showMobileSummary, setShowMobileSummary }: { showMobileSummary: boolean, setShowMobileSummary: Dispatch<SetStateAction<boolean>> }) {
+
     const {
         selectedTickets,
         subtotal,
         discountAmount,
+        platformFee,
         total,
         event,
         currentStep
     } = useCheckout()
 
 
-    const fixedFee = 2000
-
-    const { form : { control, formState: { errors } }} = useCheckoutAttendeeInfoForm()
+    const { form: { control, formState: { errors } } } = useCheckoutAttendeeInfoForm()
 
     // Return nothing if no tickets selected
     if (selectedTickets.length === 0) return null
 
-    
+
     const TicketsList = () => (
         <div className="space-y-4">
             {selectedTickets.map((ticket) => (
@@ -141,7 +140,7 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
                     )}
                 </div>
                 <p className="text-neutral-8 font-medium">
-                    {formatPrice(fixedFee, event.currency || 'NGN')}
+                    {formatPrice(platformFee, event.currency || 'NGN')}
                 </p>
             </div>
         </div>
@@ -163,7 +162,7 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
                 disabled={!showChevron}
             >
                 <p className={cn('text-xl font-medium text-primary-6', space_grotesk.className)}>
-                    {formatPrice(total,  event.currency || 'NGN')}
+                    {formatPrice(total, event.currency || 'NGN')}
                 </p>
                 {showChevron && (
                     <Icon
@@ -175,26 +174,24 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
         </div>
     )
 
-    
+
     const DesktopSummary = () => (
-        <section className="hidden md:flex w-full min-h-screen flex-col justify-between">
-            <div className=''>
-                <h2 className={cn('text-2xl mt-10 font-medium text-secondary-9 mb-8', space_grotesk.className)}>
-                    Payment Summary
-                </h2>
+        <section className="hidden md:flex w-full flex-col">
+            <h2 className={cn('text-2xl mt-10 font-medium text-secondary-9 mb-8', space_grotesk.className)}>
+                Payment Summary
+            </h2>
 
-                <PromoCode />
+            <PromoCode />
 
-                <div className="mt-8">
-                    <TicketsList />
-                </div>
-
-                <div className="border-t-[1.4px] border-neutral-5 my-6" />
-
-                <PriceBreakdown showTooltips={true} />
+            <div className="mt-8">
+                <TicketsList />
             </div>
 
-            <div className="mt-16 pt-6 border-t border-neutral-3">
+            <div className="border-t-[1.4px] border-neutral-5 my-6" />
+
+            <PriceBreakdown showTooltips={true} />
+
+            <div className="pt-6 border-t border-neutral-3 mt-6">
                 <TotalRow />
                 <div className="mt-8">
                     <CheckoutFlowActionBtns />
@@ -203,7 +200,7 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
         </section>
     )
 
-    
+
     const MobileSummary = () => (
 
         <div className='w-full md:hidden'>
@@ -239,9 +236,9 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
                 )}
             >
                 <div className="global-px py-4">
-                    <TotalRow 
-                        showChevron={true} 
-                        onClick={() => setShowMobileSummary(!showMobileSummary)} 
+                    <TotalRow
+                        showChevron={true}
+                        onClick={() => setShowMobileSummary(!showMobileSummary)}
                     />
 
 
@@ -284,7 +281,7 @@ export default function CheckoutSummary({ showMobileSummary, setShowMobileSummar
         </div>
     )
 
-    
+
     return (
         <>
             <DesktopSummary />

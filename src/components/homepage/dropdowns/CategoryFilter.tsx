@@ -11,7 +11,7 @@ import { useMediaQuery } from '@/lib/custom-hooks/UseMediaQuery'
 import CategoryItemBtn from '@/components/custom-utils/buttons/event-search/CategoryItemBtn'
 import EventFilterTypeBtn from '@/components/custom-utils/buttons/event-search/EventFilterTypeBtn'
 import { MobileBottomSheet } from '@/components/custom-utils/EventFilterDropdownMobileBottomSheet'
-import FilterButtonsActions1 from '@/components/custom-utils/buttons/event-search/FilterActionButtons1'
+
 
 interface CategoryFilterProps {
     value?: string[]
@@ -41,23 +41,22 @@ export default function CategoryFilter({
     }
 
     const handleToggle = (categoryValue: string) => {
+        let next: string[]
         if (categoryValue === 'all') {
-            setSelectedCategories([])
-            return
+            next = []
+        } else {
+            next = selectedCategories.includes(categoryValue)
+                ? selectedCategories.filter(v => v !== categoryValue)
+                : [...selectedCategories, categoryValue]
         }
-        setSelectedCategories(prev =>
-            prev.includes(categoryValue)
-                ? prev.filter(v => v !== categoryValue)
-                : [...prev, categoryValue]
-        )
+        setSelectedCategories(next)
+        onChange(next)
     }
 
-    const handleApply = () => {
-        onChange(selectedCategories)
-        setIsOpen(false)
+    const handleClear = () => {
+        setSelectedCategories([])
+        onChange([])
     }
-
-    const handleClear = () => setSelectedCategories([])
 
     const hasActiveFilter = value.length > 0
     const displayText = hasActiveFilter ? `${value.length} selected` : 'Event category'
@@ -97,7 +96,15 @@ export default function CategoryFilter({
                         title="Event Category"
                     >
                         {categoryList}
-                        <FilterButtonsActions1 onApply={handleApply} onClear={handleClear} />
+                        <div className="pt-4 flex">
+                            <button
+                                type="button"
+                                onClick={handleClear}
+                                className="flex-1 h-12 border border-neutral-6 rounded-full font-medium text-sm transition-all hover:bg-neutral-2 hover:shadow-sm active:scale-[0.98]"
+                            >
+                                Clear
+                            </button>
+                        </div>
                     </MobileBottomSheet>
                 </>
             )}
@@ -123,7 +130,15 @@ export default function CategoryFilter({
                         <div className="space-y-4">
                             <h3 className="text-sm font-semibold text-secondary-9">Category</h3>
                             {categoryList}
-                            <FilterButtonsActions1 onApply={handleApply} onClear={handleClear} />
+                            <div className="pt-4 flex">
+                                <button
+                                    type="button"
+                                    onClick={handleClear}
+                                    className="flex-1 h-10 border border-neutral-6 rounded-full font-medium text-sm transition-all hover:bg-neutral-2 hover:shadow-sm active:scale-[0.98]"
+                                >
+                                    Clear
+                                </button>
+                            </div>
                         </div>
                     </DropdownMenuContent>
                 </DropdownMenu>

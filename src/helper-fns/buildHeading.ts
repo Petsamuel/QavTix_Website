@@ -24,7 +24,7 @@ export const buildSearchResultsHeading = (filters: FilterValues) => {
   // Price range
   const priceText =
     priceRange
-      ? `priced between ${formatPrice(priceRange.min)} and ${formatPrice(priceRange.max)}`
+      ? `priced between ${priceRange.min.toLocaleString()} and ${priceRange.max.toLocaleString()}`
       : "";
 
   // Date range
@@ -99,11 +99,11 @@ export const buildTrendingEventsHeading = (filters: FilterValues, categories: Ap
 
   if (filters.dateRange?.from || filters.dateRange?.to) {
     const from = filters.dateRange.from ? format(filters.dateRange.from, "MMM d") : null
-    const to   = filters.dateRange.to   ? format(filters.dateRange.to,   "MMM d, yyyy") : null
+    const to = filters.dateRange.to ? format(filters.dateRange.to, "MMM d, yyyy") : null
 
-    if (from && to)   parts.push(`from ${from} to ${to}`)
-    else if (from)    parts.push(`starting ${from}`)
-    else if (to)      parts.push(`until ${to}`)
+    if (from && to) parts.push(`from ${from} to ${to}`)
+    else if (from) parts.push(`starting ${from}`)
+    else if (to) parts.push(`until ${to}`)
   }
 
   if (parts.length === 1) return "Trending events"

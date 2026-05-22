@@ -19,13 +19,13 @@ export default function AttendeesModal() {
 
     const { isAuthenticated } = useAppSelector(store => store.auth)
     const router = useRouter()
-    const attendees : Attendee[] = []
+    const attendees: Attendee[] = []
     const params = useParams()
 
     const handleGetTicket = () => {
         router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", (params.event_id || "") as string))
     }
-    
+
 
     return (
         <Dialog open={true} onOpenChange={() => router.back()}>
@@ -44,15 +44,15 @@ export default function AttendeesModal() {
                         <div className='max-w-xs'>
                             <DialogHeader className="mb-4">
                                 <DialogTitle className={`${space_grotesk.className} text-2xl font-medium`}>
-                                    Get a ticket to view attendee list
+                                    Get Ticket to view attendee list
                                 </DialogTitle>
                             </DialogHeader>
-                            
+
                             <p className="text-neutral-7 mb-8">
                                 Attendee list is only available to registered attendees only.
                             </p>
                         </div>
-                        
+
                         <div className="flex gap-3 justify-center">
                             <Button
                                 onClick={() => router.back()}
@@ -93,7 +93,7 @@ export default function AttendeesModal() {
                         <div className="flex-1 overflow-y-auto">
                             <div className="space-y-1">
                                 {attendees.map((attendee) => (
-                                    <div 
+                                    <div
                                         key={attendee.id}
                                         className="flex items-center justify-between py-3 px-2 hover:bg-neutral-1 rounded-lg transition-colors"
                                     >
@@ -129,7 +129,7 @@ export default function AttendeesModal() {
                                                         height="20"
                                                     />
                                                 </Link>
-                                            )): null }
+                                            )) : null}
                                         </div>
                                     </div>
                                 ))}

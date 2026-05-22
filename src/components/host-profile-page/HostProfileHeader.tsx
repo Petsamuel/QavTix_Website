@@ -19,7 +19,18 @@ const PLATFORM_ICONS: Record<string, string> = {
     tiktok: "ic:baseline-tiktok",
     facebook: "fa6-brands:facebook",
     website: "humbleicons:globe",
-    linkedin: "hugeicons:linkedin-01",
+    linkedin: "mdi:linkedin",
+}
+
+function getPlatformFromUrl(url: string) {
+    const lowerUrl = url.toLowerCase()
+    if (lowerUrl.includes('facebook.com')) return 'facebook'
+    if (lowerUrl.includes('instagram.com')) return 'instagram'
+    if (lowerUrl.includes('x.com') || lowerUrl.includes('twitter.com')) return 'twitter'
+    if (lowerUrl.includes('tiktok.com')) return 'tiktok'
+    if (lowerUrl.includes('linkedin.com')) return 'linkedin'
+    if (lowerUrl.includes('youtube.com')) return 'youtube'
+    return 'website'
 }
 
 interface Props {
@@ -34,11 +45,10 @@ export default function HostProfilePageHeader({ host }: Props) {
         host.followers_count,
     )
 
-    const socialLinks = (host.relevant_links || []).flatMap(obj =>
-        Object.entries(obj || {})
-            .filter(([, url]) => typeof url === "string" && url.trim().length > 0)
-            .map(([platform, url]) => ({ platform, url }))
-    )
+    const socialLinks = (host.relevant_links || [])
+        .map(obj => obj?.url)
+        .filter((url): url is string => typeof url === "string" && url.trim().length > 0)
+        .map((url) => ({ platform: getPlatformFromUrl(url), url }))
 
     const followBtn = (className?: string) => (
         <FollowButton
@@ -79,7 +89,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                                 getAvatarColor(String(host.id)),
                                 "text-white font-bold text-3xl md:text-5xl w-full h-full rounded-full flex items-center justify-center"
                             )}>
-                                {getInitialsFromName(host.host)}
+                                {getInitialsFromName(host.host || "User")}
                             </AvatarFallback>
                         </Avatar>
                     </div>
@@ -91,7 +101,7 @@ export default function HostProfilePageHeader({ host }: Props) {
                     </div>
 
                     <div className="md:flex justify-between items-start gap-10">
-                        <div className="flex-1 max-w-xl">
+                        <div className="flex-1 max-w-xl min-w-0">
                             <div className='flex items-center gap-2 mb-3'>
                                 <h1 className={`${space_grotesk.className} text-2xl font-medium text-secondary-9`}>
                                     {host.host}
@@ -103,11 +113,11 @@ export default function HostProfilePageHeader({ host }: Props) {
                                     className={cn(
                                         "shrink-0",
                                         !host.is_subscribed && !host.is_verified && "hidden",
-                                        (host.is_verified && host.is_subscribed) ? "text-[#FFCC00]" : host.is_verified ? "text-primary-5" : "text-neutral-5"
+                                        host.is_subscribed && "text-[#FFCC00]" || host.is_verified && "text-primary-5"
                                     )}
                                 />
                             </div>
-                            <p className="text-neutral-7">{host.description}</p>
+                            <p className="text-neutral-7 wrap-break-words overflow-hidden">{host.description}</p>
 
                             {socialLinks.length > 0 && (
                                 <div className="flex gap-3 mt-5">
@@ -132,12 +142,12 @@ export default function HostProfilePageHeader({ host }: Props) {
                         <div className="mt-10 md:mt-0 flex flex-wrap justify-between items-center gap-5">
                             <div className="flex gap-6 font-medium text-neutral-8 items-center">
                                 <span className={`${space_grotesk.className} flex flex-col gap-1`}>
-                                    <span className="text-neutral-7">{followersCount.toLocaleString()}</span>
+                                    <span className="text-neutral-7">{followersCount?.toLocaleString() ?? "--"}</span>
                                     <span>Followers</span>
                                 </span>
                                 <hr className="w-px h-8 border border-neutral-6" />
                                 <span className="flex flex-col gap-1">
-                                    <span className="text-neutral-7">{host.events_count}</span>
+                                    <span className="text-neutral-7">{host.events_count || "--"}</span>
                                     <span>Events</span>
                                 </span>
                             </div>

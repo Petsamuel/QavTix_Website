@@ -23,7 +23,8 @@ export function buildEqualSplitMembers(
 
     const totalPeople = count + 1 // include initiator
     const rawShare = 100 / totalPeople
-    const base = Math.floor(rawShare * 100) / 100
+    // Round UP in our favour
+    const base = Math.ceil(rawShare * 100) / 100
 
     const shares = Array(count).fill(base)
     const roundedSum = base * count
@@ -52,10 +53,12 @@ export function buildManualSplitMembers(
 
     const percentages = attendees.map((a) => {
         const raw = (a.amount / total) * 100
+        // Round up to the nearest 2 decimal places in our favour to avoid fraction losses
+        const roundedUp = Math.ceil(raw * 100) / 100
         return {
             email: a.email,
             date_of_birth: a.dateOfBirth,
-            percentage: (raw > 0 ? Number(raw.toFixed(2)) : 0).toFixed(2),
+            percentage: (roundedUp > 0 ? roundedUp : 0).toFixed(2),
         }
     })
 
@@ -89,10 +92,6 @@ export function validateSplitMembers(
 
     if (mode === 'manual') {
         const sum = attendees.reduce((s, a) => s + (a.amount ?? 0), 0)
-
-        if (sum <= 0) {
-            return 'At least one group member must have a positive amount to pay.'
-        }
 
         if (sum >= total) {
             return 'Initiator must retain a positive remaining balance to pay.'

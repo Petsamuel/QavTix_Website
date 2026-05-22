@@ -98,20 +98,23 @@ export const MARKETPLACE_ROUTES = {
 
 export const LEGAL_LINKS = {
   PRIVACY: { label: "Privacy Policy", href: "/legal/privacy-policy" },
-  TERMS: { label: "Terms of Use", href: "/legal/terms-of-use" },
-  COMMISSION: { label: "Commission", href: "/legal/commission" }
+  REFUND: { label: "Refund Policy", href: "/legal/refund-policy" },
+  TERMS: { label: "Terms of Service", href: "/legal/terms-of-service" },
+  TICKET_SERVICE: { label: "Ticket Services Agreement", href: "/legal/ticket-services-agreement" },
 } as const;
 
 
 export const FOOTER_LEGAL_LINKS = {
   PRIVACY: LEGAL_LINKS.PRIVACY,
-  TERMS: LEGAL_LINKS.TERMS
+  TERMS: LEGAL_LINKS.TERMS,
+  REFUND: LEGAL_LINKS.REFUND,
+  TICKET_SERVICE: LEGAL_LINKS.TICKET_SERVICE,
 }
 
 
-export const ATTENDEE_SELL_TICKET = `${process.env.NEXT_PUBLIC_HOST_SITE}/dashboard/`;
+export const ATTENDEE_SELL_TICKET = `${process.env.NEXT_PUBLIC_ATTENDEE_SITE}/dashboard/`;
 export const ATTENDEE_PROFILE_SETTINGS = `${process.env.NEXT_PUBLIC_ATTENDEE_SITE}/dashboard/account-settings/profile`;
 
 export const HOST_DASHBOARD = `${process.env.NEXT_PUBLIC_HOST_SITE}/dashboard/`;
 export const HOST_EVENTS = `${process.env.NEXT_PUBLIC_HOST_SITE}/events/`;
-export const HOST_CREATE_EVENT = `${process.env.NEXT_PUBLIC_HOST_SITE}/events/create`;
+export const HOST_CREATE_EVENT = `${process.env.NEXT_PUBLIC_HOST_SITE}/dashboard/events/create`;

@@ -13,6 +13,7 @@ import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
 import { BannerImageUpload } from '@/components/custom-utils/ImageUpload'
 import ProfileImageUpload from '@/components/custom-utils/ProfileImageUpload'
 import PhoneNumberInput from '@/components/custom-utils/inputs/CustomPhoneInput'
+import { LEGAL_LINKS } from '@/components-data/navigation/navLinks'
 
 export function OrganizationGeneralStep() {
     const { formData, updateFormData, nextStep } = useSignup()
@@ -27,6 +28,7 @@ export function OrganizationGeneralStep() {
         resolver: zodResolver(organizationGeneralSchema),
         defaultValues: {
             ...(formData as Partial<OrganizationGeneralData>),
+            phone: (formData as Partial<OrganizationGeneralData>).phone ?? '',
             profileImage: (formData as Partial<OrganizationGeneralData>).profileImage,
             bannerImage: (formData as Partial<OrganizationGeneralData>).bannerImage,
         },
@@ -171,11 +173,11 @@ export function OrganizationGeneralStep() {
                         label={
                             <span className='font-normal'>
                                 I agree to the QavTix Seller{' '}
-                                <Link href="/terms" className="text-accent-6 font-medium hover:underline">
+                                <Link href={LEGAL_LINKS.TERMS.href} className="text-accent-6 font-medium hover:underline">
                                     Terms of Service
                                 </Link>
                                 {' '}and understand the{' '}
-                                <Link href="/commission" className="text-accent-6 font-medium hover:underline">
+                                <Link href={LEGAL_LINKS.TICKET_SERVICE.href} className="text-accent-6 font-medium hover:underline">
                                     commission structure
                                 </Link>.
                             </span>

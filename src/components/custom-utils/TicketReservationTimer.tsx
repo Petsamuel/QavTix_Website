@@ -3,14 +3,12 @@
 import { useCheckout } from '@/contexts/CheckoutFlowProvider'
 import { useEffect, useState, useRef } from 'react'
 import { cn } from '@/lib/utils'
-import { useRouter } from 'next/navigation'
 import ReservationTimeExpiredPrompt from '../modals/ReservationTimeExpiredPrompt'
 
 const RESERVATION_DURATION = 10 * 60 // 10 minutes in seconds
 
 export default function TicketReservationTimer() {
-    const { resetCheckout, currentStep } = useCheckout()
-    const router = useRouter()
+    const { resetCheckout, currentStep, event } = useCheckout()
     const [timeLeft, setTimeLeft] = useState<number | null>(null)
     const [hasExpired, setHasExpired] = useState(false)
     const hasStarted = useRef(false)
@@ -23,7 +21,7 @@ export default function TicketReservationTimer() {
         }
     }, [])
 
-    // Reset timer when checkout is restarted (i.e. returns to step 1)
+    // Reset timer when checkout is restarted (step goes back to 1)
     useEffect(() => {
         if (currentStep === 1) {
             setTimeLeft(RESERVATION_DURATION)
@@ -47,9 +45,17 @@ export default function TicketReservationTimer() {
         return () => clearInterval(interval)
     }, [timeLeft])
 
-    const handleBackToTickets = () => {
-        resetCheckout()
-        router.back()
+    // Called when the user confirms restart — resets everything and closes modal
+    const handleRestart = () => {
+        resetCheckout()        // sets currentStep → 1 which also triggers the useEffect above
+        setHasExpired(false)
+        setTimeLeft(RESERVATION_DURATION)
+    }
+
+    // Called when the user cancels — go to the event detail page
+    const handleCancel = () => {
+        const eventDetailPath = `/events/details/${event.id}`
+        window.location.href = eventDetailPath
     }
 
     // Don't show if no reservation started
@@ -57,9 +63,15 @@ export default function TicketReservationTimer() {
         return null
     }
 
-    // Expired state
+    // Expired state — show modal (never unmount the timer component itself)
     if (hasExpired || timeLeft <= 0) {
-        return <ReservationTimeExpiredPrompt open={true} />
+        return (
+            <ReservationTimeExpiredPrompt
+                open={true}
+                onRestart={handleRestart}
+                onCancel={handleCancel}
+            />
+        )
     }
 
     const minutes = Math.floor(timeLeft / 60)

@@ -52,17 +52,14 @@ export default function EventOverviewSection({ event, className }: Props) {
 
                 <div className="flex items-center flex-wrap gap-8 gap-y-4 md:justify-between mt-3 md:mt-0">
                     <div className="mt-3 flex flex-wrap w-1/2 gap-3">
-                        {event.tags.map(tag => (
-                            <Badge
-                                key={tag}
-                                variant="default"
-                                className={`py-1 px-2 rounded-2xl text-center text-[14px] font-medium capitalize ${statusStyles[event.event_status as keyof StatusStylesRecord]?.bg ?? "bg-neutral-2"
-                                    } ${statusStyles[event.event_status as keyof StatusStylesRecord]?.text ?? "text-neutral-7"
-                                    }`}
-                            >
-                                {tag}
-                            </Badge>
-                        ))}
+                        <Badge
+                            variant="default"
+                            className={`py-1 px-2 rounded-2xl text-center text-[14px] font-medium capitalize ${statusStyles[event.event_status as keyof StatusStylesRecord]?.bg ?? "bg-neutral-2"
+                                } ${statusStyles[event.event_status as keyof StatusStylesRecord]?.text ?? "text-neutral-7"
+                                }`}
+                        >
+                            {event.event_status}
+                        </Badge>
 
                         {
                             event.age_restriction && (

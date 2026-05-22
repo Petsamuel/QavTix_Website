@@ -7,17 +7,26 @@ export const footerData = {
     {
       title: 'QavTix',
       links: [
-        { label: 'About us', href: NAV_LINKS.ABOUT },
-        { label: 'Pricing', href: NAV_LINKS.PRICING },
-        { label: 'How it works', href: NAV_LINKS.HOW_IT_WORKS },
-        { label: 'Explore event', href: NAV_LINKS.EVENTS },
-        { label: 'Sell ticket', href: TICKET_LINKS.SELL_TICKET },
-        { label: 'Create event', href: TICKET_LINKS.CREATE_EVENT },
+        { label: 'About us', href: NAV_LINKS.ABOUT.href },
+        { label: 'Pricing', href: NAV_LINKS.PRICING.href },
+        { label: 'How it works', href: NAV_LINKS.HOW_IT_WORKS.href },
+        { label: 'Explore event', href: NAV_LINKS.EVENTS.href },
+        { label: 'Sell ticket', href: TICKET_LINKS.SELL_TICKET.href },
+        { label: 'Create event', href: TICKET_LINKS.CREATE_EVENT.href },
       ]
     },
     {
       title: 'Support',
       links: SUPPORT_LINKS
+    },
+    {
+      title: 'Legal',
+      links: [
+        LEGAL_LINKS.PRIVACY,
+        LEGAL_LINKS.REFUND,
+        LEGAL_LINKS.TERMS,
+        LEGAL_LINKS.TICKET_SERVICE,
+      ]
     }
   ],
   contact: {
@@ -25,5 +34,10 @@ export const footerData = {
     info: Object.values(CONTACT_LINKS.LAGOS)
   },
   social: Object.values(SOCIAL_LINKS), 
-  legal: Object.values(LEGAL_LINKS).filter(v => !v.href.includes("commission"))
+  legal: [
+    LEGAL_LINKS.PRIVACY,
+    LEGAL_LINKS.REFUND,
+    LEGAL_LINKS.TERMS,
+    LEGAL_LINKS.TICKET_SERVICE,
+  ]
 }

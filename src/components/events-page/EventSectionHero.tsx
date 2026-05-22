@@ -4,9 +4,10 @@ import Image from 'next/image'
 import { z } from 'zod'
 import { useState } from 'react'
 import { space_grotesk } from '@/lib/fonts'
-import { subscribeToCity } from '@/actions/subscribe'
+import { subscribeToCity, subscribeToCategory } from '@/actions/subscribe'
 import { useAppDispatch } from '@/lib/redux/hooks'
 import { showAlert } from '@/lib/redux/slices/alertSlice'
+import { useRouter } from 'next/navigation'
 
 const emailSchema = z.email('Please enter a valid email address')
 
@@ -20,7 +21,8 @@ interface Props {
     description:   string
     stats:         HeroStat[]         // e.g. [{ label: "Events", value: 30 }, { label: "Subscribers", value: 230 }]
     imageSrc?:     string
-    subscribeKey?: string             // the city/category/tour key sent to the API
+    subscribeKey?: string | number             // the city/category/tour key sent to the API
+    subscribeType?: "category" | "location"
 }
 
 const DEFAULT_IMAGE = "/images/demo-images/d5e805332d43cd0ed9dd77016db84f44acf2d7c4.jpg"
@@ -31,11 +33,13 @@ export default function EventSectionHero({
     stats,
     imageSrc = DEFAULT_IMAGE,
     subscribeKey,
+    subscribeType = "location",
 }: Props) {
 
     const [email,        setEmail]        = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
     const dispatch = useAppDispatch()
+    const router = useRouter()
 
     const handleSubscribe = async () => {
         const validation = emailSchema.safeParse(email)
@@ -46,12 +50,15 @@ export default function EventSectionHero({
         if (!subscribeKey) return
 
         setIsSubmitting(true)
-        const result = await subscribeToCity(subscribeKey, email)
+        const result = subscribeType === "category"
+            ? await subscribeToCategory(subscribeKey, email)
+            : await subscribeToCity(subscribeKey.toString(), email)
         setIsSubmitting(false)
 
         if (result.success) {
             dispatch(showAlert({ variant: "success", title: "", description: 'Successfully subscribed!' }))
             setEmail('')
+            router.refresh()
         } else {
             dispatch(showAlert({ variant: "destructive", title: "Request Failed", description: result.message ?? 'Something went wrong. Please try again.' }))
         }

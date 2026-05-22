@@ -91,6 +91,9 @@ interface HostDetails {
 
 interface GroupMemberItem {
     email: string
+    name?: string
+    phone_number?: string
+    dob?: string
 }
 
 interface Group {

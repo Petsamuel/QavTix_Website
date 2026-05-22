@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { EVENT_CATEGORIES_ARRAY } from "@/components-data/event-category"
-import { getCategoryPage } from "@/actions/filters"
+import { getCategoryPage, getCategories } from "@/actions/filters"
 import EventSectionHero from "@/components/events-page/EventSectionHero"
 import EventsNearYouSection from "@/components/shared/EventsNearYou"
 import { getNearbyEvents } from "@/actions/getters"
@@ -34,7 +34,17 @@ export default async function EventCategoryPage({ params }: Props) {
     const categoryEntry = EVENT_CATEGORIES_ARRAY.find(c => c.path === categoryPath)
     if (!categoryEntry) notFound()
 
-    const result = await getCategoryPage(categoryPath)
+    const [result, categoriesResult] = await Promise.all([
+        getCategoryPage(categoryPath),
+        getCategories(),
+    ])
+
+    const apiCategory = categoriesResult.data.find(
+        c => c.slug === categoryPath || 
+             c.slug === categoryEntry.value || 
+             c.name.toLowerCase() === categoryEntry.label.toLowerCase()
+    )
+    const categoryId = apiCategory?.id
 
     const { city, country } = await getUserLocation()
     const nearbyEvents = await getNearbyEvents(city, country)
@@ -59,6 +69,8 @@ export default async function EventCategoryPage({ params }: Props) {
                     { label: "Events",      value: total_events      },
                     { label: "Subscribers", value: total_subscribers },
                 ]}
+                subscribeKey={categoryId ?? categoryPath}
+                subscribeType="category"
             />
 
             {

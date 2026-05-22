@@ -21,6 +21,8 @@ import {
 } from "@/actions/subscriptions"
 import { useCurrencyConversion } from "@/lib/custom-hooks/useCurrencyConversion"
 import { CONTACT_LINKS } from "@/components-data/navigation/contact-and-socials"
+import { checkHostAuth } from "@/actions/auth"
+import { showAuthPrompt } from "@/lib/redux/slices/showAuthPromptSlice"
 
 type BillingCycle   = "monthly" | "annual"
 type AccountType    = "host" | "attendee"
@@ -92,6 +94,19 @@ export function PricingCheckoutProvider({ children, accountType }: Props) {
     }, [])
 
     const subscribe = useCallback(async (plan: PricingPlan) => {
+
+        if (accountType === "host") {
+            const isHostAuthed = await checkHostAuth()
+            if (!isHostAuthed) {
+                dispatch(showAuthPrompt("Sign in to subscribe to a host plan."))
+                return
+            }
+        } else {
+            if (!user) {
+                dispatch(showAuthPrompt("Sign in to subscribe to an attendee plan."))
+                return
+            }
+        }
 
         // FREE PLAN — NO PAYMENT NEEDED
         if (plan.price === 0 && plan.currency !== "Custom") {

@@ -4,59 +4,69 @@ export type StatusStylesRecord = Record<
 >
 
 export const statusStyles: StatusStylesRecord = {
-  "filling-fast": {
-    bg: "bg-warning-tertiary",
-    text: "text-brand-secondary-9",
+  "filling_fast": {
+    bg: "bg-primary-1",
+    text: "text-primary-9",
     label: "Filling fast",
   },
-  "selling-fast": {
-    bg: "bg-warning-tertiary",
-    text: "text-brand-secondary-9",
+  "selling_fast": {
+    bg: "bg-primary-1",
+    text: "text-primary-9",
     label: "Selling fast",
   },
-  "near-capacity": {
-    bg: "bg-danger-tertiary",
-    text: "text-brand-secondary-9",
+  "near_capacity": {
+    bg: "bg-accent-1",
+    text: "text-accent-7",
     label: "Near capacity",
   },
   new: {
-    bg: "bg-red-400",
+    bg: "bg-accent-6",
     text: "text-white",
     label: "New",
   },
-  "sold-out": {
-    bg: "bg-white border border-red-200",
-    text: "text-red-600",
+  normal: {
+    bg: "bg-neutral-2",
+    text: "text-neutral-7",
+    label: "On Sale",
+  },
+  "sold_out": {
+    bg: "bg-white border border-accent-6/20",
+    text: "text-accent-6",
     label: "Sold out",
   },
-  "starts-soon": {
-    bg: "bg-brand-primary-1",
-    text: "text-brand-primary-9",
+  "starts_soon": {
+    bg: "bg-primary-1",
+    text: "text-primary-9",
     label: "Starts soon",
   },
+  started: {
+    bg: "bg-primary-1",
+    text: "text-primary-9",
+    label: "Started",
+  },
   draft: {
-    bg: "bg-gray-100",
-    text: "text-gray-600",
+    bg: "bg-neutral-3",
+    text: "text-neutral-7",
     label: "Draft",
   },
   active: {
-    bg: "bg-positive-tertiary",
-    text: "text-brand-secondary-2",
+    bg: "bg-primary-1",
+    text: "text-primary-9",
     label: "Active",
   },
   ended: {
-    bg: "bg-gray-100",
-    text: "text-gray-600",
+    bg: "bg-neutral-3",
+    text: "text-neutral-7",
     label: "Ended",
   },
   cancelled: {
-    bg: "bg-white border border-red-200",
-    text: "text-red-600",
+    bg: "bg-white border border-neutral-6/20",
+    text: "text-neutral-7",
     label: "Cancelled",
   },
   banned: {
-    bg: "bg-white border border-red-200",
-    text: "text-red-600",
+    bg: "bg-white border border-accent-6/20",
+    text: "text-accent-6",
     label: "Banned",
   },
 };

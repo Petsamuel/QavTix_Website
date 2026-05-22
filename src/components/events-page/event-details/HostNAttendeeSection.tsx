@@ -55,7 +55,7 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                 "md:justify-start md:gap-6"
             )}>
                 <div className="flex items-center gap-2">
-                    <CustomAvatar id={event.organizer_id} name={event.organizer_display_name} size="size-12" />
+                    <CustomAvatar profileImg={event.organizer_profile_picture} id={event.organizer_id} name={event.organizer_display_name} size="size-12" />
                     <div>
                         <p className="text-xs text-neutral-7">Hosted by</p>
                         <Link
@@ -63,6 +63,16 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                             href={NAV_LINKS.HOST_PROFILE.href.replace('[host_id]', event.organizer_id)}
                         >
                             <strong className="font-normal whitespace-nowrap capitalize">{event.organizer_display_name}</strong>
+                            <Icon
+                                icon="ph:seal-check-fill"
+                                width="18"
+                                height="18"
+                                className={cn(
+                                    "shrink-0 ms-1",
+                                    !event.organizer_is_subscribed && !event.organizer_is_verified && "hidden",
+                                    event.organizer_is_subscribed && "text-[#FFCC00]" || event.organizer_is_verified && "text-primary-5"
+                                )}
+                            />
                             <Icon icon="line-md:chevron-right" width="20" height="20" />
                         </Link>
                     </div>

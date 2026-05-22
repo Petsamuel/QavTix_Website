@@ -12,7 +12,7 @@ export async function initializeHostSubscription(payload: {
     currency:       string
 }): Promise<{ success: boolean; checkout_url?: string; message?: string }> {
     try {
-        const axiosInstance = await getServerAxios()
+        const axiosInstance = await getServerAxios("host_access_token")
 
         const { data } = await axiosInstance.post(HOST_PLAN_CHECKOUT_ENDPOINT, payload)
 
@@ -47,7 +47,7 @@ export async function verifyHostSubscription(payload: {
     country:    string
 }): Promise<{ success: boolean; message?: string; data?: any }> {
     try {
-        const axiosInstance = await getServerAxios()
+        const axiosInstance = await getServerAxios("host_access_token")
 
         const { data } = await axiosInstance.post(HOST_PLAN_CHECKOUT_VERIFY_ENDPOINT, payload)
 

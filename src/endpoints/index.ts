@@ -27,6 +27,7 @@ export const EVENTS_NEARBY_ENDPOINT = "public/events/nearby"
 export const TOP_LOCATIONS_ENDPOINT = "public/event/top-locations"
 export const LOCATION_PAGE_ENDPOINT = "public/locations/[loc]"
 export const CITY_SUBSCRIBE_ENDPOINT = "public/locations/subscribe/"
+export const CATEGORY_SUBSCRIBE_ENDPOINT = "public/categories/subscribe/"
 export const TRENDING_EVENTS_ENDPOINT = "public/event/trending"
 
 export const SEARCH_EVENTS_ENDPOINT = "public/search"
@@ -44,7 +45,8 @@ export const CHECKOUT_VERIFY_ENDPOINT = "payments/complete/"
 export const VALIDATE_PROMO_CODE_ENDPOINT = "payments/promo-code/validate/"
 export const CANCEL_TICKET_ENDPOINT = "public/tickets/[ticket_id]/cancel/"
 
-export const SPLIT_PAYMENT_TOKEN_VERIFY_ENDPOINT = "payments/split/pay/[token]/"
+export const SPLIT_PAYMENT_TOKEN_ENDPOINT = "payments/split/pay/[token]/"
+export const SPLIT_PAYMENT_TOKEN_VERIFY_ENDPOINT = "payments/complete/"
 
 export const HOST_PLAN_CHECKOUT_ENDPOINT = "payments/plans/subscribe/"
 export const ATTENDEE_PLAN_CHECKOUT_ENDPOINT = "payments/attendee-plans/subscribe/"

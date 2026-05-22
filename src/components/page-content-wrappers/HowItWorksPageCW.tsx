@@ -1,6 +1,6 @@
 "use client"
 
-import { EVENT_ROUTES } from "@/components-data/navigation/navLinks";
+import { EVENT_ROUTES, HOST_CREATE_EVENT, HOST_DASHBOARD } from "@/components-data/navigation/navLinks";
 import AttendeeFeaturesSections from "@/components/how-it-works/AttendeeFeaturesSections";
 import HostFeaturesSections from "@/components/how-it-works/HostFeaturesSection";
 import SectionHeading from "@/components/shared/SectionHeading";
@@ -26,7 +26,7 @@ export default function HowItWorksPageCW() {
                                 QavTix makes event ticketing simple for both organizers and attendees.  Browse or sell tickets in three easy steps, with a seamless, secure experience from start to finish. Ready to jump in?
                             </p>
                             <LiquidLink
-                                onClick={() => router.push("/event/create")}
+                                onClick={() => window.open(HOST_DASHBOARD, "_blank")}
                                 className="w-fit mt-10 md:mt-14 p-4 h-[4em] rounded-[30px] bg-primary hover:bg-primary-7 active:bg-primary-8 hover:shadow-md active:scale-[0.98] disabled:bg-neutral-5 disabled:cursor-not-allowed disabled:opacity-60 text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-150 flex items-center justify-center gap-2"
                             >
                                 Get started for free
@@ -67,7 +67,7 @@ export default function HowItWorksPageCW() {
 
                         <button
                             type="button"
-                            onClick={() => router.push(process.env.NEXT_PUBLIC_HOST_SITE || "/")}
+                            onClick={() => window.open(HOST_CREATE_EVENT, "_blank")}
                             className="w-[45%] max-w-[11em] text-secondary-8 bg-white p-4 h-[4em] hover:shadow flex items-center gap-2 justify-center px-6 py-3 rounded-[30px] border-2 border-secondary-3 font-medium text-sm hover:bg-neutral-2 hover:border-secondary-5 active:bg-neutral-3 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-neutral-4 focus:ring-offset-2 transition-all duration-150"
                         >
                             Create Event

@@ -42,7 +42,7 @@ async function _getFavourites(
                 "Content-Type": "application/json",
                 ...(token ? { Authorization: `Bearer ${token}` } : {}),
             },
-            next: { tags: [CACHE_TAGS.EVENT_CARDS] },
+            next: { tags: [CACHE_TAGS.MY_FAVOURITES] },
         })
 
         if (!res.ok) {

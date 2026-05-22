@@ -41,15 +41,17 @@ export function LocationFilterSelect({
                         No options available
                     </div>
                 ) : (
-                    options.map(option => (
-                        <SelectItem 
-                            key={option.value} 
-                            value={option.value}
-                            className="hover:bg-accent-2! hover:text-secondary-9 cursor-pointer"
-                        >
-                            {option.label}
-                        </SelectItem>
-                    ))
+                    [...options]
+                        .sort((a, b) => a.label.localeCompare(b.label))
+                        .map(option => (
+                            <SelectItem 
+                                key={option.value} 
+                                value={option.value}
+                                className="hover:bg-accent-2! hover:text-secondary-9 cursor-pointer"
+                            >
+                                {option.label}
+                            </SelectItem>
+                        ))
                 )}
             </SelectContent>
         </Select>

@@ -53,7 +53,9 @@ export default function CustomGlobalAlert() {
             >
                 {IconComponent}
                 <div className="flex-1">
-                    <AlertTitle className="font-normal!">{title}</AlertTitle>
+                    {title &&
+                        <AlertTitle className="font-normal!">{title}</AlertTitle>
+                    }
                     {description && (
                         <AlertDescription className="mt-1 text-xs text-inherit">
                             {description}

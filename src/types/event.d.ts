@@ -47,7 +47,7 @@ type FilterFor = "homepage" | "eventPage"
 
 type EventType = "single" | "recurring"
 type EventLocationType = "physical" | "online" | "tba"
-type EventStatus = "draft" | "active" | "sold-out" | "new" | "ended" | "cancelled" | "banned" | "filling-fast" | "selling-fast" | "near-capacity" | "starts-soon"
+type EventStatus = "draft" | "active" | "sold_out" | "new" | "normal" | "ended" | "cancelled" | "banned" | "filling_fast" | "selling_fast" | "near_capacity" | "starts_soon" | "started"
 type RefundPolicy = "no" | "partial" | "full" | "custom"
 
 interface PublicPagesEvent {
@@ -105,6 +105,9 @@ interface IEvent {
     currency: string
     organizer_display_name: string
     organizer_description: string
+    organizer_is_subscribed: boolean
+    organizer_is_verified: boolean
+    organizer_profile_picture: string
     public_email: string
     phone_number: string
     refund_policy: RefundPolicy
@@ -201,7 +204,10 @@ interface EventDetails {
     full_description: string
     currency: string
     organizer_display_name: string
+    organizer_is_subscribed: boolean
+    organizer_is_verified: boolean
     organizer_description: string
+    organizer_profile_picture: string
     organizer_id: string
     public_email: string
     phone_number: string

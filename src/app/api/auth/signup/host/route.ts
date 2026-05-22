@@ -7,21 +7,17 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json()
 
-        console.log("[host-register] body:", body)
-
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/${HOST_REGISTER_ENDPOINT}`, {
-            method:  "POST",
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify(body),
+            body: JSON.stringify(body),
         })
 
         // Safely parse — the API might return an HTML error page on 5xx
         const contentType = res.headers.get("content-type") ?? ""
-        const isJson      = contentType.includes("application/json")
-        const json        = isJson ? await res.json() : null
+        const isJson = contentType.includes("application/json")
+        const json = isJson ? await res.json() : null
 
-        console.log("[host-register] status:", res.status)
-        console.log("[host-register] raw json:", JSON.stringify(json, null, 2))
 
         if (!res.ok) {
             const message = res.status === 409
@@ -40,7 +36,7 @@ export async function POST(req: NextRequest) {
             { status: 201 }
         )
 
-        response.cookies.set("host_access_token",  access,  accessCookieOptions)
+        response.cookies.set("host_access_token", access, accessCookieOptions)
         response.cookies.set("host_refresh_token", refresh, refreshCookieOptions)
 
         return response

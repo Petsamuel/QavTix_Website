@@ -37,8 +37,11 @@ export default function PromoCode() {
 
     const onSubmit = async (data: PromoCodeForm) => {
         setIsSubmitting(true)
-
-        await validateCoupon(data.code)
+        try {
+            await validateCoupon(data.code)
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     return (
