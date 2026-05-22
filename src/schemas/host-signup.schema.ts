@@ -3,8 +3,8 @@ import { z } from 'zod'
 
 export const individualGeneralSchema = z.object({
     fullName: z.string().min(2, 'Full name must be at least 2 characters').max(100, 'Full name cannot exceed 100 characters'),
-    email: z.email('Invalid email address').max(254, 'Email cannot exceed 254 characters'),
-    phone: z.string().min(1, 'Phone Number is Required').min(10, 'Invalid phone number').max(20, 'Phone number cannot exceed 20 characters'),
+    email: z.string().min(1, 'Email address is required').email('Invalid email address').max(254, 'Email cannot exceed 254 characters'),
+    phone: z.string().min(1, 'Phone number is required').min(10, 'Invalid phone number').max(20, 'Phone number cannot exceed 20 characters'),
     country: z.string().min(1, 'Please select a country').max(100, 'Invalid country'),
     state: z.string().min(1, 'Please select a state').max(100, 'Invalid state'),
     city: z.string().min(2, 'Please enter a valid city name').max(60, 'City name must not exceed 60 characters'),
@@ -29,8 +29,8 @@ export const individualBusinessSchema = z.object({
 
 export const organizationGeneralSchema = z.object({
     fullName: z.string().min(2, 'Full name is required').max(100, 'Full name cannot exceed 100 characters'),
-    companyEmail: z.email('Invalid email address').max(254, 'Email cannot exceed 254 characters'),
-    phone: z.string().min(1, 'Phone Number is Required').min(10, 'Invalid phone number').max(20, 'Phone number cannot exceed 20 characters'),
+    companyEmail: z.string().min(1, 'Email address is required').email('Invalid email address').max(254, 'Email cannot exceed 254 characters'),
+    phone: z.string().min(1, 'Phone number is required').min(10, 'Invalid phone number').max(20, 'Phone number cannot exceed 20 characters'),
     country: z.string().min(1, 'Please select a country').max(100, 'Invalid country'),
     state: z.string().min(1, 'Please select a state').max(100, 'Invalid state'),
     city: z.string().min(2, 'Please enter a valid city name').max(60, 'City name must not exceed 60 characters'),

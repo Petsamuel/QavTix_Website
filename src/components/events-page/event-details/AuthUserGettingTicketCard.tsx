@@ -110,9 +110,10 @@ export default function AuthUserGettingTicketCard({ event }: { event: EventDetai
 
                     const isUnderAge = event.age_restriction && isAuthenticated && userAge !== null && event.minimum_age !== null && userAge < event.minimum_age;
 
+                    const relativePath = `${EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}/checkout`
                     isUnderAge
                         ? setShowAgeRestrictionModal(true)
-                        : router.push(eventUrl)
+                        : router.push(relativePath)
                 }}
                 className="bg-primary-6 w-fit mt-4 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
             >
