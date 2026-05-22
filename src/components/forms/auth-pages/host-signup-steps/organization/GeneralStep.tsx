@@ -28,6 +28,7 @@ export function OrganizationGeneralStep() {
         resolver: zodResolver(organizationGeneralSchema),
         defaultValues: {
             ...(formData as Partial<OrganizationGeneralData>),
+            phone: (formData as Partial<OrganizationGeneralData>).phone ?? '',
             profileImage: (formData as Partial<OrganizationGeneralData>).profileImage,
             bannerImage: (formData as Partial<OrganizationGeneralData>).bannerImage,
         },

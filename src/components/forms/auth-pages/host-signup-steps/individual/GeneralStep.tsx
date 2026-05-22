@@ -30,6 +30,7 @@ export function IndividualGeneralStep() {
         resolver: zodResolver(individualGeneralSchema),
         defaultValues: {
             ...(formData as Partial<IndividualGeneralData>),
+            phone: (formData as Partial<IndividualGeneralData>).phone ?? '',
             profileImage: (formData as Partial<IndividualGeneralData>).profileImage,
             bannerImage: (formData as Partial<IndividualGeneralData>).bannerImage,
         },

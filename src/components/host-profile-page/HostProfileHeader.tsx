@@ -19,7 +19,7 @@ const PLATFORM_ICONS: Record<string, string> = {
     tiktok: "ic:baseline-tiktok",
     facebook: "fa6-brands:facebook",
     website: "humbleicons:globe",
-    linkedin: "hugeicons:linkedin-01",
+    linkedin: "mdi:linkedin",
 }
 
 function getPlatformFromUrl(url: string) {

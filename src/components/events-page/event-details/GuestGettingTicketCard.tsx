@@ -128,7 +128,7 @@ export default function GuestGettingTicketCard({ event }: { event: EventDetails 
 
                 {/* GET MORE TICKETS — LINKS BACK TO THE EVENT PAGE */}
                 <LiquidLink
-                    href={`${eventUrl}/checkout`}
+                    href={`${EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}/checkout`}
                     className="bg-primary-6 inline-block w-fit mt-4 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
                 >
                     Get more tickets
