@@ -75,7 +75,7 @@ export default function AttendeeEmailSignUpForm({ setSuccessfulSignUp, successfu
         >
             <div>
                 <label className="text-sm font-medium text-neutral-10 mb-2 block">
-                    Name
+                    Full Name
                 </label>
                 <TextInput1
                     placeholder="Enter your first and last name"

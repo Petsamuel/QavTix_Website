@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import Logo from "./Logo"
 import Link from "next/link"
 import { Icon } from "@iconify/react"
-import { header2NavLinks, NAV_LINKS } from "@/components-data/navigation/navLinks"
+import { ATTENDEE_PROFILE_SETTINGS, header2NavLinks, NAV_LINKS } from "@/components-data/navigation/navLinks"
 import { useState } from "react"
 import MobileMenu from "./MobileMenu"
 import logoSrcWhite from "@/public-assets/logo/qavtix-logo-white.png"
@@ -16,6 +16,13 @@ import CustomAvatar from "../custom-utils/avatars/CustomAvatar"
 import { useLogOut } from "@/contexts/UseLogout"
 import { cn } from "@/lib/utils"
 import LiquidLink from "../custom-utils/buttons/LiquidGlassLink"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function Header2() {
 
@@ -128,25 +135,76 @@ export default function Header2() {
                             </>
                         )}
 
+                        {/* Authenticated: Dropdown containing Profile + Sign out */}
                         {isAuthenticated && user?.id && (
-                            <div className="flex items-center gap-2">
-                                <CustomAvatar id={user.id} profileImg={user.profile_picture} name={user.full_name} size="size-7 ring-2!" textSize="text-base" />
-                                <div className="flex flex-col">
-                                    <span className="text-xs font-medium text-neutral-8">
-                                        {user.full_name}
-                                    </span>
-                                    <button
-                                        onClick={handleLogOut}
-                                        disabled={isLoggingOut}
-                                        className="flex items-center gap-1 text-xs text-neutral-6 hover:text-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150"
-                                    >
-                                        {isLoggingOut
-                                            ? <><Icon icon="eos-icons:three-dots-loading" className="size-6" /></>
-                                            : <><Icon icon="hugeicons:logout-square-02" width="17" height="17" />Sign out</>
-                                        }
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="flex items-center gap-2 cursor-pointer focus:outline-none group active:scale-[0.98] transition-transform duration-100">
+                                        <CustomAvatar
+                                            id={user.id}
+                                            profileImg={user.profile_picture}
+                                            name={user.full_name}
+                                            size="size-8 ring-2 ring-primary-5/20 group-hover:ring-primary-5"
+                                            textSize="text-base"
+                                        />
+                                        <div className="flex items-center gap-1">
+                                            <span className={cn(
+                                                "text-sm font-medium transition-colors duration-150",
+                                                isLightBg ? "text-neutral-8 group-hover:text-primary-7" : "text-white group-hover:text-primary-5"
+                                            )}>
+                                                {user.full_name}
+                                            </span>
+                                            <Icon
+                                                icon="lucide:chevron-down"
+                                                className={cn(
+                                                    "size-4 transition-colors duration-150",
+                                                    isLightBg ? "text-neutral-5 group-hover:text-primary-7" : "text-neutral-3 group-hover:text-primary-5"
+                                                )}
+                                            />
+                                        </div>
                                     </button>
-                                </div>
-                            </div>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" sideOffset={12} className="w-48 p-1.5 rounded-xl bg-white border border-neutral-2 shadow-lg animate-in fade-in-50 slide-in-from-top-1 duration-150 z-[110]">
+                                    <div className="px-2.5 py-1.5">
+                                        <p className="text-[9px] font-bold text-neutral-5 uppercase tracking-wider">Signed in as</p>
+                                        <p className="text-sm font-semibold text-neutral-8 truncate mt-0.5">{user.full_name}</p>
+                                        {user.email && <p className="text-xs text-neutral-6 truncate mt-0.5 font-medium">{user.email}</p>}
+                                    </div>
+                                    <DropdownMenuSeparator className="bg-neutral-2 my-1" />
+                                    <DropdownMenuItem asChild className="focus:bg-primary-5/10 focus:text-primary-7 rounded-md cursor-pointer px-2.5 py-1.5 text-xs font-medium text-neutral-7 transition-colors duration-150">
+                                        <Link
+                                            href={user.role === 'host' ? `${process.env.NEXT_PUBLIC_HOST_SITE}/dashboard/settings` : ATTENDEE_PROFILE_SETTINGS}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 w-full"
+                                        >
+                                            <Icon icon="hugeicons:user-circle" className="size-4" />
+                                            <span>Profile Settings</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator className="bg-neutral-2 my-1" />
+                                    <DropdownMenuItem
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleLogOut();
+                                        }}
+                                        disabled={isLoggingOut}
+                                        className="focus:bg-red-50 focus:text-red-600 rounded-md cursor-pointer px-2.5 py-1.5 text-xs font-medium text-neutral-7 hover:text-red-600 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-150 flex items-center gap-2 w-full"
+                                    >
+                                        {isLoggingOut ? (
+                                            <>
+                                                <Icon icon="eos-icons:three-dots-loading" className="size-4" />
+                                                <span>Signing out...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Icon icon="hugeicons:logout-square-02" className="size-4" />
+                                                <span>Sign out</span>
+                                            </>
+                                        )}
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         )}
                     </div>
 
