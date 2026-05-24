@@ -18,7 +18,8 @@ const BUSINESS_TYPES = [
     { value: 'sole proprietorship', label: 'Sole Proprietorship' },
     { value: 'nonprofit', label: 'Nonprofit Organization' },
     { value: 'cooperative', label: 'Cooperative' },
-    { value: 'llp', label: 'LLP' },
+    { value: 'llp', label: 'Limited Liability Partnership' },
+    { value: 'partners', label: 'Partners' }
 ]
 
 export function OrganizationBusinessStep() {

@@ -7,13 +7,13 @@ import CategoryFilter from '../homepage/dropdowns/CategoryFilter'
 import PriceFilter from '../homepage/dropdowns/PriceFilter'
 import { space_grotesk } from '@/lib/fonts'
 import EventsCard1 from '../custom-utils/cards/EventCards'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { countries, getStates } from '@/components-data/location'
 import PaginationControls from '../custom-utils/buttons/event-search/PaginationControl'
-import { usePathname } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 import { buildTrendingEventsHeading } from '@/helper-fns/buildHeading'
 import { fromPublicPagesEvent } from '../custom-utils/cards/resources/event-card-adapter'
-import { TRENDING_EVENTS_ENDPOINT } from '@/endpoints'
+import { SEARCH_EVENTS_ENDPOINT, TRENDING_EVENTS_ENDPOINT } from '@/endpoints'
 import { Icon } from '@iconify/react'
 import { usePublicEvents } from '@/lib/custom-hooks/UsePublicEvents'
 import EventCardLoaderContainer from '../loaders/EventCardLoader'
@@ -40,23 +40,71 @@ export function TrendingEvents({
 
     console.log(initialEvents)
 
+    const params = useParams()
+    const categoryNameParam = params?.category_name as string | undefined
+
+    const activeCategory = useMemo(() => {
+        if (!categoryNameParam || !categories) return null
+        return categories.find(
+            c => c.slug === categoryNameParam ||
+                 c.name.toLowerCase() === categoryNameParam.replace(/-/g, ' ').toLowerCase()
+        )
+    }, [categoryNameParam, categories])
+
+    const [hasFallback, setHasFallback] = useState(false)
+    const isCategoryMode = activeCategory && !hasFallback
+    const endpoint = isCategoryMode ? SEARCH_EVENTS_ENDPOINT : TRENDING_EVENTS_ENDPOINT
+
     const [showAll, setShowAll] = useState(false)
-    const [filters, setFilters] = useState<Partial<FilterValues>>({})
+    const [filters, setFilters] = useState<Partial<FilterValues>>(() => {
+        if (activeCategory) {
+            return { categories: [String(activeCategory.id)] }
+        }
+        return {}
+    })
+
+    // Reset fallback and sync categories filter when activeCategory changes, or clear filters on fallback
+    useEffect(() => {
+        if (activeCategory && !hasFallback) {
+            setFilters({ categories: [String(activeCategory.id)] })
+        } else {
+            setFilters({})
+        }
+    }, [activeCategory, hasFallback])
+
+    // Reset hasFallback state whenever a new category route is navigated to
+    useEffect(() => {
+        setHasFallback(false)
+    }, [activeCategory])
 
     const {
         items, count, totalPages, currentPage,
         isLoading, isError, isEmpty, goToPage,
     } = usePublicEvents(
         {
-            endpoint:     TRENDING_EVENTS_ENDPOINT,
-            initialItems: initialEvents,
-            initialCount,
+            endpoint:     endpoint,
+            initialItems: isCategoryMode ? [] : initialEvents,
+            initialCount: isCategoryMode ? 0  : initialCount,
             query: "",
-            initialPages,
-            initialNext,
+            initialPages: isCategoryMode ? 1  : initialPages,
+            initialNext:  isCategoryMode ? false : initialNext,
         },
         filters,
     )
+
+    // Trigger fallback if category returns 0 results under no active user filters
+    useEffect(() => {
+        if (isCategoryMode && isEmpty) {
+            const hasOtherFilters =
+                !!filters.location?.country ||
+                !!filters.priceRange ||
+                !!filters.dateRange?.from
+
+            if (!hasOtherFilters) {
+                setHasFallback(true)
+            }
+        }
+    }, [isCategoryMode, isEmpty, filters])
 
     const pathName = usePathname()
     const showThisFilter = (filterPath: string) => pathName.split("/")[3] !== filterPath

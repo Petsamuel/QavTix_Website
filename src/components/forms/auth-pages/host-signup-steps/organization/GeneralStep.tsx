@@ -31,6 +31,7 @@ export function OrganizationGeneralStep() {
         resolver: zodResolver(organizationGeneralSchema),
         defaultValues: {
             ...(formData as Partial<OrganizationGeneralData>),
+            country: (formData as Partial<OrganizationGeneralData>).country || 'NG',
             phone: (formData as Partial<OrganizationGeneralData>).phone ?? '',
             profileImage: (formData as Partial<OrganizationGeneralData>).profileImage,
             bannerImage: (formData as Partial<OrganizationGeneralData>).bannerImage,
@@ -83,17 +84,10 @@ export function OrganizationGeneralStep() {
                 render={({ field }) => (
                     <PhoneNumberInput
                         value={field.value ?? undefined}
-                        onChange={(val) => {
-                            field.onChange(val ?? '');
-                            if (val && val.startsWith('+')) {
-                                try {
-                                    const parsed = parsePhoneNumber(val);
-                                    if (parsed && parsed.country) {
-                                        setValue('country', parsed.country, { shouldDirty: true, shouldValidate: true });
-                                    }
-                                } catch (e) {
-                                    // ignore
-                                }
+                        onChange={field.onChange}
+                        onCountryChange={(country) => {
+                            if (country) {
+                                setValue('country', country, { shouldDirty: true, shouldValidate: true });
                             }
                         }}
                         error={errors.phone?.message}

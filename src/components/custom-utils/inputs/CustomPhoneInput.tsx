@@ -27,6 +27,7 @@ interface NumberInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 interface PhoneNumberInputProps {
     value?: string
     onChange: (value: string | undefined) => void
+    onCountryChange?: (country: Country | undefined) => void
     error?: string
     placeholder?: string
     defaultCountry?: Country
@@ -154,6 +155,7 @@ const CustomCountrySelect = ({ value, onChange, options, disabled, defaultCountr
 export default function PhoneNumberInput({
     value,
     onChange,
+    onCountryChange,
     error,
     placeholder = '8123456789',
     defaultCountry = 'NG',
@@ -186,6 +188,7 @@ export default function PhoneNumberInput({
                     defaultCountry={defaultCountry}
                     value={value ?? ''}
                     onChange={onChange}
+                    onCountryChange={onCountryChange}
                     disabled={!isInteractable}
                     placeholder={placeholder}
                     autoComplete="off"

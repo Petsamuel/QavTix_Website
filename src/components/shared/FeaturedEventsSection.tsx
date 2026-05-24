@@ -7,7 +7,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Icon } from '@iconify/react'
 import { space_grotesk } from '@/lib/fonts'
-import { Avatar, AvatarFallback } from '../ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { mockAttendees } from '@/components-data/mock-attendees'
 import CarouselActionBtns from '../custom-utils/buttons/CarouselActionBtns'
 import { getAvatarColor } from '@/helper-fns/getAvatarColor'
 import { getInitialsFromName } from '@/helper-fns/getInitialFromName'
@@ -151,24 +152,29 @@ export default function FeaturedEventsSection({ events }: Props) {
                                             </div>
 
                                             <div className="flex items-center justify-between pt-4">
-                                                <div className="flex -space-x-2">
-                                                    <Avatar className="ring-2 ring-white size-7">
-                                                        <AvatarFallback className={`${getAvatarColor(event.id)} text-white text-xs`}>
-                                                            {getInitialsFromName(event.host)}
-                                                        </AvatarFallback>
-                                                    </Avatar>
-                                                    {event.attendees_count > 1 && (
-                                                        <Avatar className="ring-2 ring-white size-7">
-                                                            <AvatarFallback className="bg-primary-1 text-xs font-medium">
-                                                                +{event.attendees_count - 1}
-                                                            </AvatarFallback>
-                                                        </Avatar>
-                                                    )}
-                                                </div>
+                                                {(event.attendees_count ?? 0) > 0 && (
+                                                    <div className="flex -space-x-1.5 shrink-0">
+                                                        {mockAttendees.slice(0, event.attendees_count <= 5 ? event.attendees_count : 4).map((user) => (
+                                                            <Avatar key={user.id} className="ring-2 ring-white size-7">
+                                                                {user.profile_picture && <AvatarImage src={user.profile_picture} alt={user.full_name} />}
+                                                                <AvatarFallback className={`${getAvatarColor(user.id.toString())} text-white font-medium text-[10px]`}>
+                                                                    {getInitialsFromName(user.full_name)}
+                                                                </AvatarFallback>
+                                                            </Avatar>
+                                                        ))}
+                                                        {event.attendees_count > 5 && (
+                                                            <Avatar className="ring-2 ring-white size-7">
+                                                                <AvatarFallback className="bg-primary-1 font-medium text-secondary-7 text-xs">
+                                                                    +{event.attendees_count - 4}
+                                                                </AvatarFallback>
+                                                            </Avatar>
+                                                        )}
+                                                    </div>
+                                                )}
 
                                                 <div className="text-right">
                                                     <p className={`${space_grotesk.className} font-medium text-lg text-secondary-9`}>
-                                                        {formatPrice(parseInt(event.price), event.currency)}
+                                                        {parseInt(event.price) === 0 ? 'Free' : formatPrice(parseInt(event.price), event.currency)}
                                                     </p>
                                                 </div>
                                             </div>
