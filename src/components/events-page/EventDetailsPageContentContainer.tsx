@@ -39,7 +39,7 @@ export default function EventDetailsPageContentContainer({ event, relatedEvents 
                         }
                     </figure>
                     <HostNAttendeeDetailsSection event={event} className="md:mt-8" />
-                    <ContactHostForm event={event} />
+                    <ContactHostForm event={event} /> 
                 </div>
 
                 {/* Right column */}

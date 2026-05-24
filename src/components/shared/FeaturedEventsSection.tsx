@@ -18,6 +18,7 @@ import { Skeleton } from '../ui/skeleton'
 import { formatPrice } from '@/helper-fns/formatPrice'
 import { statusStyles, StatusStylesRecord } from '@/components/custom-utils/cards/resources/event-status-styles'
 import { cn } from '@/lib/utils'
+import { toTitleCase } from '@/helper-fns/stringFormaters'
 
 
 interface Props {
@@ -127,16 +128,16 @@ export default function FeaturedEventsSection({ events }: Props) {
                                         </span>
 
                                         <div className="absolute inset-x-0 -bottom-1 bg-white p-5 w-full group-hover:scale-103 border-b rounded-b-4xl lg:rounded-b-sm transform transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] translate-y-0 opacity-100 lg:translate-y-full lg:opacity-0 lg:group-hover:translate-y-0 md:group-hover:opacity-100">
-                                            <span className="bg-accent-1 w-fit block text-accent-7 font-medium py-1 px-2 rounded-2xl text-xs">
+                                            <span className="bg-accent-1 w-fit block text-accent-9 font-medium py-1 px-2 rounded-2xl text-xs">
                                                 {event.category}
                                             </span>
 
                                             <p className="text-sm text-secondary-9 font-medium mt-2 line-clamp-2">
-                                                {event.event_name}
+                                                {toTitleCase(event.event_name)}
                                             </p>
 
                                             <span className="text-[11px] block mt-1 text-neutral-7">
-                                                Hosted by {event.host}
+                                                Hosted by {toTitleCase(event.host)}
                                             </span>
 
                                             <div className="flex items-center gap-1 mt-2 text-neutral-7 text-[11px]">
