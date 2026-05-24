@@ -33,6 +33,7 @@ export function IndividualGeneralStep() {
         resolver: zodResolver(individualGeneralSchema),
         defaultValues: {
             ...(formData as Partial<IndividualGeneralData>),
+            country: (formData as Partial<IndividualGeneralData>).country || 'NG',
             phone: (formData as Partial<IndividualGeneralData>).phone ?? '',
             profileImage: (formData as Partial<IndividualGeneralData>).profileImage,
             bannerImage: (formData as Partial<IndividualGeneralData>).bannerImage,
@@ -89,17 +90,10 @@ export function IndividualGeneralStep() {
                 render={({ field }) => (
                     <PhoneNumberInput
                         value={field.value ?? undefined}
-                        onChange={(val) => {
-                            field.onChange(val ?? '');
-                            if (val && val.startsWith('+')) {
-                                try {
-                                    const parsed = parsePhoneNumber(val);
-                                    if (parsed && parsed.country) {
-                                        setValue('country', parsed.country, { shouldDirty: true, shouldValidate: true });
-                                    }
-                                } catch (e) {
-                                    // ignore
-                                }
+                        onChange={field.onChange}
+                        onCountryChange={(country) => {
+                            if (country) {
+                                setValue('country', country, { shouldDirty: true, shouldValidate: true });
                             }
                         }}
                         error={errors.phone?.message}

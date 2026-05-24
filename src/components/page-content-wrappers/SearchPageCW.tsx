@@ -209,7 +209,7 @@ export default function SearchPage() {
                                     <div className="text-right shrink-0">
                                         {card.price && parsePrice(card.price) != null && (
                                             <p className={`${space_grotesk.className} text-sm font-semibold text-secondary-9`}>
-                                                {formatPrice(parsePrice(card.price)!, card.currency || 'NGN')}
+                                                {parsePrice(card.price) === 0 ? 'Free' : formatPrice(parsePrice(card.price)!, card.currency || 'NGN')}
                                             </p>
                                         )}
                                     </div>
