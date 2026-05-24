@@ -25,7 +25,8 @@ export default function EventsCard(card: EventCardProps) {
 
     const [imageError, setImageError] = useState(false)
     const [showShare, setShowShare] = useState(false)
-    const displayCount = Math.min(card.attendees || 0, 3)
+    const totalAttendees = card.attendees || 0
+    const avatarsToShow = totalAttendees <= 5 ? totalAttendees : 4
 
     const { isFavourite, toggle: toggleFavourite, feedbackMsg } = useFavourite(card.id, card.isFavourite)
 
@@ -96,7 +97,7 @@ export default function EventsCard(card: EventCardProps) {
 
                     <div className="flex flex-col justify-between flex-1 mt-1">
                         <div>
-                            <span className="bg-accent-1 capitalize w-fit block text-accent-7 font-medium py-1 px-2 mt-2 rounded-2xl text-center text-xs">
+                            <span className="bg-accent-1 capitalize w-fit block text-accent-9 font-medium py-1 px-2 mt-2 rounded-2xl text-center text-xs">
                                 {card.category}
                             </span>
                             <span className="text-[11px] block mt-1 w-fit text-neutral-7 truncate max-w-full">
@@ -125,7 +126,7 @@ export default function EventsCard(card: EventCardProps) {
                         <div className="flex items-center flex-wrap justify-between pt-2 gap-2">
                             {(card.attendees ?? 0) > 0 && (
                                 <div className="flex -space-x-1.5 shrink-0">
-                                    {mockAttendees.slice(displayCount).map((user) => (
+                                    {mockAttendees.slice(0, avatarsToShow).map((user) => (
                                         <Avatar key={user.id} className="ring-2 ring-background size-8">
                                             {user.profile_picture && <AvatarImage src={user.profile_picture} alt={user.full_name} />}
                                             <AvatarFallback className={`${getAvatarColor(user.id.toString())} text-white font-medium text-[10px]`}>
@@ -133,10 +134,10 @@ export default function EventsCard(card: EventCardProps) {
                                             </AvatarFallback>
                                         </Avatar>
                                     ))}
-                                    {card.attendees && card.attendees > 3 && (
+                                    {card.attendees && card.attendees > 5 && (
                                         <Avatar className="ring-2 ring-background size-8">
                                             <AvatarFallback className="bg-primary-1 font-medium text-secondary-7 text-xs">
-                                                +{card.attendees - 3}
+                                                +{card.attendees - 4}
                                             </AvatarFallback>
                                         </Avatar>
                                     )}
@@ -151,7 +152,7 @@ export default function EventsCard(card: EventCardProps) {
                                 )}
                                 {card.price && parsePrice(card.price) != null && (
                                     <p className={`${space_grotesk.className} font-semibold text-lg text-secondary-9`}>
-                                        {formatPrice(parsePrice(card.price)!, card.currency || 'NGN')}
+                                        {parsePrice(card.price) === 0 ? 'Free' : formatPrice(parsePrice(card.price)!, card.currency || 'NGN')}
                                     </p>
                                 )}
                             </div>

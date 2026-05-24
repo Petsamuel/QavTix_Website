@@ -39,7 +39,7 @@ export default function TicketPricingSection({
                                 <div key={`${ticket.ticket_type}-${i}`} className="shrink-0 border-e-[1.5px] pe-3 border-accent-2">
                                     <p className="text-sm text-neutral-7 mb-2">{ticket.ticket_type}</p>
                                     <p className="text-sm font-medium text-neutral-10 tracking-[10%] md:tracking-[12%]">
-                                        {formatPrice(parseFloat(ticket.price), event.currency)}
+                                        {parseFloat(ticket.price) === 0 ? 'Free' : formatPrice(parseFloat(ticket.price), event.currency)}
                                     </p>
                                 </div>
                             ))}
