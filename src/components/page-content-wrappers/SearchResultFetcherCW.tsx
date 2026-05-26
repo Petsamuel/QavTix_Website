@@ -5,7 +5,7 @@ import { resolveCountryLabel, resolveStateLabel } from "@/helper-fns/resolveCoun
 
 type SearchPageParams = {
     q?: string
-    category?: string
+    category?: string | string[]
     country?: string
     state?: string
     min_price?: string
@@ -27,8 +27,15 @@ export default async function SearchResultFetcher({
         ? params.state === "FC" && params.country === "NG" ? "Abuja" : resolveStateLabel(params.state, params.country)
         : params.state
 
+    const categoryRaw = params.category
+    const parsedCategories = Array.isArray(categoryRaw)
+        ? categoryRaw.flatMap(c => c.split(","))
+        : typeof categoryRaw === "string"
+            ? categoryRaw.split(",")
+            : []
+
     const initialFilters: Partial<FilterValues> = {
-        categories: params.category ? [params.category] : [],
+        categories: parsedCategories,
         location: params.country
             ? { country: params.country, state: params.state || "" }
             : undefined,
@@ -44,7 +51,9 @@ export default async function SearchResultFetcher({
     }
 
     const searchFilters: SearchEventsFilters = {}
-    if (params.category) searchFilters.categories = [Number(params.category)]
+    if (parsedCategories.length > 0) {
+        searchFilters.categories = parsedCategories.map(Number).filter(n => !isNaN(n))
+    }
     if (countryLabel) searchFilters.country = countryLabel
     if (stateLabel) searchFilters.state = stateLabel
     if (params.min_price != null) searchFilters.min_price = Number(params.min_price)

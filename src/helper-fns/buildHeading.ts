@@ -4,13 +4,18 @@ import { countries, getStates } from "@/components-data/location";
 import { ApiCategory } from "@/actions/filters";
 import { resolveCountryLabel, resolveStateLabel } from "./resolveCountryCode";
 
-export const buildSearchResultsHeading = (filters: FilterValues) => {
+export const buildSearchResultsHeading = (filters: FilterValues, categoriesList?: ApiCategory[]) => {
   const { categories, location, priceRange, dateRange } = filters;
 
   // Categories
   const categoryText =
     categories && categories.length > 0
-      ? categories?.join(", ")
+      ? categories
+          .map((id) => {
+            const match = categoriesList?.find((c) => String(c.id) === String(id));
+            return match?.name ?? String(id);
+          })
+          .join(", ")
       : "all";
 
   // Location

@@ -19,6 +19,7 @@ export default function HeroSection({ categories }:{ categories: ApiCategory[] }
             behavior: 'smooth',
         })
     }
+    // console.log("categories", categories)
     
     return (
         <section className="md:pe-0! md:flex justify-between min-h-svh overflow-x-hidden">

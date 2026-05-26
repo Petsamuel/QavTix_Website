@@ -106,7 +106,7 @@ export function SearchResultSection({
             {/* Heading */}
             {hasActiveSearch && !isLoading && (
                 <h2 className={`max-w-xl text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 mb-10 ${space_grotesk.className}`}>
-                    {buildSearchResultsHeading(filters as FilterValues)}
+                    {buildSearchResultsHeading(filters as FilterValues, categories)}
                     {query && (
                         <span className="text-primary-6 ml-2">
                             &ldquo;{query}&rdquo;
