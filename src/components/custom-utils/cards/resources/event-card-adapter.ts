@@ -15,6 +15,7 @@ export interface EventCardProps {
     attendees?: number
     isFavourite?: boolean
     is_mine?: boolean
+    isFeatured?: boolean
     currency?: string          // ISO code e.g. "NGN", "USD", "GBP"
 }
 
@@ -48,7 +49,8 @@ export function fromPublicPagesEvent(e: PublicPagesEvent): EventCardProps {
         attendees: e.attendees_count,
         currency: e.currency ?? undefined,
         isFavourite: e.is_favorite,
-        is_mine: e.is_mine
+        is_mine: e.is_mine,
+        isFeatured: (e as any).is_featured
     }
 }
 
@@ -72,6 +74,7 @@ export function fromIEvent(e: IEvent & {
         status: e.status ?? null,
         attendees: e.attendees,
         isFavourite: false,
+        isFeatured: (e as any).is_featured,
         currency: e.currency ?? undefined,
     }
 }
