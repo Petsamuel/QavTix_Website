@@ -8,8 +8,8 @@ import { buildEqualSplitMembers, buildManualSplitMembers, SplitMember, validateS
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks'
 import { showAlert } from '@/lib/redux/slices/alertSlice'
 import { AttendeeInformationData, SplitMode } from '@/schemas/checkout-flow.schema'
-import { usePathname } from 'next/navigation'
-import { createContext, useState, ReactNode, useEffect, useContext, useMemo, useCallback, Dispatch, SetStateAction } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { createContext, useState, ReactNode, useEffect, useContext, useMemo, useCallback, Suspense } from 'react'
 import { CURRENCY_CHECKOUT_FEES, PLATFORM_FEE_PERCENT } from '@/components-data/currencies'
 
 
@@ -111,6 +111,19 @@ function normaliseTicket(t: EventTicket, index: number, quantity: number = 0): C
         sales_end: t.sales_end,
         promo_codes: t.promo_codes ?? [],
     }
+}
+
+// READS THE AFFILIATE REF FROM THE URL QUERY PARAM AND PERSISTS IT IN SESSION STORAGE
+// WRAPPED IN SUSPENSE INSIDE THE PROVIDER SO useSearchParams DOESN'T BREAK SSR PAGES
+function AffiliateRefCapture() {
+    const searchParams = useSearchParams()
+    useEffect(() => {
+        const ref = searchParams.get('ref')
+        if (ref) {
+            sessionStorage.setItem('affiliate_ref', ref)
+        }
+    }, [searchParams])
+    return null
 }
 
 export function CheckoutFlowProvider({ children, event, groups }: Props) {
@@ -339,6 +352,9 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                     )
                 : []
 
+            // Read the affiliate code that was stored when the user visited the event details page
+            const affiliateCode = sessionStorage.getItem("affiliate_ref") || undefined
+
             const paymentPayload: InitializePaymentPayload = isMarketplace
                 ? {
                     full_name: attendeeInfo.name!,
@@ -350,10 +366,14 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                     date_of_birth: attendeeInfo.dateOfBirth || '',
                     tickets: [],
                     ...(isSplit && { split_members: splitMembers }),
+                    ...(!user && {
+                        email: attendeeInfo.email!,
+                        send_update_emails: attendeeInfo.sendUpdates ? "true" : "false",
+                        keep_in_loop: attendeeInfo.keepInLoop ? "true" : "false"
+                    }),
                 }
                 : {
                     full_name: attendeeInfo.name!,
-                    email: attendeeInfo.email!,
                     event_id: event.id,
                     phone_number: attendeeInfo.phone!,
                     is_split: isSplit,
@@ -365,6 +385,12 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                     save_card: false,
                     date_of_birth: attendeeInfo.dateOfBirth || '',
                     ...(isSplit && { split_members: splitMembers }),
+                    ...(!user && {
+                        email: attendeeInfo.email!,
+                        send_update_emails: attendeeInfo.sendUpdates ? "true" : "false",
+                        keep_in_loop: attendeeInfo.keepInLoop ? "true" : "false"
+                    }),
+                    ...(affiliateCode && { affiliate_code: affiliateCode }),
                 }
 
             const init = await initializePayment(paymentPayload)
@@ -388,6 +414,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                         reference: transaction.reference,
                         save_card: false,
                         country: user?.country || country,
+                        ...(!user && { email: attendeeInfo.email! })
                     })
 
                     if (!verify.success) {
@@ -407,6 +434,9 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                             purchaseDate: new Date().toISOString(),
                         })
                     }
+
+                    // Clear the affiliate code after a successful purchase
+                    sessionStorage.removeItem("affiliate_ref")
 
                     dispatch(showAlert({
                         title: isSplit ? 'Split Payment Successful!' : 'Payment Successful!',
@@ -545,6 +575,9 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
 
     return (
         <CheckoutContext.Provider value={value}>
+            <Suspense fallback={null}>
+                <AffiliateRefCapture />
+            </Suspense>
             {children}
         </CheckoutContext.Provider>
     )

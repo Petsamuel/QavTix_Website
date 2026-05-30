@@ -198,18 +198,22 @@ async function _getLocationPage(
 
 // ─── event details ────────────────────────────────────────────────────────────
 
-export async function getEventDetails(eventID: string): Promise<{ success: boolean; data?: EventDetails; message?: string }> {
+export async function getEventDetails(eventID: string, refCode?: string): Promise<{ success: boolean; data?: EventDetails; message?: string }> {
     const token = await getAuthToken()
-    return _getEventDetails(token, eventID)
+    return _getEventDetails(token, eventID, refCode)
 }
 
 async function _getEventDetails(
     token: string | undefined,
     eventID: string,
+    refCode?: string
 ): Promise<{ success: boolean; data?: EventDetails; message?: string }> {
 
     try {
-        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`
+        let url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/${EVENT_DETAILS_ENDPOINT.replace("[event_id]", eventID)}`
+        if (refCode) {
+            url += `?ref=${encodeURIComponent(refCode)}`
+        }
         const res = await fetch(url, {
             headers: { ...(token && { Authorization: `Bearer ${token}` }) },
         })

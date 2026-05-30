@@ -18,6 +18,7 @@ interface VerifyPaymentPayload {
     reference: string
     save_card: boolean
     country: string
+    email?: string
 }
 
 interface VerifyPaymentResult {

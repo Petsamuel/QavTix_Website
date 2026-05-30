@@ -10,9 +10,10 @@ import { useState, useEffect } from "react"
 
 interface Props {
     event: EventDetails
+    affiliateCode?: string
 }
 
-export default function TicketStatusSection({ event }: Props) {
+export default function TicketStatusSection({ event, affiliateCode }: Props) {
     const [isMounted, setIsMounted] = useState(false)
 
     const { user, ticketSession } = useTicketUser()
@@ -60,5 +61,5 @@ export default function TicketStatusSection({ event }: Props) {
     }
 
     // Default: show pricing / buy tickets
-    return <TicketPricingSection event={event} />
+    return <TicketPricingSection event={event} affiliateCode={affiliateCode} />
 }
