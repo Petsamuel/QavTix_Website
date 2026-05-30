@@ -62,6 +62,7 @@ export default function ContactHostForm({ event }: Props) {
         if (url.includes("facebook"))                          return "fa6-brands:facebook"
         if (url.includes("tiktok"))                            return "ic:baseline-tiktok"
         if (url.includes("youtube"))                           return "mynaui:youtube-solid"
+        if(url.includes("linkedin"))                          return "pajamas:linkedin"
         return "humbleicons:globe"
     }
 
@@ -83,6 +84,7 @@ export default function ContactHostForm({ event }: Props) {
                                     social.url.includes("instagram") ? "Instagram" :
                                     social.url.includes("facebook") ? "Facebook" : "Social Media"}
                     >
+                       
                         <Icon icon={socialPlatformIcon(social.url)} width="24" height="24" className="text-secondary-9 size-9" />
                     </Link>
                 ))}

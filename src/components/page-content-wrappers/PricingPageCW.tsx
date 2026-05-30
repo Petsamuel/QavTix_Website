@@ -37,16 +37,20 @@ export default function PricingPageCW() {
                     onValueChange={(v) => setActivePricingTab(v as AccountType)}
                     className="w-full max-w-7xl mx-auto"
                 >
-                    <LiquidTabs
-                        value={activePricingTab}
-                        onValueChange={(v) => setActivePricingTab(v as AccountType)}
-                        options={[
-                            { label: "Host", value: "host" },
-                            { label: "Attendee", value: "attendee" },
-                        ]}
-                        className="w-[240px] mx-auto mb-8 lg:mb-20"
+                    <PricingContent
+                        activeTab={activePricingTab}
+                        tabsSwitcher={
+                            <LiquidTabs
+                                value={activePricingTab}
+                                onValueChange={(v) => setActivePricingTab(v as AccountType)}
+                                options={[
+                                    { label: "Host", value: "host" },
+                                    { label: "Attendee", value: "attendee" },
+                                ]}
+                                className="w-[240px] mx-auto mb-8 lg:mb-20"
+                            />
+                        }
                     />
-                    <PricingContent />
                 </Tabs>
             </div>
         </main>

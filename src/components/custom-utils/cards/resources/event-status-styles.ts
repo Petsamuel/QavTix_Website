@@ -14,6 +14,16 @@ export const statusStyles: StatusStylesRecord = {
     text: "text-primary-9",
     label: "Selling fast",
   },
+  "Fast-Selling": {
+    bg: "bg-white/90 backdrop-blur-sm shadow-sm",
+    text: "text-neutral-8",
+    label: "Fast-Selling",
+  },
+  "fast-selling": {
+    bg: "bg-white/90 backdrop-blur-sm shadow-sm",
+    text: "text-neutral-8",
+    label: "Fast-Selling",
+  },
   "near_capacity": {
     bg: "bg-accent-1",
     text: "text-accent-7",
