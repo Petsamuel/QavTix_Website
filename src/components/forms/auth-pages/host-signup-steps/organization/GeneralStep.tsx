@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useSignup } from '@/contexts/HostSignupProvider'
 import { organizationGeneralSchema, type OrganizationGeneralData } from '@/schemas/host-signup.schema'
 import FormSelect1 from '@/components/custom-utils/inputs/FormSelect1'
+import SearchableSelect from '@/components/custom-utils/inputs/SearchableSelect'
 import FormCheckbox1 from '@/components/custom-utils/inputs/FormCheckbox1'
 import { Country, State } from 'country-state-city';
 import Link from 'next/link'
@@ -13,6 +14,7 @@ import TextInput1 from '@/components/custom-utils/inputs/TextInput1'
 import { BannerImageUpload } from '@/components/custom-utils/ImageUpload'
 import ProfileImageUpload from '@/components/custom-utils/ProfileImageUpload'
 import PhoneNumberInput from '@/components/custom-utils/inputs/CustomPhoneInput'
+import { parsePhoneNumber } from 'react-phone-number-input'
 import { LEGAL_LINKS } from '@/components-data/navigation/navLinks'
 
 export function OrganizationGeneralStep() {
@@ -22,12 +24,14 @@ export function OrganizationGeneralStep() {
         register,
         control,
         watch,
+        setValue,
         handleSubmit,
         formState: { errors }
     } = useForm<OrganizationGeneralData>({
         resolver: zodResolver(organizationGeneralSchema),
         defaultValues: {
             ...(formData as Partial<OrganizationGeneralData>),
+            country: (formData as Partial<OrganizationGeneralData>).country || 'NG',
             phone: (formData as Partial<OrganizationGeneralData>).phone ?? '',
             profileImage: (formData as Partial<OrganizationGeneralData>).profileImage,
             bannerImage: (formData as Partial<OrganizationGeneralData>).bannerImage,
@@ -80,7 +84,12 @@ export function OrganizationGeneralStep() {
                 render={({ field }) => (
                     <PhoneNumberInput
                         value={field.value ?? undefined}
-                        onChange={(val) => field.onChange(val ?? '')}
+                        onChange={field.onChange}
+                        onCountryChange={(country) => {
+                            if (country) {
+                                setValue('country', country, { shouldDirty: true, shouldValidate: true });
+                            }
+                        }}
                         error={errors.phone?.message}
                         defaultCountry="NG"
                         data-testid="phone"
@@ -138,7 +147,7 @@ export function OrganizationGeneralStep() {
                     name="state"
                     control={control}
                     render={({ field }) => (
-                        <FormSelect1
+                        <SearchableSelect
                             label="State"
                             required
                             options={states}

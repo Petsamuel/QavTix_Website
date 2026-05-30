@@ -15,6 +15,7 @@ import { useFavourite } from "@/lib/custom-hooks/UseFavourite"
 import ShareEventModal from "@/components/modals/ShareEventModal"
 import { useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
+import Image from "next/image"
 
 interface Props {
     event: EventDetails | MarketplaceEventDetails
@@ -51,15 +52,28 @@ export default function EventOverviewSection({ event, className }: Props) {
                 </h1>
 
                 <div className="flex items-center flex-wrap gap-8 gap-y-4 md:justify-between mt-3 md:mt-0">
-                    <div className="mt-3 flex flex-wrap w-1/2 gap-3">
+                    <div className="mt-3 flex flex-wrap w-1/2 gap-3 ">
                         <Badge
-                            variant="default"
+                            variant="outline"
+
                             className={`py-1 px-2 rounded-2xl text-center text-[14px] font-medium capitalize ${statusStyles[event.event_status as keyof StatusStylesRecord]?.bg ?? "bg-neutral-2"
                                 } ${statusStyles[event.event_status as keyof StatusStylesRecord]?.text ?? "text-neutral-7"
+                                } border border-[#3D4149]! inline-flex items-center justify-center text-[#3D4149] bg`}
+                        >
+                            <Image src="/Fire.svg" alt="Fire Icon" width={16} height={16}/>
+                            {/* {event.event_status === "sold-out" ? "Sold Out" : event.event_status}  */}
+                            {new Date(event.end_datetime).getTime() > Date.now() ? "Starts Soon" : event.event_status}
+                        </Badge>
+                        
+                        {/* option 2 */}
+                        {event.event_status === "sold-out" && <Badge
+                            variant="default"
+                            className={`py-1 px-2 rounded-2xl text-center text-[14px] font-medium capitalize ${statusStyles[event.event_status as keyof StatusStylesRecord]?.bg ?? "bg-[#FFFBEB] text-red-900"
+                                } ${statusStyles[event.event_status as keyof StatusStylesRecord]?.text ?? "text-red-900"
                                 }`}
                         >
-                            {event.event_status}
-                        </Badge>
+                            {event.event_status } 
+                        </Badge>}
 
                         {
                             event.age_restriction && (
@@ -106,8 +120,10 @@ export default function EventOverviewSection({ event, className }: Props) {
                     </div>
 
                     <div className="flex items-center gap-1">
-                        <Icon icon="hugeicons:location-01" className="size-4 shrink-0 text-accent-6" />
-                        <Link
+                        {/* Icon */}
+                       {event.location_type !== "online" ? <>
+                       <Icon icon="hugeicons:location-01" className="size-4 shrink-0 text-accent-6" />
+                       <Link
                             href={`https://maps.google.com/?q=${encodeURIComponent(mapQuery)}`}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -116,6 +132,20 @@ export default function EventOverviewSection({ event, className }: Props) {
                             <span className="text-sm wrap-break-words flex-1">{fullAddress}</span>
                             <Icon icon="system-uicons:arrow-top-right" width="16" height="16" className="shrink-0 -ml-0.5" />
                         </Link>
+                       </>:<Link
+                            href={`${event.event_location.address}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-fit min-w-0 text-neutral-7 inline-flex gap-1  items-center"
+                        >
+                            <div className="items-center gap-2  inline-flex justify-center ">
+                                <Icon icon="hugeicons:location-01" className="size-4 shrink-0 text-accent-6" />
+                               <div>
+                                 <span className="text-sm wrap-break-words flex font-normal">Venue: {event.event_location.venue_name}</span>
+                                {/* <span className="text-sm wrap-break-words flex-1 underline">Link: {event.event_location.address}</span> */}
+                               </div>
+                            </div>
+                        </Link>}
                     </div>
                 </div>
 
@@ -126,10 +156,12 @@ export default function EventOverviewSection({ event, className }: Props) {
                             onClick={() => router.push(MARKETPLACE_ROUTES.CHECKOUT.href.replace("[ticket_id]", (event as MarketplaceEventDetails).listing_id.toString()))}
                             className="bg-primary-6 mt-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
                         >
-                            Purchase Ticket
+                            Purchase Ticket 
                         </button>
                         :
-                        <TicketStatusSection event={event} />
+                       <>
+                       { event.event_status !== "sold-out" && <TicketStatusSection event={event} />}
+                       </>
                 }
 
                 {/* Full description */}

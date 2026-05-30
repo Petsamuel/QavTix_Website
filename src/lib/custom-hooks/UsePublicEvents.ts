@@ -175,7 +175,13 @@ export function usePublicEvents(
     }, [config.endpoint, config.query])
 
     useEffect(() => {
-        if (!initialized.current) return
+        if (!initialized.current) {
+            if (config.initialItems.length === 0) {
+                pageRef.current = 1
+                fetchData(1, false)
+            }
+            return
+        }
         if (prevFilterKey.current === filterKey) return
         prevFilterKey.current = filterKey
 

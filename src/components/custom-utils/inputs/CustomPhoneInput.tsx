@@ -5,7 +5,8 @@ import PhoneInput, { getCountryCallingCode, Country } from 'react-phone-number-i
 import flags from 'react-phone-number-input/flags'
 import 'react-phone-number-input/style.css'
 import { cn } from '@/lib/utils'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Search } from 'lucide-react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { inter } from '@/lib/fonts'
 
 
@@ -13,6 +14,8 @@ interface CountrySelectProps {
     value?: Country
     onChange: (value?: Country) => void
     options: { value?: Country; label: string }[]
+    disabled?: boolean
+    defaultCountry?: Country
 }
 
 interface NumberInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -24,28 +27,148 @@ interface NumberInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 interface PhoneNumberInputProps {
     value?: string
     onChange: (value: string | undefined) => void
+    onCountryChange?: (country: Country | undefined) => void
     error?: string
     placeholder?: string
     defaultCountry?: Country
     label?: string
     className?: string
+    disabled?: boolean
+    readOnly?: boolean
+}
+
+const CustomInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
+    ({ country, international, withCountryCallingCode, ...rest }, ref) => {
+        const { value, onChange, ...inputProps } = rest;
+
+        return (
+            <input
+                {...inputProps}
+                value={value}
+                onChange={onChange}
+                ref={ref}
+                autoComplete="off"
+                data-lpignore="true"
+                data-form-type="other"
+                data-1p-ignore="true"
+                name={`phone-${Math.random()}`}
+                className={cn(
+                    inter.className,
+                    "flex-1 bg-transparent px-4 py-3 text-sm outline-none text-neutral-9 placeholder:text-secondary-5 h-full"
+                )}
+            />
+        )
+    }
+)
+
+const CustomCountrySelect = ({ value, onChange, options, disabled, defaultCountry }: CountrySelectProps) => {
+    const [searchQuery, setSearchQuery] = React.useState('')
+    const [open, setOpen] = React.useState(false)
+
+    const displayCountry = value || defaultCountry || 'NG';
+    const Flag = flags[displayCountry as Country]
+
+    const filteredOptions = React.useMemo(() => {
+        return options.filter(opt => {
+            if (!opt.value) return false;
+            const name = opt.label.toLowerCase();
+            const code = opt.value.toLowerCase();
+            const query = searchQuery.toLowerCase();
+            return name.includes(query) || code.includes(query);
+        });
+    }, [options, searchQuery]);
+
+    return (
+        <div className="relative flex items-center h-full">
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <button
+                        type="button"
+                        disabled={disabled}
+                        className="flex items-center gap-2 px-4 h-full cursor-pointer hover:bg-neutral-50 transition-colors disabled:cursor-not-allowed select-none outline-none"
+                    >
+                        {Flag && (
+                            <span className="size-7 overflow-hidden rounded-sm shrink-0 inline-flex">
+                                <Flag title={displayCountry} />
+                            </span>
+                        )}
+                        <ChevronDown className="size-4 text-secondary-5" />
+                    </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-0" align="start" sideOffset={8}>
+                    <div className="flex items-center border-b px-3 py-2 bg-neutral-50 rounded-t-lg">
+                        <Search className="size-4 mr-2 text-neutral-400 shrink-0" />
+                        <input
+                            type="text"
+                            placeholder="Search country..."
+                            className="w-full bg-transparent text-sm outline-none placeholder:text-neutral-400 text-neutral-9 py-1"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            autoFocus
+                        />
+                    </div>
+                    <ul className="max-h-64 overflow-y-auto py-1">
+                        {filteredOptions.length === 0 ? (
+                            <li className="px-4 py-3 text-sm text-neutral-400 text-center">
+                                No country found
+                            </li>
+                        ) : (
+                            filteredOptions.map(({ value: optValue, label: optLabel }) => {
+                                const OptFlag = optValue ? flags[optValue] : null;
+                                const isSelected = optValue === value;
+                                return (
+                                    <li key={optValue || 'ZZ'}>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                onChange(optValue);
+                                                setOpen(false);
+                                                setSearchQuery('');
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-3 w-full px-4 py-2 text-left text-sm hover:bg-neutral-50 transition-colors",
+                                                isSelected && "bg-neutral-100 font-medium text-primary-6"
+                                            )}
+                                        >
+                                            {OptFlag && (
+                                                <span className="size-6 overflow-hidden rounded-sm shrink-0 inline-flex">
+                                                    <OptFlag title={optLabel} />
+                                                </span>
+                                            )}
+                                            <span className="flex-1 truncate text-xs">{optLabel}</span>
+                                            <span className="text-xs text-neutral-400 font-normal">
+                                                +{getCountryCallingCode(optValue as Country)}
+                                            </span>
+                                        </button>
+                                    </li>
+                                )
+                            })
+                        )}
+                    </ul>
+                </PopoverContent>
+            </Popover>
+            <div className="h-8 w-px bg-secondary-4" />
+        </div>
+    )
 }
 
 export default function PhoneNumberInput({
     value,
     onChange,
+    onCountryChange,
     error,
     placeholder = '8123456789',
-    defaultCountry = 'US',
+    defaultCountry = 'NG',
     label = "Phone Number",
-    className
+    className,
+    disabled,
+    readOnly
 }: PhoneNumberInputProps) {
+    const isInteractable = !disabled && !readOnly;
 
-    // Ensure we always have a country code to display even if value is empty
-    // We derive it from the value (if it exists) or fall back to defaultCountry
-    const currentCountry = (value && value.startsWith('+'))
-        ? undefined // The library will handle deriving it from the string
-        : defaultCountry;
+    const CountrySelect = React.useMemo(() => (props: CountrySelectProps) => (
+        <CustomCountrySelect {...props} defaultCountry={defaultCountry} />
+    ), [defaultCountry])
 
     return (
         <div className={cn("w-full space-y-2", className)}>
@@ -56,7 +179,8 @@ export default function PhoneNumberInput({
             <div className={cn(
                 inter.className,
                 "flex items-center w-full h-14 text-sm rounded-lg border bg-white transition-all focus-within:ring-1 focus-within:ring-primary-6 focus-within:border-primary-6",
-                error ? "border-red-400" : "border-secondary-5 hover:border-secondary-6"
+                error ? "border-red-400" : "border-secondary-5 hover:border-secondary-6",
+                !isInteractable && "bg-neutral-100 opacity-80 pointer-events-none"
             )}>
                 <PhoneInput
                     international
@@ -64,65 +188,14 @@ export default function PhoneNumberInput({
                     defaultCountry={defaultCountry}
                     value={value ?? ''}
                     onChange={onChange}
+                    onCountryChange={onCountryChange}
+                    disabled={!isInteractable}
                     placeholder={placeholder}
                     autoComplete="off"
                     className="flex w-full h-full custom-phone-input"
 
-                    countrySelectComponent={({ value: country, onChange: onCountryChange, options }: CountrySelectProps) => {
-                        // If 'country' is undefined (because user cleared input), 
-                        // we fallback to display the defaultCountry code
-                        const displayCountry = country || defaultCountry;
-                        const Flag = flags[displayCountry]
-
-                        return (
-                            <div className="relative flex items-center px-4 h-full cursor-pointer group">
-                                <select
-                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                    value={displayCountry}
-                                    onChange={(event) => onCountryChange(event.target.value as Country)}
-                                >
-                                    {options.map(({ value: optValue, label: optLabel }) => (
-                                        <option key={optValue || 'ZZ'} value={optValue}>
-                                            {optLabel}
-                                        </option>
-                                    ))}
-                                </select>
-                                <div className="flex items-center gap-2 ...">
-                                    {Flag && (
-                                        <span className="size-7 overflow-hidden rounded-sm shrink-0 inline-flex">
-                                            <Flag title={displayCountry} />
-                                        </span>
-                                    )}
-                                    <ChevronDown className="size-4 text-secondary-5" />
-                                </div>
-                                <div className="ml-2 h-8 w-px bg-secondary-4" />
-                            </div>
-                        )
-                    }}
-
-                    numberinputcomponent={React.forwardRef<HTMLInputElement, NumberInputProps>(
-                        ({ country, international, withCountryCallingCode, ...rest }, ref) => {
-                            const { value, onChange, ...inputProps } = rest;
-
-                            return (
-                                <input
-                                    {...inputProps}
-                                    value={value}
-                                    onChange={onChange}
-                                    ref={ref}
-                                    autoComplete="off"
-                                    data-lpignore="true"
-                                    data-form-type="other"
-                                    data-1p-ignore="true"
-                                    name={`phone-${Math.random()}`}
-                                    className={cn(
-                                        inter.className,
-                                        "flex-1 bg-transparent px-4 py-3 text-sm outline-none text-neutral-9 placeholder:text-secondary-5 h-full"
-                                    )}
-                                />
-                            )
-                        }
-                    )}
+                    countrySelectComponent={CountrySelect}
+                    inputComponent={CustomInput}
                 />
             </div>
 

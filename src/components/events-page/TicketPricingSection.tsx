@@ -39,7 +39,7 @@ export default function TicketPricingSection({
                                 <div key={`${ticket.ticket_type}-${i}`} className="shrink-0 border-e-[1.5px] pe-3 border-accent-2">
                                     <p className="text-sm text-neutral-7 mb-2">{ticket.ticket_type}</p>
                                     <p className="text-sm font-medium text-neutral-10 tracking-[10%] md:tracking-[12%]">
-                                        {formatPrice(parseFloat(ticket.price), event.currency)}
+                                        {parseFloat(ticket.price) === 0 ? 'Free' : formatPrice(parseFloat(ticket.price), event.currency)}
                                     </p>
                                 </div>
                             ))}
@@ -58,22 +58,52 @@ export default function TicketPricingSection({
             )}
 
             <div className="mt-8">
-                <LiquidLink
-                    onClick={() => {
-                        const userAge = user?.dob
-                            ? new Date().getFullYear() - new Date(user.dob).getFullYear()
-                            : null;
+                {event.location_type === "online" && new Date(event.start_datetime).getTime() > Date.now() ? (
+                    <button
+                        disabled
+                        className="bg-neutral-3 text-[#6b7280] border border-neutral-4 px-6 py-4 rounded-full font-medium cursor-not-allowed select-none inline-flex items-center justify-center text-sm"
+                    >
+                        Upcoming Webinar
+                    </button>
+                ) : (
+                    <LiquidLink
+                        onClick={() => {
+                            if (event.location_type === "online") {
+                                const fields = [
+                                    event.event_location?.address,
+                                    event.event_location?.venue_name
+                                ];
+                                let onlineLink = null;
+                                for (const f of fields) {
+                                    if (f && (f.trim().startsWith("http://") || f.trim().startsWith("https://"))) {
+                                        onlineLink = f.trim();
+                                        break;
+                                    }
+                                }
 
-                        const isUnderAge = event.age_restriction && isAuthenticated && userAge !== null && event.minimum_age !== null && userAge < event.minimum_age;
+                                if (onlineLink) {
+                                    window.open(onlineLink, "_blank", "noopener,noreferrer");
+                                } else {
+                                    router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id.toString()));
+                                }
+                                return;
+                            }
 
-                        isUnderAge
-                            ? setShowAgeRestrictionModal(true)
-                            : router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id.toString()));
-                    }}
-                    className="bg-primary-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
-                >
-                    Get Tickets
-                </LiquidLink>
+                            const userAge = user?.dob
+                                ? new Date().getFullYear() - new Date(user.dob).getFullYear()
+                                : null;
+
+                            const isUnderAge = event.age_restriction && isAuthenticated && userAge !== null && event.minimum_age !== null && userAge < event.minimum_age;
+
+                            isUnderAge
+                                ? setShowAgeRestrictionModal(true)
+                                : router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id.toString()));
+                        }}
+                        className="bg-primary-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
+                    >
+                        {event.location_type === "online" ? "Join the Webinar" : "Get Tickets"}
+                    </LiquidLink>
+                )}
             </div>
 
             <AccessDeniedModal open={showAgeRestrictionModal} setOpen={setShowAgeRestrictionModal} eventID={event.id.toString()} />

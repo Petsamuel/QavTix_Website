@@ -108,7 +108,7 @@ const HostNAttendeeDetailsSection = ({ event, className }: Props) => {
                         <Badge
                             key={`${tag}-${i}`}
                             variant="default"
-                            className="py-1 px-2 bg-accent-1 text-accent-7 rounded-2xl text-center text-sm font-medium capitalize"
+                            className="py-1 px-2 bg-accent-1 text-accent-9 rounded-2xl text-center text-sm font-medium capitalize"
                         >
                             #{tag.replace(/\s+/g, "")}
                         </Badge>

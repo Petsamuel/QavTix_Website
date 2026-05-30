@@ -1,4 +1,5 @@
 // Add fields here as the card grows. Never put raw API models in the card.
+import { toTitleCase } from '@/helper-fns/stringFormaters'
 
 export interface EventCardProps {
     id: string
@@ -14,6 +15,7 @@ export interface EventCardProps {
     attendees?: number
     isFavourite?: boolean
     is_mine?: boolean
+    isFeatured?: boolean
     currency?: string          // ISO code e.g. "NGN", "USD", "GBP"
 }
 
@@ -35,9 +37,9 @@ export function fromPublicPagesEvent(e: PublicPagesEvent): EventCardProps {
 
     return {
         id: e.id,
-        title: e.event_name,
+        title: toTitleCase(e.event_name),
         category: e.category,
-        host: e.host,
+        host: toTitleCase(e.host),
         date: e.event_datetime,
         location: formatLocation(e.event_location),
         image: e.event_image,
@@ -47,7 +49,8 @@ export function fromPublicPagesEvent(e: PublicPagesEvent): EventCardProps {
         attendees: e.attendees_count,
         currency: e.currency ?? undefined,
         isFavourite: e.is_favorite,
-        is_mine: e.is_mine
+        is_mine: e.is_mine,
+        isFeatured: (e as any).is_featured
     }
 }
 
@@ -60,9 +63,9 @@ export function fromIEvent(e: IEvent & {
 }): EventCardProps {
     return {
         id: e.id,
-        title: e.title ?? '',
+        title: toTitleCase(e.title ?? ''),
         category: e.resolvedCategory ?? '',
-        host: e.organizer_display_name,
+        host: toTitleCase(e.organizer_display_name),
         date: e.start_datetime,
         location: e.resolvedLocation ?? '',
         image: '',
@@ -71,6 +74,7 @@ export function fromIEvent(e: IEvent & {
         status: e.status ?? null,
         attendees: e.attendees,
         isFavourite: false,
+        isFeatured: (e as any).is_featured,
         currency: e.currency ?? undefined,
     }
 }

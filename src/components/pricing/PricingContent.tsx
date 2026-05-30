@@ -25,15 +25,16 @@ function PlanGrid({ plans }: { plans: PricingPlan[] }) {
 }
 
 // HOST TAB CONTENT — WRAPPED IN ITS OWN PROVIDER SO CONTEXT IS SCOPED CORRECTLY
-function HostPricingTab() {
+function HostPricingTab({ tabsSwitcher }: { tabsSwitcher: React.ReactNode }) {
     return (
+       
         <PricingCheckoutProvider accountType="host">
-            <HostPricingTabInner />
+            <HostPricingTabInner tabsSwitcher={tabsSwitcher} />
         </PricingCheckoutProvider>
     )
 }
 
-function HostPricingTabInner() {
+function HostPricingTabInner({ tabsSwitcher }: { tabsSwitcher: React.ReactNode }) {
     const { status } = usePricingCheckout()
 
     return (
@@ -43,12 +44,12 @@ function HostPricingTabInner() {
             <h2 className={`${space_grotesk.className} font-bold text-2xl md:text-3xl lg:text-[2.5rem] text-secondary-9`}>
                 Pricing that grows with your events
             </h2>
-            <p className="text-neutral-8 mt-4">
+            <p className="text-neutral-8 mt-4 mb-6">
                 Start free and upgrade anytime. Whether you're hosting your first event or managing hundreds, QavTix offers flexible, fair pricing designed for organizers at every level.
             </p>
 
-            <div className="my-12 flex justify-center items-center">
-                <CurrencySwitcher className="bg-primary-1!" />
+            <div className="my-8 lg:my-12">
+                {tabsSwitcher}
             </div>
 
             <PlanGrid plans={hostPricingData.plans} />
@@ -67,15 +68,15 @@ function HostPricingTabInner() {
 }
 
 // ATTENDEE TAB CONTENT — OWN PROVIDER, INDEPENDENT STATE FROM HOST TAB
-function AttendeePricingTab() {
+function AttendeePricingTab({ tabsSwitcher }: { tabsSwitcher: React.ReactNode }) {
     return (
         <PricingCheckoutProvider accountType="attendee">
-            <AttendeePricingTabInner />
+            <AttendeePricingTabInner tabsSwitcher={tabsSwitcher} />
         </PricingCheckoutProvider>
     )
 }
 
-function AttendeePricingTabInner() {
+function AttendeePricingTabInner({ tabsSwitcher }: { tabsSwitcher: React.ReactNode }) {
     const { status } = usePricingCheckout()
 
     return (
@@ -88,6 +89,10 @@ function AttendeePricingTabInner() {
             <p className="text-neutral-8 mt-4 max-w-3xl">
                 From free events to premium experiences — pay only for what you enjoy. Whether you're attending your first gathering or joining hundreds, QavTix gives you clear, fair pricing designed for attendees like you.
             </p>
+
+            <div className="my-8 lg:my-12">
+                {tabsSwitcher}
+            </div>
 
             <div className="my-12 flex justify-center items-center">
                 <CurrencySwitcher className="bg-primary-1!" />
@@ -108,15 +113,20 @@ function AttendeePricingTabInner() {
     )
 }
 
-export default function PricingContent() {
+interface PricingContentProps {
+    activeTab: AccountType
+    tabsSwitcher: React.ReactNode
+}
+
+export default function PricingContent({ activeTab, tabsSwitcher }: PricingContentProps) {
     return (
         <>
             <TabsContent value="host">
-                <HostPricingTab />
+                <HostPricingTab tabsSwitcher={tabsSwitcher} />
             </TabsContent>
 
             <TabsContent value="attendee">
-                <AttendeePricingTab />
+                <AttendeePricingTab tabsSwitcher={tabsSwitcher} />
             </TabsContent>
         </>
     )
