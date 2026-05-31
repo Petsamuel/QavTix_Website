@@ -13,8 +13,8 @@ interface IMultiStepFormButtonDuo {
 
 export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormButtonDuo) {
     const router = useRouter()
-    const { currentStep, nextStep, updateAttendeeInfo, isProcessing, prevStep, canProceedToCheckout, clearTickets } = useCheckout()
-    const { splitError, setShowSplitError } = useSplitPayment()
+    const { currentStep, nextStep, updateAttendeeInfo, setSplitPaymentMode, isProcessing, prevStep, canProceedToCheckout, clearTickets } = useCheckout()
+    const { splitError, setShowSplitError, splitMode } = useSplitPayment()
     const { form } = useCheckoutAttendeeInfoForm()
 
     const buttonIsDisabled = !!isSubmitting || isProcessing || !!splitError
@@ -39,6 +39,10 @@ export default function CheckoutFlowActionBtns({ isSubmitting }: IMultiStepFormB
                 }
                 return
             }
+
+            // Commit the split mode into the checkout context BEFORE advancing
+            // so processPayment reads the correct equal/manual value.
+            setSplitPaymentMode(splitMode)
 
             // Sync form values into checkout context before proceeding
             updateAttendeeInfo({

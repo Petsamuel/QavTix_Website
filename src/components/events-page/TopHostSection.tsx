@@ -89,7 +89,7 @@ export default function TopHostsSection({ hosts }: Props) {
   if (hosts.length === 0) return null
 
   return (
-    <section className="w-full pt-16 md:pt-10 pb-16 px-4 md:ps-10 lg:ps-16 md:pe-0">
+    <section className="w-full lg:mt-26 pt-16 md:pt-10 pb-16 px-4 md:ps-10 lg:ps-16 md:pe-0">
       <div>
         <div className="flex pe-4 items-center gap-6 justify-between mb-8 md:pe-10">
           <h2 className={`text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
