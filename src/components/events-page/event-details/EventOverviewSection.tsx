@@ -20,9 +20,10 @@ import Image from "next/image"
 interface Props {
     event: EventDetails | MarketplaceEventDetails
     className?: string
+    affiliateCode?: string
 }
 
-export default function EventOverviewSection({ event, className }: Props) {
+export default function EventOverviewSection({ event, className, affiliateCode }: Props) {
 
     const [showShare, setShowShare] = useState(false)
     const pathName = usePathname()
@@ -30,7 +31,8 @@ export default function EventOverviewSection({ event, className }: Props) {
 
     const { isFavourite, toggle: toggleFavourite, feedbackMsg } = useFavourite(event.id, event.is_favorite)
 
-    const eventUrl = `${process.env.NEXT_PUBLIC_APP_DOMAIN}${EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}`
+    const baseEventUrl = `${process.env.NEXT_PUBLIC_APP_DOMAIN}${EVENT_ROUTES.EVENTS_DETAILS.href.replace("[event_id]", event.id)}`
+    const eventUrl = affiliateCode ? `${baseEventUrl}?ref=${encodeURIComponent(affiliateCode)}` : baseEventUrl
     const fullAddress = [
         event.event_location.venue_name,
         event.event_location.address,
@@ -160,7 +162,7 @@ export default function EventOverviewSection({ event, className }: Props) {
                         </button>
                         :
                        <>
-                       { event.event_status !== "sold-out" && <TicketStatusSection event={event} />}
+                       { event.event_status !== "sold-out" && <TicketStatusSection event={event} affiliateCode={affiliateCode} />}
                        </>
                 }
 

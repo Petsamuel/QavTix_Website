@@ -81,9 +81,18 @@ interface InitializePaymentPayload {
     event_id?: string
     date_of_birth: string
 
+    // Guest checkout fields
+    send_update_emails?: string
+    keep_in_loop?: string
+
     // Regular event fields
     tickets?:  { ticket_id: number; quantity: number }[]
 
     // Marketplace (secondary ticket) field
     marketplace_listing_id?: string
+
+    // Split purchase fields
+    split_members?: any[]
+
+    affiliate_code?: string
 }

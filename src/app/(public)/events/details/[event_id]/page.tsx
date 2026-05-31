@@ -8,17 +8,18 @@ import { buildPageMetadata } from "@/metadata"
 
 interface Props {
     params: Promise<{ event_id: string }>
+    searchParams: Promise<{ ref?: string }>
 }
 
-
 export async function generateMetadata(
-    { params }: { params: Promise<{ event_id: string }> }
+    { params, searchParams }: Props
 ): Promise<Metadata> {
     const { event_id } = await params
-    const result       = await getEventDetails(event_id)
+    const { ref } = await searchParams
+    const result       = await getEventDetails(event_id, ref)
  
     if (!result.success || !result.data) {
-        return buildPageMetadata("Event Not Found", undefined, `/events/details/${event_id}`)
+        return buildPageMetadata("Event Not Found", undefined, `/events/details/${event_id}${ref ? `?ref=${ref}` : ""}`)
     }
  
     const { title, short_description, full_description, event_location } = result.data
@@ -27,14 +28,15 @@ export async function generateMetadata(
     return buildPageMetadata(
         title,
         desc,
-        `/events/details/${event_id}`,
+        `/events/details/${event_id}${ref ? `?ref=${ref}` : ""}`,
     )
 }
 
-export default async function EventDetailPage({ params }: Props) {
+export default async function EventDetailPage({ params, searchParams }: Props) {
     const { event_id } = await params
+    const { ref } = await searchParams
 
-    const result = await getEventDetails(event_id)
+    const result = await getEventDetails(event_id, ref)
 
     if (!result.success || !result.data) {
         return <EventNotFound />
@@ -58,6 +60,7 @@ export default async function EventDetailPage({ params }: Props) {
         <EventDetailsPageContentContainer
             event={event}
             relatedEvents={relatedEventsResult.data?.filter(v => v.id !== event.id) ?? []}
+            affiliateCode={ref}
         />
     )
 }

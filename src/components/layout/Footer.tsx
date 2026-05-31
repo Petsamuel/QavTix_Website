@@ -22,7 +22,7 @@ export default function Footer() {
                 <div className="max-w-7xl mx-auto">
                     {/* Main Footer Content */}
                     <div className="w-[90%] md:w-1/2 h-full absolute bg-contain bg-no-repeat bg-[url('/images/vectors/logo-bg-element-mobile.svg')] left-0 top-0 bottom-0 mx-auto pointer-events-none opacity-50"></div>
-                    <div className="grid relative z-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                    <div className="grid relative z-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-16">
                         <div>
                             <Logo />
                         </div>
@@ -53,7 +53,7 @@ export default function Footer() {
                     {/* Bottom Section */}
                     <div className="pt-8 border-t border-neutral-3 flex flex-col md:flex-row justify-between items-center gap-6 relative z-10">
                         {/* Social Icons (Left on Desktop, Center on Mobile) */}
-                        <div className="flex gap-6 items-center order-2 md:order-1">
+                        <div className="flex gap-6 items-center md:order-1">
                             {footerData.social.map((social) => (
                                 <Link
                                     key={social.label}
@@ -63,18 +63,18 @@ export default function Footer() {
                                     className="text-primary-6 hover:scale-110 transition-transform"
                                     aria-label={social.label}
                                 >
-                                    <Icon icon={social.icon} width="28" height="28" className="size-7" />
+                                    <Icon icon={social.icon} width="28" height="28" className="size-8" />
                                 </Link>
                             ))}
                         </div>
 
                         {/* Copyright (Center) */}
-                        <p className={`${space_grotesk.className} text-neutral-8 order-3 md:order-2 text-center`}>
+                        <p className={`${space_grotesk.className} text-neutral-8 md:order-2 text-center`}>
                             © 2025 QavTix
                         </p>
 
                         {/* Region Selector (Right) */}
-                        <div className="flex items-center gap-3 order-1 md:order-3">
+                        <div className="flex items-center gap-3 md:order-3">
                             <RegionSwitcher />
                         </div>
                     </div>

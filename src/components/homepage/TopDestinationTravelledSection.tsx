@@ -69,9 +69,9 @@ export default function TopDestinationTravelledSection({ locations }: Props) {
     }, [emblaApi, onSelect])
 
     return (
-        <section className="w-full py-8 mt-8 bg-neutral-1 ps-4 sm:ps-10 lg:ps-14 xl:ps-20 lg:min-h-[25em] lg:h-[25em]">
+        <section className="w-full py-8 mt-8 bg-neutral-1 lg:min-h-[25em] lg:h-[25em]">
             <div>
-                <div className="flex pe-4 items-center gap-6 justify-between mb-8 md:pe-10">
+                <div className="flex p-4 sm:p-10 lg:ps-14 xl:ps-20 items-center gap-6 justify-between mb-8">
                     <h2 className={`text-2xl md:text-3xl font-bold text-secondary-9 ${space_grotesk.className}`}>
                         Top traveled destinations
                     </h2>
@@ -83,7 +83,7 @@ export default function TopDestinationTravelledSection({ locations }: Props) {
                     />
                 </div>
 
-                <div className="overflow-hidden" ref={emblaRef}>
+                <div className="overflow-hidden ps-1.5" ref={emblaRef}>
                     <div className="flex gap-6 px-3 py-1">
                         {displayLocations.map(loc => (
                             <Link

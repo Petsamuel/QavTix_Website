@@ -23,7 +23,7 @@ export default function HeroSection({ categories }:{ categories: ApiCategory[] }
     
     return (
         <section className="md:pe-0! md:flex justify-between min-h-svh overflow-x-hidden">
-            <div className="md:w-[48%] py-32">
+            <div className="md:w-[48%] pt-32 pb-12 md:pb-32">
                 <div className="global-px">
                     <h1 className={`${space_grotesk.className} leading-tight text-primary-6 text-center text-[clamp(2.5rem,4vw,4.5rem)] md:leading-[1.1] md:text-left font-medium`}>
                         Discover <span className="text-secondary-9 md:block">Your Next</span> Experience

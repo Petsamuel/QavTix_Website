@@ -13,11 +13,13 @@ import { useAppSelector } from "@/lib/redux/hooks"
 interface Props {
     initialVisibleCount?: number
     event: EventDetails
+    affiliateCode?: string
 }
 
 export default function TicketPricingSection({
     initialVisibleCount = 4,
-    event
+    event,
+    affiliateCode,
 }: Props) {
 
     const router = useRouter()
@@ -95,9 +97,13 @@ export default function TicketPricingSection({
 
                             const isUnderAge = event.age_restriction && isAuthenticated && userAge !== null && event.minimum_age !== null && userAge < event.minimum_age;
 
-                            isUnderAge
-                                ? setShowAgeRestrictionModal(true)
-                                : router.push(EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id.toString()));
+                            if (isUnderAge) {
+                                setShowAgeRestrictionModal(true)
+                                return
+                            }
+
+                            const checkoutHref = EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id.toString())
+                            router.push(affiliateCode ? `${checkoutHref}?ref=${encodeURIComponent(affiliateCode)}` : checkoutHref)
                         }}
                         className="bg-primary-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
                     >

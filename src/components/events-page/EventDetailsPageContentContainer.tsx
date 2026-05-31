@@ -12,9 +12,10 @@ import { Skeleton } from "../ui/skeleton"
 interface Props {
     event: EventDetails | MarketplaceEventDetails
     relatedEvents: PublicPagesEvent[]
+    affiliateCode?: string
 }
 
-export default function EventDetailsPageContentContainer({ event, relatedEvents }: Props) {
+export default function EventDetailsPageContentContainer({ event, relatedEvents, affiliateCode }: Props) {
     const imageSrc = event.event_media?.find(v => v.is_featured)?.image_url || event.event_media?.[0]?.image_url
 
     return (
@@ -59,7 +60,7 @@ export default function EventDetailsPageContentContainer({ event, relatedEvents 
                         }
                     </figure>
 
-                    <EventOverviewSection event={event} />
+                    <EventOverviewSection event={event} affiliateCode={affiliateCode} />
 
                     <div className="md:hidden">
                         <ContactHostForm event={event} />
