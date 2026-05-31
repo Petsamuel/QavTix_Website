@@ -9,7 +9,7 @@ import LiquidLink from "../custom-utils/buttons/LiquidGlassLink"
 export default function SellTicketsSection() {
 
     return (
-        <section className="global-px mt-14 mb-28 flex flex-col justify-center items-center text-center">
+        <section className="global-px mt-24 md:mt-14 mb-28 flex flex-col justify-center">
             <h2 className={`text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
                 Do you have tickets to sell?
             </h2>
@@ -18,7 +18,7 @@ export default function SellTicketsSection() {
                 Selling ticket has never been easier. Your one sure place to sell your tickets with no hassle.
             </p>
 
-            <div className="w-full flex items-center mt-8 justify-between sm:justify-center md:mt-14 gap-4">
+            <div className="w-full flex items-center mt-8 sm:justify-center md:mt-14 gap-4">
                 <LiquidLink
                     href={ATTENDEE_SELL_TICKET}
                     target="_blank"

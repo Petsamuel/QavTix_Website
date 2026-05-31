@@ -19,7 +19,7 @@ export default function PlanningAnEventSection() {
                     We make it easy to create, promote, and sell tickets for your events, all in one place. Plus, reaching your target audience and onboarding them has never been easier.
                 </p>
 
-                <div className="flex items-center mt-8 justify-between sm:justify-start md:mt-14 gap-4">
+                <div className="flex items-center mt-8 justify-center sm:justify-start md:mt-14 gap-4">
                     <LiquidLink
                         href={HOST_CREATE_EVENT}
                         target="_blank"

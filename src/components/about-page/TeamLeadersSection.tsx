@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import useEmblaCarousel from 'embla-carousel-react'
 import Image from 'next/image'
 import { space_grotesk } from '@/lib/fonts'
 import { Icon } from '@iconify/react'
@@ -51,31 +50,15 @@ export default function TeamLeadersCarousel() {
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [direction, setDirection] = useState(0)
 
-    const [mobileEmblaRef, mobileEmblaApi] = useEmblaCarousel({
-        loop: true,
-        align: 'center'
-    })
-
     const scrollPrev = useCallback(() => {
         setDirection(-1)
-        mobileEmblaApi?.scrollPrev()
-    }, [mobileEmblaApi])
+        setSelectedIndex((prev) => (prev - 1 + teamMembers.length) % teamMembers.length)
+    }, [])
 
     const scrollNext = useCallback(() => {
         setDirection(1)
-        mobileEmblaApi?.scrollNext()
-    }, [mobileEmblaApi])
-
-    const onMobileSelect = useCallback(() => {
-        if (!mobileEmblaApi) return
-        setSelectedIndex(mobileEmblaApi.selectedScrollSnap())
-    }, [mobileEmblaApi])
-
-    useEffect(() => {
-        if (!mobileEmblaApi) return
-        onMobileSelect()
-        mobileEmblaApi.on('select', onMobileSelect)
-    }, [mobileEmblaApi, onMobileSelect])
+        setSelectedIndex((prev) => (prev + 1) % teamMembers.length)
+    }, [])
 
     const currentMember = teamMembers[selectedIndex]
     const nextMember = teamMembers[(selectedIndex + 1) % teamMembers.length]
@@ -114,38 +97,63 @@ export default function TeamLeadersCarousel() {
 
                 {/* Mobile Layout */}
                 <div className="md:hidden overflow-x-hidden">
-                    <div className="flex flex-row-reverse items-center gap-3 mb-6 global-px pe-0!">
+                    <div className="flex flex-row-reverse items-center gap-4 mb-6 global-px pe-0!">
 
                         {/* Next member preview — fixed */}
-                        <div className="w-[27%] flex items-center justify-end overflow-hidden">
-                            <div className="relative w-[10.5em] h-[12em] my-auto aspect-3/4 rounded-3xl overflow-hidden">
+                        <div className="w-[15%] flex items-center justify-start overflow-hidden">
+                            <motion.div 
+                                layout
+                                key={nextMember.id}
+                                className="relative w-[10.5em] shrink-0 h-[12em] rounded-3xl overflow-hidden"
+                            >
                                 <button onClick={scrollNext} className="w-full h-full">
                                     <Image
                                         src={nextMember.image}
                                         alt={nextMember.name}
                                         fill
-                                        className="object-cover opacity-90"
+                                        className="object-cover opacity-90 transition-all duration-500"
                                     />
                                 </button>
-                            </div>
+                            </motion.div>
                         </div>
 
                         {/* Main carousel */}
-                        <div className="flex-1 overflow-hidden" ref={mobileEmblaRef}>
-                            <div className="flex">
-                                {teamMembers.map((member) => (
-                                    <div key={member.id} className="flex-[0_0_100%] rounded-[32px] overflow-hidden">
-                                        <div className="relative aspect-3/4 w-full h-75">
-                                            <Image
-                                                src={member.image}
-                                                alt={member.name}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                        <div className="flex-1 relative aspect-3/4 rounded-[32px] h-75 overflow-hidden">
+                            <AnimatePresence initial={false} custom={direction} mode="popLayout">
+                                <motion.div
+                                    key={selectedIndex}
+                                    custom={direction}
+                                    variants={variants}
+                                    initial="enter"
+                                    animate="center"
+                                    exit="exit"
+                                    transition={{
+                                        opacity: { duration: 0.6 },
+                                        scale: { type: 'spring', stiffness: 200, damping: 22 },
+                                        x: { type: 'spring', stiffness: 200, damping: 22 },
+                                    }}
+                                    drag="x"
+                                    dragConstraints={{ left: 0, right: 0 }}
+                                    dragElastic={0.2}
+                                    onDragEnd={(e, { offset, velocity }) => {
+                                        const swipe = offset.x;
+                                        if (swipe < -50) {
+                                            scrollNext();
+                                        } else if (swipe > 50) {
+                                            scrollPrev();
+                                        }
+                                    }}
+                                    className="absolute inset-0 w-full h-full touch-pan-y"
+                                >
+                                    <Image
+                                        src={currentMember.image}
+                                        alt={currentMember.name}
+                                        fill
+                                        className="object-cover"
+                                        priority
+                                    />
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </div>
 
@@ -192,7 +200,7 @@ export default function TeamLeadersCarousel() {
                         </div>
 
                         <div className="w-[75%] lg:w-[70%] grid grid-cols-2 gap-6 lg:gap-16 items-center">
-                            <div className="relative aspect-3/4 h-full min-h-[35em] overflow-hidden rounded-[40px]">
+                            <div className="relative aspect-3/4 w-full overflow-hidden rounded-[32px] lg:rounded-[40px]">
                                 <AnimatePresence initial={false} custom={direction} mode="popLayout">
                                     <motion.div
                                         key={selectedIndex}
