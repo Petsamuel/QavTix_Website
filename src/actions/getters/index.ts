@@ -9,7 +9,6 @@ import {
 } from "@/endpoints"
 import { handleApiError } from "@/helper-fns/handleApiErrors"
 import { getAuthToken } from "@/helper-fns/getAuthToken"
-import { CACHE_TAGS } from "@/cache-tags"
 
 const REGIONAL_MIN_THRESHOLD = 8
 
@@ -19,15 +18,10 @@ const REGIONAL_MIN_THRESHOLD = 8
 
 async function apiFetch<T>(url: string, token?: string): Promise<T | null> {
     try {
-        const res = await fetch(url, token
-            ? {
-                headers: { Authorization: `Bearer ${token}` },
-                cache: 'no-store',
-            }
-            : {
-                next: { revalidate: 60, tags: [CACHE_TAGS.EVENT_CARDS] },
-            }
-        )
+        const res = await fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+            cache: 'no-store',
+        })
         if (!res.ok) {
             console.log("[apiFetch] failed:", url, res.status)
             return null

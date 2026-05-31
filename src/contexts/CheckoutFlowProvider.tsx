@@ -51,6 +51,7 @@ interface CheckoutState {
     isProcessing: boolean
     checkoutComplete: boolean  // FLIPS TO TRUE AFTER SUCCESSFUL PAYMENT VERIFICATION
     isSplitPayment: boolean  // TRACKS IF THE SUCCESSFUL PAYMENT WAS A SPLIT PAYMENT
+    splitPaymentMode: SplitMode  // EQUAL OR MANUAL — SET WHEN THE USER ADVANCES FROM STEP 2
     discount: Discount | null
     subtotal: number
     platformFee: number
@@ -72,6 +73,7 @@ interface CheckoutActions {
     decrementTicket: (key: string) => void
     clearTickets: () => void
     updateAttendeeInfo: (data: Partial<AttendeeInformationData>) => void
+    setSplitPaymentMode: (mode: SplitMode) => void  // CALLED FROM ACTION BTNS BEFORE ADVANCING TO STEP 3
     applyDiscount: (discount: Discount) => void
     removeDiscount: () => void
     validateCoupon: (code: string) => Promise<Discount | null>
@@ -133,6 +135,9 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
     const pathName = usePathname()
     const isMarketplace = pathName.includes("marketplace")
     const [isSplitPayment, setIsSplitPayment] = useState(false)
+    // Stores whether the user chose equal or manual split — updated from the action buttons
+    // before advancing to step 3 so processPayment always reads the correct mode.
+    const [splitPaymentMode, setSplitPaymentMode] = useState<SplitMode>('equal')
 
     const [currentStep, setCurrentStep] = useState(1)
 
@@ -315,7 +320,6 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
             const { country } = await getUserLocation()
 
             const isSplit = !!attendeeInfo?.shareWithGroup && (attendeeInfo.attendees?.length ?? 0) > 0;
-            const splitMode = (attendeeInfo as any).splitMode as SplitMode ?? 'equal'
 
             // Track if this is split payment for success message
             setIsSplitPayment(isSplit)
@@ -324,7 +328,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
             if (isSplit) {
                 const splitError = validateSplitMembers(
                     attendeeInfo.attendees ?? [],
-                    splitMode,
+                    splitPaymentMode,
                     total,
                     event.age_restriction,
                 )
@@ -334,15 +338,22 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                 }
             }
 
+            const initiator = {
+                email: attendeeInfo.email!,
+                dateOfBirth: attendeeInfo.dateOfBirth || '2000-01-01',
+            }
+
             const splitMembers: SplitMember[] = isSplit
-                ? splitMode === 'equal'
+                ? splitPaymentMode === 'equal'
                     ? buildEqualSplitMembers(
+                        initiator,
                         (attendeeInfo.attendees ?? []).map(a => ({
                             email: a.email,
                             dateOfBirth: a.dateOfBirth,
                         }))
                     )
                     : buildManualSplitMembers(
+                        initiator,
                         (attendeeInfo.attendees ?? []).map(a => ({
                             email: a.email,
                             dateOfBirth: a.dateOfBirth,
@@ -487,6 +498,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         setPaymentMethod(null)
         setCheckoutComplete(false)
         setIsSplitPayment(false)
+        setSplitPaymentMode('equal')
         setDiscount(null)
     }, [event, isMarketplace])
 
@@ -543,6 +555,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         isProcessing,
         checkoutComplete,
         isSplitPayment,
+        splitPaymentMode,
         discount,
         subtotal,
         platformFee,
@@ -559,6 +572,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         clearTickets,
         canProceedToCheckout,
         updateAttendeeInfo,
+        setSplitPaymentMode,
         applyDiscount: setDiscount,
         removeDiscount: () => setDiscount(null),
         validateCoupon,
@@ -568,9 +582,10 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         event, groups, currentStep, tickets, attendeeInfo, paymentMethod,
         isProcessing, checkoutComplete, discount, subtotal, total,
         discountAmount, totalTickets, selectedTickets, isSplitPayment,
+        splitPaymentMode,
         nextStep, prevStep, updateTicketQuantity, incrementTicket,
         decrementTicket, clearTickets, canProceedToCheckout,
-        updateAttendeeInfo, validateCoupon, processPayment, resetCheckout,
+        updateAttendeeInfo, setSplitPaymentMode, validateCoupon, processPayment, resetCheckout,
     ])
 
     return (

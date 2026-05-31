@@ -1,4 +1,4 @@
-import { getEventDetails }  from "@/actions/getters"
+import { getEventDetails } from "@/actions/getters"
 import { getCategories } from "@/actions/filters"
 import { searchEvents } from "@/actions/filters/client"
 import EventDetailsPageContentContainer from "@/components/events-page/EventDetailsPageContentContainer"
@@ -16,15 +16,15 @@ export async function generateMetadata(
 ): Promise<Metadata> {
     const { event_id } = await params
     const { ref } = await searchParams
-    const result       = await getEventDetails(event_id, ref)
- 
+    const result = await getEventDetails(event_id, ref)
+
     if (!result.success || !result.data) {
         return buildPageMetadata("Event Not Found", undefined, `/events/details/${event_id}${ref ? `?ref=${ref}` : ""}`)
     }
- 
+
     const { title, short_description, full_description, event_location } = result.data
     const desc = short_description || full_description.slice(0, 155)
- 
+
     return buildPageMetadata(
         title,
         desc,
@@ -42,11 +42,11 @@ export default async function EventDetailPage({ params, searchParams }: Props) {
         return <EventNotFound />
     }
 
-    const event    = result.data
+    const event = result.data
     const category = event.category ?? null
 
-    const categories        = await getCategories()
-    const foundCategoryID   = categories.data.find(
+    const categories = await getCategories()
+    const foundCategoryID = categories.data.find(
         v => v.name.toLowerCase() === category?.toLowerCase()
     )?.id
 

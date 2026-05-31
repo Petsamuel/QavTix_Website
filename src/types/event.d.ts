@@ -47,7 +47,7 @@ type FilterFor = "homepage" | "eventPage"
 
 type EventType = "single" | "recurring"
 type EventLocationType = "physical" | "online" | "tba"
-type EventStatus = "draft" | "active" | "sold_out" | "new" | "normal" | "ended" | "cancelled" | "banned" | "filling_fast" | "selling_fast" | "near_capacity" | "starts_soon" | "started" | "Fast-Selling" | "fast-selling"
+type EventStatus = "draft" | "active" | "sold_out" | "new" | "normal" | "on_sale" | "ended" | "cancelled" | "banned" | "filling_fast" | "fast_filling" | "selling_fast" | "near_capacity" | "starts_soon" | "started" | "Fast-Selling" | "fast-selling"
 type RefundPolicy = "no" | "partial" | "full" | "custom"
 
 interface PublicPagesEvent {
@@ -219,7 +219,8 @@ interface EventDetails {
     age_restriction: boolean,
     minimum_age: number | null,
     is_following: boolean,
-    is_favorite: boolean
+    is_favorite: boolean,
+    is_filling_fast?: boolean,
     user_ticket_summary?: UserTicketSummary
 }
 

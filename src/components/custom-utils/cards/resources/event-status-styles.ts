@@ -5,22 +5,27 @@ export type StatusStylesRecord = Record<
 
 export const statusStyles: StatusStylesRecord = {
   "filling_fast": {
-    bg: "bg-primary-1",
+    bg: "bg-transparent",
     text: "text-primary-9",
     label: "Filling fast",
   },
+  "fast_filling": {
+    bg: "bg-transparent",
+    text: "text-primary-9",
+    label: "Fast filling",
+  },
   "selling_fast": {
-    bg: "bg-primary-1",
+    bg: "bg-transparent",
     text: "text-primary-9",
     label: "Selling fast",
   },
   "Fast-Selling": {
-    bg: "bg-white/90 backdrop-blur-sm shadow-sm",
+    bg: "bg-transparent backdrop-blur-sm shadow-sm",
     text: "text-neutral-8",
     label: "Fast-Selling",
   },
   "fast-selling": {
-    bg: "bg-white/90 backdrop-blur-sm shadow-sm",
+    bg: "bg-transparent backdrop-blur-sm shadow-sm",
     text: "text-neutral-8",
     label: "Fast-Selling",
   },
@@ -35,6 +40,11 @@ export const statusStyles: StatusStylesRecord = {
     label: "New",
   },
   normal: {
+    bg: "bg-neutral-2",
+    text: "text-neutral-7",
+    label: "On Sale",
+  },
+  "on_sale": {
     bg: "bg-neutral-2",
     text: "text-neutral-7",
     label: "On Sale",
