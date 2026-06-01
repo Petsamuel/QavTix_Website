@@ -111,16 +111,24 @@ export default function FeaturedEventsSection({ events }: Props) {
                                         }
 
                                         {/* Status badge — top left */}
-                                        <span
-                                            suppressHydrationWarning
-                                            className={cn(
-                                                "absolute top-3 hidden group-hover:block left-3 z-10 py-1 px-2 rounded-2xl text-center text-xs font-medium capitalize shadow-sm",
-                                                statusStyles[event.event_status as keyof StatusStylesRecord]?.bg,
-                                                statusStyles[event.event_status as keyof StatusStylesRecord]?.text,
-                                            )}
-                                        >
-                                            {statusStyles[event.event_status as keyof StatusStylesRecord]?.label ?? event.event_status}
-                                        </span>
+                                        {event.event_status && (
+                                            <span
+                                                suppressHydrationWarning
+                                                className={cn(
+                                                    "absolute top-3 hidden group-hover:flex left-3 z-10 py-1 px-2 rounded-2xl text-center text-xs font-medium capitalize shadow-sm items-center justify-center gap-1 whitespace-nowrap",
+                                                    statusStyles[event.event_status as keyof StatusStylesRecord]?.bg || "bg-white/90 backdrop-blur-sm shadow-sm",
+                                                    statusStyles[event.event_status as keyof StatusStylesRecord]?.text || "text-neutral-8",
+                                                    ['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(event.event_status) ? "border border-[#3D4149]! text-[#3D4149]! bg-white/90 backdrop-blur-sm" : ""
+                                                )}
+                                            >
+                                                {['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(event.event_status) && (
+                                                    <Image src="/Fire.svg" alt="Fire Icon" width={16} height={16} />
+                                                )}
+                                                <span>
+                                                    {statusStyles[event.event_status as keyof StatusStylesRecord]?.label ?? event.event_status}
+                                                </span>
+                                            </span>
+                                        )}
 
                                         {/* Featured icon — top right */}
                                         <span suppressHydrationWarning className="absolute top-3 right-3 z-10 flex items-center justify-center size-8 rounded-full bg-white/60 shadow-sm">

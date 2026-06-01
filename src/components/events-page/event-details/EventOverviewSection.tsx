@@ -54,26 +54,38 @@ export default function EventOverviewSection({ event, className, affiliateCode }
                 </h1>
 
                 <div className="flex items-center flex-wrap gap-8 gap-y-4 md:justify-between mt-3 md:mt-0">
-                    <div className="mt-3 flex flex-wrap w-1/2 gap-3 ">
-                        <Badge
-                            variant={['fast_filling', 'filling_fast', 'selling_fast', 'fast_selling'].includes(event.event_status) || (event as EventDetails).is_filling_fast ? "outline" : "default"}
-                            className={cn(
-                                "py-1 px-2 rounded-2xl text-center text-[14px] font-medium capitalize inline-flex items-center justify-center gap-1",
-                                statusStyles[event.event_status as keyof StatusStylesRecord]?.bg ?? "bg-neutral-2",
-                                statusStyles[event.event_status as keyof StatusStylesRecord]?.text ?? "text-neutral-7",
-                                ['fast_filling', 'filling_fast', 'selling_fast', 'fast_selling'].includes(event.event_status) || (event as EventDetails).is_filling_fast
-                                    ? "border border-[#3D4149]! text-[#3D4149]! bg-transparent"
-                                    : "border-none"
-                            )}
-                        >
-                            {(['fast_filling', 'filling_fast', 'selling_fast', 'fast_selling'].includes(event.event_status) || (event as EventDetails).is_filling_fast) && (
-                                <Image src="/Fire.svg" alt="Fire Icon" width={16} height={16} />
-                            )}
-                            {((event as EventDetails).is_filling_fast && !['fast_filling', 'filling_fast', 'selling_fast', 'fast_selling'].includes(event.event_status))
-                                ? "Fast Filling"
-                                : (statusStyles[event.event_status as keyof StatusStylesRecord]?.label || event.event_status)
-                            }
-                        </Badge>
+                    <div className="mt-3 flex flex-wrap flex-1 gap-3">
+                        {event.event_status && (
+                            <Badge
+                                variant={['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(event.event_status) ? "outline" : "default"}
+                                className={cn(
+                                    "py-1 px-2 rounded-2xl text-center text-[14px] font-medium capitalize inline-flex items-center justify-center gap-1",
+                                    statusStyles[event.event_status as keyof StatusStylesRecord]?.bg ?? "bg-neutral-2",
+                                    statusStyles[event.event_status as keyof StatusStylesRecord]?.text ?? "text-neutral-7",
+                                    ['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(event.event_status)
+                                        ? "border border-[#3D4149]! text-[#3D4149]! bg-transparent"
+                                        : "border-none"
+                                )}
+                            >
+                                {['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(event.event_status) && (
+                                    <Image src="/Fire.svg" alt="Fire Icon" width={16} height={16} />
+                                )}
+                                {statusStyles[event.event_status as keyof StatusStylesRecord]?.label || event.event_status}
+                            </Badge>
+                        )}
+
+                        {((event as EventDetails).is_filling_fast && !['fast_filling', 'filling_fast'].includes(event.event_status)) && (
+                            <Badge
+                                variant="default"
+                                className={cn(
+                                    "py-1 px-2 rounded-2xl text-center text-[14px] font-medium capitalize inline-flex items-center justify-center gap-1 border-none",
+                                    statusStyles['filling_fast']?.bg ?? "bg-warning-tertiary",
+                                    statusStyles['filling_fast']?.text ?? "text-secondary-9"
+                                )}
+                            >
+                                Filling Fast
+                            </Badge>
+                        )}
 
                         {
                             event.age_restriction && (
