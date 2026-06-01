@@ -29,14 +29,14 @@ interface SplitPaymentContextType {
 const SplitPaymentContext = createContext<SplitPaymentContextType | undefined>(undefined)
 
 export function SplitPaymentProvider({ children }: { children: ReactNode }) {
-    const { selectedTickets, total, event } = useCheckout()
+    const { selectedTickets, splitBaseTotal, event } = useCheckout()
     const { user } = useTicketUser()
     const [splitMode, setSplitMode] = useState<SplitMode>('equal')
     const [splitPaymentEnabled, setSplitPaymentEnabled] = useState(false)
     const [attendees, setAttendees] = useState<AttendeeFormData[]>([])
     const [showSplitError, setShowSplitError] = useState(false)
 
-    const totalAmount = total
+    const totalAmount = splitBaseTotal
     const totalTicketsSelected = selectedTickets.reduce((sum, ticket) => sum + ticket.quantity, 0)
     const canAddMoreAttendees = attendees.length < (totalTicketsSelected - 1) // initiator takes 1 slot
     const [nextAttendeeId, setNextAttendeeId] = useState(1)

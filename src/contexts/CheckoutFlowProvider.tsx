@@ -56,6 +56,7 @@ interface CheckoutState {
     subtotal: number
     platformFee: number
     total: number   // SUBTOTAL MINUS ANY DISCOUNT PLUS FEES
+    splitBaseTotal: number // SUBTOTAL MINUS ANY DISCOUNT (USED AS BASE FOR SPLIT CALCS BEFORE FEES)
     discountAmount: number
     totalTickets: number   // SUM OF ALL SELECTED TICKET QUANTITIES
     selectedTickets: CheckoutTicket[]  // ONLY TICKETS WITH QUANTITY > 0
@@ -184,6 +185,8 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
     }, [subtotal, event.currency])
 
     const total = useMemo(() => Math.max(0, (subtotal - discountAmount) + platformFee), [subtotal, discountAmount, platformFee])
+
+    const splitBaseTotal = useMemo(() => Math.max(0, subtotal - discountAmount), [subtotal, discountAmount])
 
     const totalTickets = useMemo(
         () => tickets.reduce((sum, t) => sum + t.quantity, 0),
@@ -329,7 +332,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                 const splitError = validateSplitMembers(
                     attendeeInfo.attendees ?? [],
                     splitPaymentMode,
-                    total,
+                    splitBaseTotal,
                     event.age_restriction,
                 )
                 if (splitError) {
@@ -359,7 +362,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                             dateOfBirth: a.dateOfBirth,
                             amount: a.amount ?? 0,
                         })),
-                        total,
+                        splitBaseTotal,
                     )
                 : []
 
@@ -560,6 +563,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         subtotal,
         platformFee,
         total,
+        splitBaseTotal,
         discountAmount,
         totalTickets,
         selectedTickets,
@@ -580,7 +584,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         resetCheckout,
     }), [
         event, groups, currentStep, tickets, attendeeInfo, paymentMethod,
-        isProcessing, checkoutComplete, discount, subtotal, total,
+        isProcessing, checkoutComplete, discount, subtotal, total, splitBaseTotal,
         discountAmount, totalTickets, selectedTickets, isSplitPayment,
         splitPaymentMode,
         nextStep, prevStep, updateTicketQuantity, incrementTicket,
