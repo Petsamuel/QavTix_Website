@@ -197,7 +197,7 @@ export default function EventOverviewSection({ event, className, affiliateCode }
                             </div>
                             :
                             <>
-                                {event.event_status !== "sold-out" && <TicketStatusSection event={event} affiliateCode={affiliateCode} />}
+                                {event.event_status !== "sold_out" && <TicketStatusSection event={event} affiliateCode={affiliateCode} />}
                             </>
                 }
 
