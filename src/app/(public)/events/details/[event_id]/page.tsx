@@ -56,6 +56,7 @@ export default async function EventDetailPage({ params, searchParams }: Props) {
         foundCategoryID ? { categories: [foundCategoryID] } : {},
     )
 
+    console.log(event)
     return (
         <EventDetailsPageContentContainer
             event={event}

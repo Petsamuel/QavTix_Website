@@ -64,7 +64,7 @@ export default function EventOverviewSection({ event, className, affiliateCode }
                                     statusStyles[event.event_status as keyof StatusStylesRecord]?.text ?? "text-neutral-7",
                                     ['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(event.event_status)
                                         ? "border border-[#3D4149]! text-[#3D4149]! bg-transparent"
-                                        : "border-none"
+                                        : (statusStyles[event.event_status as keyof StatusStylesRecord]?.bg?.includes('border') ? "" : "border-none")
                                 )}
                             >
                                 {['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(event.event_status) && (
@@ -132,32 +132,37 @@ export default function EventOverviewSection({ event, className, affiliateCode }
                     </div>
 
                     <div className="flex items-center gap-1">
-                        {/* Icon */}
-                        {event.location_type !== "online" ? <>
-                            <Icon icon="hugeicons:location-01" className="size-4 shrink-0 text-accent-6" />
+                        {event.location_type === "tba" ? (
+                            <>
+                                <Icon icon="hugeicons:location-01" className="size-4 shrink-0 text-accent-6" />
+                                <span className="text-neutral-7 text-sm italic">To Be Announced</span>
+                            </>
+                        ) : event.location_type !== "online" ? (
+                            <>
+                                <Icon icon="hugeicons:location-01" className="size-4 shrink-0 text-accent-6" />
+                                <Link
+                                    href={`https://maps.google.com/?q=${encodeURIComponent(mapQuery)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-fit min-w-0 text-neutral-7 inline-flex gap-1 underline items-center"
+                                >
+                                    <span className="text-sm wrap-break-words flex-1">{fullAddress}</span>
+                                    <Icon icon="system-uicons:arrow-top-right" width="16" height="16" className="shrink-0 -ml-0.5" />
+                                </Link>
+                            </>
+                        ) : (
                             <Link
-                                href={`https://maps.google.com/?q=${encodeURIComponent(mapQuery)}`}
+                                href={`${event.event_location.address}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="w-fit min-w-0 text-neutral-7 inline-flex gap-1 underline items-center"
+                                className="w-fit min-w-0 text-neutral-7 inline-flex gap-1 items-center"
                             >
-                                <span className="text-sm wrap-break-words flex-1">{fullAddress}</span>
-                                <Icon icon="system-uicons:arrow-top-right" width="16" height="16" className="shrink-0 -ml-0.5" />
-                            </Link>
-                        </> : <Link
-                            href={`${event.event_location.address}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-fit min-w-0 text-neutral-7 inline-flex gap-1  items-center"
-                        >
-                            <div className="items-center gap-2  inline-flex justify-center ">
-                                <Icon icon="hugeicons:location-01" className="size-4 shrink-0 text-accent-6" />
-                                <div>
-                                    <span className="text-sm wrap-break-words flex font-normal">Venue: {event.event_location.venue_name}</span>
-                                    {/* <span className="text-sm wrap-break-words flex-1 underline">Link: {event.event_location.address}</span> */}
+                                <div className="items-center gap-2 inline-flex justify-center">
+                                    <Icon icon="hugeicons:internet" className="size-4 shrink-0 text-accent-6" />
+                                    <span className="text-sm font-normal">Online Event</span>
                                 </div>
-                            </div>
-                        </Link>}
+                            </Link>
+                        )}
                     </div>
                 </div>
 
@@ -170,10 +175,30 @@ export default function EventOverviewSection({ event, className, affiliateCode }
                         >
                             Purchase Ticket
                         </button>
-                        :
-                        <>
-                            {event.event_status !== "sold-out" && <TicketStatusSection event={event} affiliateCode={affiliateCode} />}
-                        </>
+                        : event.location_type === "tba" ?
+                            <div className="mt-6 rounded-3xl border border-neutral-5 bg-neutral-1 p-5 space-y-4">
+                                <div className="flex items-start gap-3">
+                                    <span className="flex items-center justify-center size-9 rounded-full bg-neutral-2 shrink-0 mt-0.5">
+                                        <Icon icon="hugeicons:location-06" className="size-5 text-neutral-7" />
+                                    </span>
+                                    <div>
+                                        <p className="text-sm font-semibold text-secondary-9">Location To Be Announced</p>
+                                        <p className="text-xs text-neutral-7 mt-1 leading-relaxed">
+                                            Event details are still being finalised. Ticket sales will open once the location is confirmed.
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    disabled
+                                    className="w-full py-3.5 rounded-full bg-neutral-3 text-neutral-5 font-medium text-sm cursor-not-allowed select-none"
+                                >
+                                    Get Tickets
+                                </button>
+                            </div>
+                            :
+                            <>
+                                {event.event_status !== "sold-out" && <TicketStatusSection event={event} affiliateCode={affiliateCode} />}
+                            </>
                 }
 
                 {/* Full description */}
