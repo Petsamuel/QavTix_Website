@@ -26,7 +26,7 @@ export default function EventsCard(card: EventCardProps) {
     const [imageError, setImageError] = useState(false)
     const [showShare, setShowShare] = useState(false)
     const totalAttendees = card.attendees || 0
-    const avatarsToShow = totalAttendees <= 5 ? totalAttendees : 4
+    const avatarsToShow = totalAttendees <= 4 ? totalAttendees : 3
 
     const { isFavourite, toggle: toggleFavourite, feedbackMsg } = useFavourite(card.id, card.isFavourite)
 
@@ -40,10 +40,10 @@ export default function EventsCard(card: EventCardProps) {
         <>
             <Link
                 href={eventUrl}
-                className="block w-full max-w-72 md:max-w-70 p-3 relative min-h-[25em] rounded-[32px] border border-neutral-6 bg-white hover:bg-secondary-1 hover:shadow-sm transition-all duration-200 focus:outline-none focus:ring-[1.5px] focus:ring-accent-5 focus:ring-offset-[1.5px] group"
+                className="flex flex-col w-full max-w-72 md:max-w-70 p-3 relative min-h-[25em] rounded-[32px] border border-neutral-6 bg-white hover:bg-secondary-1 hover:shadow-sm transition-all duration-200 focus:outline-none focus:ring-[1.5px] focus:ring-accent-5 focus:ring-offset-[1.5px] group"
                 aria-label={`View event: ${card.title}`}
             >
-                <div className="flex flex-col h-full">
+                <div className="flex flex-col flex-1">
                     <div className="relative shrink-0">
                         {card.status && (
                             <span className={cn(
@@ -155,7 +155,7 @@ export default function EventsCard(card: EventCardProps) {
                             {(card.attendees ?? 0) > 0 && (
                                 <div className="flex -space-x-1.5 shrink-0">
                                     {mockAttendees.slice(0, avatarsToShow).map((user) => (
-                                        <Avatar key={user.id} className="ring-2 ring-background size-8">
+                                        <Avatar key={user.id} className="ring-2 ring-background size-7">
                                             {user.profile_picture && <AvatarImage src={user.profile_picture} alt={user.full_name} />}
                                             <AvatarFallback className={`${getAvatarColor(user.id.toString())} text-white font-medium text-[10px]`}>
                                                 {getInitialsFromName(user.full_name)}
@@ -163,7 +163,7 @@ export default function EventsCard(card: EventCardProps) {
                                         </Avatar>
                                     ))}
                                     {card.attendees && card.attendees > 5 && (
-                                        <Avatar className="ring-2 ring-background size-8">
+                                        <Avatar className="ring-2 ring-background size-7">
                                             <AvatarFallback className="bg-primary-1 font-medium text-secondary-7 text-xs">
                                                 +{card.attendees - 4}
                                             </AvatarFallback>
