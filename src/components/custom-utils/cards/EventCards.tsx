@@ -47,12 +47,12 @@ export default function EventsCard(card: EventCardProps) {
                     <div className="relative shrink-0">
                         {card.status && (
                             <span className={cn(
-                                "absolute top-2 shadow-sm left-2 z-10 py-1 px-2 rounded-2xl text-center text-xs font-medium capitalize inline-flex items-center justify-center gap-1",
+                                "absolute top-2 shadow-sm left-2 z-10 py-1 px-2 rounded-2xl text-center text-xs font-medium capitalize inline-flex items-center justify-center gap-1 whitespace-nowrap",
                                 statusStyles[card.status as keyof StatusStylesRecord]?.bg || "bg-white/90 backdrop-blur-sm shadow-sm",
                                 statusStyles[card.status as keyof StatusStylesRecord]?.text || "text-neutral-8",
-                                ['fast_filling', 'filling_fast', 'selling_fast', 'fast_selling'].includes(card.status) ? "border border-[#3D4149]! text-[#3D4149]! bg-white/90 backdrop-blur-sm" : ""
+                                ['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(card.status) ? "border border-[#3D4149]! text-[#3D4149]! bg-white/90 backdrop-blur-sm" : ""
                             )}>
-                                {['fast_filling', 'filling_fast', 'selling_fast', 'fast_selling'].includes(card.status) && (
+                                {['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(card.status) && (
                                     <Image src="/Fire.svg" alt="Fire Icon" width={16} height={16}/>
                                 )}
                                 {statusStyles[card.status as keyof StatusStylesRecord]?.label || card.status}
