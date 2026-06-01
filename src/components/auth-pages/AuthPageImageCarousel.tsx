@@ -10,9 +10,10 @@ import { space_grotesk } from '@/lib/fonts'
 export default function AuthPageImageCarousel() {
 
     const pathName = usePathname()
-    const slides = (pathName.includes('signin') || pathName.includes('forgot-password') || pathName.includes('reset-password')) ? 
-    signInSlides : pathName.includes('signup') ? 
-    signUpSlides : []
+    const isSignIn = pathName.includes('signin') || pathName.includes('forgot-password') || pathName.includes('reset-password')
+    const isSignUp = pathName.includes('signup')
+    
+    const slides: AuthPagesSlidesData[] = []
     const [emblaRef, emblaApi] = useEmblaCarousel(
         { 
             loop: true,
@@ -43,6 +44,25 @@ export default function AuthPageImageCarousel() {
     const scrollTo = useCallback((index: number) => {
         if (emblaApi) emblaApi.scrollTo(index)
     }, [emblaApi])
+
+    if (isSignIn || isSignUp) {
+        return (
+            <div className="h-full relative overflow-hidden rounded-[25px] bg-gradient-to-tr from-[#610092 ] via-[#0052cc]/20 to-[#610092]">
+                {/* Background Video */}
+                <video 
+                    className="absolute inset-0 w-[110%] h-[110%] object-cover"
+                    src="/qavtix.webm"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                />
+                {/* Brand Color Gradient Overlay to tint and tone down the white video */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#0052cc]/20 via-transparent to-black/40 mix-blend-multiply pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#0052cc]/15 via-transparent to-transparent mix-blend-overlay pointer-events-none" />
+            </div>
+        )
+    }
 
     return (
        <div className="h-full">
