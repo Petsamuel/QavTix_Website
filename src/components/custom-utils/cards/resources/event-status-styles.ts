@@ -46,8 +46,8 @@ export const statusStyles: StatusStylesRecord = {
     label: "On Sale",
   },
   "sold_out": {
-    bg: "bg-white border border-accent-6/20",
-    text: "text-accent-6",
+    bg: "bg-neutral-1 border border-neutral-9",
+    text: "text-red-600",
     label: "Sold out",
   },
   "starts_soon": {

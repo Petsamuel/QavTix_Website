@@ -8,6 +8,7 @@ export interface EventCardProps {
     host: string
     date: string          // pre-formatted display string
     location: string          // pre-formatted display string
+    locationType?: string     // "physical" | "online" | "tba"
     image: string
     price: string | null
     originalPrice: string | null
@@ -34,6 +35,7 @@ export function formatLocation(loc: EventLocation): string {
 
 export function fromPublicPagesEvent(e: PublicPagesEvent): EventCardProps {
     const price = e.price != null ? String(e.price) : null
+    const locType = (e as any).location_type as string | undefined
 
     return {
         id: e.id,
@@ -42,6 +44,7 @@ export function fromPublicPagesEvent(e: PublicPagesEvent): EventCardProps {
         host: toTitleCase(e.host),
         date: e.event_datetime,
         location: formatLocation(e.event_location),
+        locationType: locType,
         image: e.event_image,
         price,
         originalPrice: null,
@@ -68,6 +71,7 @@ export function fromIEvent(e: IEvent & {
         host: toTitleCase(e.organizer_display_name),
         date: e.start_datetime,
         location: e.resolvedLocation ?? '',
+        locationType: e.location_type,
         image: '',
         price: e.resolvedPrice ?? null,
         originalPrice: e.resolvedOriginalPrice ?? null,

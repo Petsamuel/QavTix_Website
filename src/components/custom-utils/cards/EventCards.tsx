@@ -53,7 +53,7 @@ export default function EventsCard(card: EventCardProps) {
                                 ['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(card.status) ? "border border-[#3D4149]! text-[#3D4149]! bg-white/90 backdrop-blur-sm" : ""
                             )}>
                                 {['selling_fast', 'fast_selling', 'starts_soon', 'near_capacity'].includes(card.status) && (
-                                    <Image src="/Fire.svg" alt="Fire Icon" width={16} height={16}/>
+                                    <Image src="/Fire.svg" alt="Fire Icon" width={16} height={16} />
                                 )}
                                 {statusStyles[card.status as keyof StatusStylesRecord]?.label || card.status}
                             </span>
@@ -75,7 +75,7 @@ export default function EventsCard(card: EventCardProps) {
                             ) : (
                                 <Skeleton className="w-full h-full bg-linear-to-br from-neutral-4 to-neutral-5" />
                             )}
-                            
+
                             {card.isFeatured && (
                                 <span className="absolute top-3 right-3 z-10 flex items-center justify-center size-8 rounded-full bg-white/60 shadow-sm border border-white/40 backdrop-blur-md">
                                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" className="iconify iconify--mdi text-accent-6 w-5 h-5" viewBox="0 0 24 24">
@@ -131,8 +131,22 @@ export default function EventsCard(card: EventCardProps) {
                                     <span className="text-neutral-7 text-[11px] truncate flex-1">{formatEventDate(card.date)}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                    <Icon icon="hugeicons:location-01" className="size-4 shrink-0 text-accent-6" />
-                                    <span className="text-neutral-7 text-[11px] truncate flex-1">{card.location}</span>
+                                    {card.locationType === 'online' ? (
+                                        <>
+                                            <Icon icon="hugeicons:internet" className="size-4 shrink-0 text-accent-6" />
+                                            <span className="text-neutral-7 text-[11px] truncate flex-1">Online Event</span>
+                                        </>
+                                    ) : card.locationType === 'tba' ? (
+                                        <>
+                                            <Icon icon="hugeicons:location-01" className="size-4 shrink-0 text-accent-6" />
+                                            <span className="text-neutral-7 text-[11px] truncate flex-1 italic">To Be Announced</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Icon icon="hugeicons:location-01" className="size-4 shrink-0 text-accent-6" />
+                                            <span className="text-neutral-7 text-[11px] truncate flex-1">{card.location}</span>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
