@@ -13,7 +13,7 @@ export default function AuthPageImageCarousel() {
     const isSignIn = pathName.includes('signin') || pathName.includes('forgot-password') || pathName.includes('reset-password')
     const isSignUp = pathName.includes('signup')
     
-    const slides: AuthPagesSlidesData[] = []
+    const slides = isSignIn ? signInSlides : isSignUp ? signUpSlides : []
     const [emblaRef, emblaApi] = useEmblaCarousel(
         { 
             loop: true,
