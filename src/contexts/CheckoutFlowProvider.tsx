@@ -179,9 +179,8 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
     const platformFee = useMemo(() => {
         if (subtotal === 0) return 0
         const currency = event.currency || 'NGN'
-        const fixedFee = CURRENCY_CHECKOUT_FEES[currency] || 0
         const percentageFee = subtotal * (PLATFORM_FEE_PERCENT / 100)
-        return percentageFee + fixedFee
+        return percentageFee
     }, [subtotal, event.currency])
 
     const total = useMemo(() => Math.max(0, (subtotal - discountAmount) + platformFee), [subtotal, discountAmount, platformFee])

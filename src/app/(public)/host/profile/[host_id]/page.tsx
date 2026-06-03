@@ -29,6 +29,5 @@ export default async function HostProfilePage({ params }: Props) {
         return <HostNotFound />
     }
 
-
     return <HostPageWrapper host={result.data} />
 }
