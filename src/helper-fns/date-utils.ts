@@ -96,16 +96,12 @@ export function formatDateTime(date: string | Date) {
   return `${formattedDate} | ${formattedTime}`
 }
 
-// FORMATS AN EVENT DATE INTO A CONTEXTUAL LABEL RELATIVE TO TODAY
-// HANDLES: Today, Tomorrow, This Weekend, Next Weekend, Next Week, or plain date
-// ADJUSTS FOR WAT (UTC+1) BY ADDING 1 HOUR TO THE RAW DATE
-export function formatEventDate(isoString: string): string {
+export function formatEventDate(isoString: string | Date): string {
   if (!isoString) return "Date TBA"
 
-  const raw = new Date(isoString)
-  if (isNaN(raw.getTime())) return "Date TBA"
+  const date = typeof isoString === 'string' ? new Date(isoString) : isoString
+  if (isNaN(date.getTime())) return "Date TBA"
 
-  const date = new Date(new Date(isoString).getTime() + 60 * 60 * 1000)
   const now  = new Date()
 
   const timeStr = format(date, "h:mmaaa").toUpperCase()

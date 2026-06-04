@@ -178,10 +178,9 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
 
     const platformFee = useMemo(() => {
         if (subtotal === 0) return 0
-        const currency = event.currency || 'NGN'
         const percentageFee = subtotal * (PLATFORM_FEE_PERCENT / 100)
         return percentageFee
-    }, [subtotal, event.currency])
+    }, [subtotal])
 
     const total = useMemo(() => Math.max(0, (subtotal - discountAmount) + platformFee), [subtotal, discountAmount, platformFee])
 
@@ -248,34 +247,6 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         setTickets(prev => prev.map(t => ({ ...t, quantity: 0 })))
         setDiscount(null)
     }, [])
-
-    const nextStep = useCallback(() => {
-
-        // STEP 3 IS THE PAYMENT TRIGGER — VALIDATE ATTENDEE INFO BEFORE FIRING
-        if (currentStep === 3) {
-            if (!attendeeInfo.name || !attendeeInfo.email || !attendeeInfo.phone || !attendeeInfo.dateOfBirth) {
-                dispatch(showAlert({
-                    title: 'Incomplete Information',
-                    description: 'Please fill in all required fields before proceeding to checkout.',
-                    variant: 'destructive',
-                }))
-                return
-            }
-
-            processPayment()
-            return;
-        }
-
-        // STEP 1 GATE — MUST HAVE AT LEAST ONE TICKET SELECTED TO CONTINUE
-        if (currentStep === 1) {
-            const error = getTicketSelectionError()
-            if (error) {
-                dispatch(showAlert({ title: '', description: error, variant: 'destructive' }))
-                return
-            }
-        }
-        setCurrentStep(prev => Math.min(prev + 1, 3))
-    }, [currentStep, getTicketSelectionError, dispatch])
 
     const prevStep = useCallback(() => setCurrentStep(prev => Math.max(prev - 1, 1)), [])
 
@@ -373,11 +344,11 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                     full_name: attendeeInfo.name!,
                     phone_number: attendeeInfo.phone!,
                     is_split: isSplit,
-                    marketplace_listing_id: (event as MarketplaceEventDetails).listing_id,
-                    promo_code: discount?.code ?? '',
+                    marketplace_listing_id: Number((event as MarketplaceEventDetails).listing_id),
                     save_card: false,
                     date_of_birth: attendeeInfo.dateOfBirth || '',
                     tickets: [],
+                    ...(discount?.code && { promo_code: discount.code }),
                     ...(isSplit && { split_members: splitMembers }),
                     ...(!user && {
                         email: attendeeInfo.email!,
@@ -394,7 +365,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
                         ticket_id: t.id,
                         quantity: t.quantity,
                     })),
-                    promo_code: discount?.code ?? '',
+                    ...(discount?.code && { promo_code: discount.code }),
                     save_card: false,
                     date_of_birth: attendeeInfo.dateOfBirth || '',
                     ...(isSplit && { split_members: splitMembers }),
@@ -483,8 +454,38 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         dispatch,
         isMarketplace,
         user,
-        total,
+        splitPaymentMode,
+        splitBaseTotal,
     ])
+
+    // nextStep — declared AFTER processPayment so the closure always captures the real reference
+    const nextStep = useCallback(() => {
+
+        // STEP 3 IS THE PAYMENT TRIGGER — VALIDATE ATTENDEE INFO BEFORE FIRING
+        if (currentStep === 3) {
+            if (!attendeeInfo.name || !attendeeInfo.email || !attendeeInfo.phone || !attendeeInfo.dateOfBirth) {
+                dispatch(showAlert({
+                    title: 'Incomplete Information',
+                    description: 'Please fill in all required fields before proceeding to checkout.',
+                    variant: 'destructive',
+                }))
+                return
+            }
+
+            processPayment()
+            return;
+        }
+
+        // STEP 1 GATE — MUST HAVE AT LEAST ONE TICKET SELECTED TO CONTINUE
+        if (currentStep === 1) {
+            const error = getTicketSelectionError()
+            if (error) {
+                dispatch(showAlert({ title: '', description: error, variant: 'destructive' }))
+                return
+            }
+        }
+        setCurrentStep(prev => Math.min(prev + 1, 3))
+    }, [currentStep, getTicketSelectionError, dispatch, attendeeInfo, processPayment])
 
     // FULL RESET — BRINGS THE CHECKOUT BACK TO ITS INITIAL STATE
     const resetCheckout = useCallback(() => {
@@ -510,22 +511,6 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
         [tickets]
     )
 
-    // SECONDARY GUARD — WATCHES FOR STEP 3 AND RE-VALIDATES ATTENDEE INFO BEFORE PAYMENT
-    // THIS CATCHES CASES WHERE processPayment IS CALLED OUTSIDE OF nextStep
-    useEffect(() => {
-        if (currentStep === 3) {
-            if (!attendeeInfo.name || !attendeeInfo.email || !attendeeInfo.phone || !attendeeInfo.dateOfBirth) {
-                dispatch(showAlert({
-                    title: 'Incomplete Information',
-                    description: 'Please fill in all required fields before proceeding to checkout.',
-                    variant: 'destructive',
-                }))
-                return
-            }
-
-            processPayment()
-        }
-    }, [currentStep, attendeeInfo, processPayment, dispatch])
 
 
 
