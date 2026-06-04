@@ -132,7 +132,7 @@ export function OrganizationGeneralStep() {
                     name="country"
                     control={control}
                     render={({ field }) => (
-                        <FormSelect1
+                        <SearchableSelect
                             label="Country"
                             required
                             options={countries}

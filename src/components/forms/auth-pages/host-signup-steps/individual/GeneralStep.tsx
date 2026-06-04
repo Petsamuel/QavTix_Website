@@ -139,7 +139,7 @@ export function IndividualGeneralStep() {
                     defaultValue=""
                     control={control}
                     render={({ field }) => (
-                        <FormSelect1
+                        <SearchableSelect
                             label="Country"
                             required
                             options={countries}
