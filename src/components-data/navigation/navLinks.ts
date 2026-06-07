@@ -40,6 +40,7 @@ export const NAV_LINKS = {
 
 // Unauthenticated nav
 export const navLinks: NavLink[] = [
+  NAV_LINKS.HOME,
   NAV_LINKS.ABOUT,
   NAV_LINKS.HOW_IT_WORKS,
   NAV_LINKS.PRICING,
@@ -49,6 +50,7 @@ export const navLinks: NavLink[] = [
 
 // Authenticated nav — Sign In becomes Dashboard, Get Started becomes avatar (handled in Header)
 export const navLinksAuthenticated: NavLink[] = [
+  NAV_LINKS.HOME,
   NAV_LINKS.ABOUT,
   NAV_LINKS.HOW_IT_WORKS,
   NAV_LINKS.PRICING,
@@ -56,6 +58,7 @@ export const navLinksAuthenticated: NavLink[] = [
 ]
 
 export const navLinksMobileMenu: NavLink[] = [
+  NAV_LINKS.HOME,
   NAV_LINKS.ABOUT,
   NAV_LINKS.CONTACT_US,
   NAV_LINKS.HOW_IT_WORKS,
@@ -66,6 +69,7 @@ export const navLinksMobileMenu: NavLink[] = [
 ]
 
 export const header2NavLinks: NavLink[] = [
+  NAV_LINKS.HOME,
   NAV_LINKS.ABOUT,
   NAV_LINKS.HOW_IT_WORKS,
   NAV_LINKS.EVENTS,

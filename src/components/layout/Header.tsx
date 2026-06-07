@@ -40,6 +40,7 @@ export default function Header() {
 
     const dashboardUrl = getDashboardURL(user?.role ?? undefined)
     const activeNavLinks = isAuthenticated ? navLinksAuthenticated : navLinks
+    // const hideHome = navLinks.find((link) => link.label === "Home")
 
     if (
         pathName.startsWith("/auth") ||
@@ -69,7 +70,7 @@ export default function Header() {
                                 rel="noopener noreferrer"
                                 className="px-4 py-2 rounded-lg text-sm transition-all duration-150 text-secondary-4 hover:text-primary-7 active:scale-[0.98] focus:outline-none focus:border-b-2 focus:border-neutral-4"
                             >
-                                {link.label}
+                                {link.label }
                             </Link>
                         )
                     }
@@ -97,7 +98,7 @@ export default function Header() {
                                 focus:outline-none focus:border-b-2 focus:border-neutral-4
                             `}
                         >
-                            {link.label}
+                            {link.label === "Home" && link.href === "/"? null : link.label}
                         </Link>
                     )
                 })}

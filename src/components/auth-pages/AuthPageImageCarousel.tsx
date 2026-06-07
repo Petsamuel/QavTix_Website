@@ -47,19 +47,23 @@ export default function AuthPageImageCarousel() {
 
     if (isSignIn || isSignUp) {
         return (
-            <div className="h-full relative overflow-hidden rounded-[25px] bg-gradient-to-tr from-[#610092 ] via-[#0052cc]/20 to-[#610092]">
+            <div className="h-full relative overflow-hidden rounded-[25px] bg-linear-to-br  from-[#E6EEFA] to-[#ADCEFF] ">
                 {/* Background Video */}
                 <video 
-                    className="absolute inset-0 w-[110%] h-[110%] object-cover"
-                    src="/qavtix.webm"
+                    className="absolute inset-0 w-[110%] h-[110%] object-cover z-30"
+                    src="/qavtix2.webm"
                     autoPlay
                     loop
                     muted
                     playsInline
                 />
-                {/* Brand Color Gradient Overlay to tint and tone down the white video */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#0052cc]/20 via-transparent to-black/40 mix-blend-multiply pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#0052cc]/15 via-transparent to-transparent mix-blend-overlay pointer-events-none" />
+                
+                {/* Large White Logo Watermark overlaying the background */}
+                <img 
+                    src="/White.png" 
+                    alt="QavTix Background Overlay" 
+                    className="absolute -top-10 left-[65%]  -translate-x-1/2 -translate-y-1/2 z-10 w-[90%] sm:w-[170%] opacity-25 mix-blend-overlay pointer-events-none object-contain" 
+                />
             </div>
         )
     }
