@@ -130,7 +130,7 @@ export default function EventsCard(card: EventCardProps) {
                                     </div>
                                     <span className="text-neutral-7 text-[11px] truncate flex-1">{formatEventDate(card.date)}</span>
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-1 capitalize">
                                     {card.locationType === 'online' ? (
                                         <>
                                             <Icon icon="hugeicons:internet" className="size-4 shrink-0 text-accent-6" />

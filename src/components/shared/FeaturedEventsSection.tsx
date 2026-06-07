@@ -153,7 +153,7 @@ export default function FeaturedEventsSection({ events }: Props) {
                                                 <span>{formatEventDate(event.event_datetime)}</span>
                                             </div>
 
-                                            <div className="flex items-center gap-1 mt-1 text-neutral-7 text-[11px]">
+                                            <div className="flex items-center gap-1 mt-1 text-neutral-7 text-[11px] capitalize">
                                                 <Icon icon="hugeicons:location-01" className="size-4" />
                                                 <span>
                                                     {event.event_location.city}, {event.event_location.state}

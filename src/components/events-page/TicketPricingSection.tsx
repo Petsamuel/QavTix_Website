@@ -60,7 +60,7 @@ export default function TicketPricingSection({
             )}
 
             <div className="mt-8">
-                {event.location_type === "online" && new Date(event.start_datetime).getTime() > Date.now() ? (
+                {event.location_type === "online" && (event.tickets[0].price === "0.00") && new Date(event.start_datetime).getTime() > Date.now() ? (
                     <button
                         disabled
                         className="bg-neutral-3 text-[#6b7280] border border-neutral-4 px-6 py-4 rounded-full font-medium cursor-not-allowed select-none inline-flex items-center justify-center text-sm"
@@ -70,7 +70,8 @@ export default function TicketPricingSection({
                 ) : (
                     <LiquidLink
                         onClick={() => {
-                            if (event.location_type === "online") {
+                            //checker for free online event wit location type "online"
+                            if (event.location_type === "online" && event.tickets[0].price === "0.00") {
                                 const fields = [
                                     event.event_location?.address,
                                     event.event_location?.venue_name
@@ -82,7 +83,7 @@ export default function TicketPricingSection({
                                         break;
                                     }
                                 }
-
+                                //if online link found open it in new tab else redirect to checkout page
                                 if (onlineLink) {
                                     window.open(onlineLink, "_blank", "noopener,noreferrer");
                                 } else {
@@ -103,11 +104,13 @@ export default function TicketPricingSection({
                             }
 
                             const checkoutHref = EVENT_ROUTES.CHECKOUT.href.replace("[event_id]", event.id.toString())
+
                             router.push(affiliateCode ? `${checkoutHref}?ref=${encodeURIComponent(affiliateCode)}` : checkoutHref)
                         }}
                         className="bg-primary-6 hover:bg-primary-7 text-white px-6 py-4 rounded-full font-medium transition-colors"
                     >
-                        {event.location_type === "online" ? "Join the Webinar" : "Get Tickets"}
+                        {event.location_type === "online" && event.tickets[0].price === "0.00" ? "Join the Webinar" : "Get Ticket"}
+                        
                     </LiquidLink>
                 )}
             </div>

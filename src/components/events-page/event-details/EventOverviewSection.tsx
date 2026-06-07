@@ -146,7 +146,7 @@ export default function EventOverviewSection({ event, className, affiliateCode }
                                     rel="noopener noreferrer"
                                     className="w-fit min-w-0 text-neutral-7 inline-flex gap-1 underline items-center"
                                 >
-                                    <span className="text-sm wrap-break-words flex-1">{fullAddress}</span>
+                                    <span className="text-sm wrap-break-words flex-1 capitalize">{fullAddress}</span>
                                     <Icon icon="system-uicons:arrow-top-right" width="16" height="16" className="shrink-0 -ml-0.5" />
                                 </Link>
                             </>
@@ -164,6 +164,8 @@ export default function EventOverviewSection({ event, className, affiliateCode }
                             </Link>
                         )}
                     </div>
+
+              
                 </div>
 
                 {/* Tickets */}

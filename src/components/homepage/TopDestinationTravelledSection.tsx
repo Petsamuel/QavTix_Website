@@ -107,14 +107,14 @@ export default function TopDestinationTravelledSection({ locations }: Props) {
                                             <div className="absolute inset-0 bg-linear-to-br from-primary-2 via-primary-3 to-slate-300" />
                                         )}
 
-                                        <div className="absolute hidden lg:block inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-500 ease-out group-hover:opacity-0">
+                                        <div className="absolute hidden lg:block inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-500 ease-out group-hover:opacity-0 capitalize">
                                             <h3 className={`absolute left-5 bottom-5 z-10 text-lg md:text-xl text-white font-medium drop-shadow-md transition-all duration-500 ease-out group-hover:translate-y-2 group-hover:opacity-0 ${space_grotesk.className}`}>
                                                 {loc.city}
                                             </h3>
                                         </div>
                                     </div>
 
-                                    <div className="bg-white h-auto lg:h-0 lg:opacity-0 overflow-hidden transition-all duration-500 ease-cubic-bezier(0.4,0,0.2,1) group-hover:h-auto group-hover:opacity-100">
+                                    <div className="bg-white h-auto lg:h-0 lg:opacity-0 overflow-hidden transition-all duration-500 ease-cubic-bezier(0.4,0,0.2,1) group-hover:h-auto group-hover:opacity-100 capitalize">
                                         <div className="p-5 transform translate-y-0 opacity-100 lg:translate-y-4 lg:opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
                                             <h3 className={`text-lg text-secondary-9 font-medium mb-2 ${space_grotesk.className}`}>
                                                 {loc.city}
