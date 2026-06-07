@@ -76,22 +76,25 @@ export default function HostProfilePageHeader({ host }: Props) {
                     </div>
 
                     {/* Avatar */}
-                    <div className="bg-white p-3 rounded-full -bottom-16 absolute w-fit">
-                        <Avatar className="w-[6.25em] md:w-36 aspect-square h-auto rounded-full">
-                            {host.profile_picture && (
-                                <AvatarImage
-                                    src={host.profile_picture}
-                                    alt={host.host}
-                                    className="object-cover rounded-full"
-                                />
-                            )}
-                            <AvatarFallback className={cn(
-                                getAvatarColor(String(host.id)),
-                                "text-white font-bold text-3xl md:text-5xl w-full h-full rounded-full flex items-center justify-center"
-                            )}>
-                                {getInitialsFromName(host.host || "User")}
-                            </AvatarFallback>
-                        </Avatar>
+                    <div className="bg-white p-2 rounded-full -bottom-16 absolute w-fit">
+                        <div className="relative p-[3px] rounded-full overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-150">
+                            <div className="absolute inset-0 bg-[conic-gradient(from_0deg,#ef4444,#eab308,#22c55e,#3b82f6,#a855f7,#ef4444)] animate-[spin_3s_linear_infinite]" />
+                            <Avatar className="w-[6.25em] md:w-36 aspect-square h-auto rounded-full relative z-10 !ring-0">
+                                {host.profile_picture && (
+                                    <AvatarImage
+                                        src={host.profile_picture}
+                                        alt={host.host}
+                                        className="object-cover rounded-full"
+                                    />
+                                )}
+                                <AvatarFallback className={cn(
+                                    getAvatarColor(String(host.id)),
+                                    "text-white font-bold text-3xl md:text-5xl w-full h-full rounded-full flex items-center justify-center"
+                                )}>
+                                    {getInitialsFromName(host.host || "User")}
+                                </AvatarFallback>
+                            </Avatar>
+                        </div>
                     </div>
                 </div>
 
