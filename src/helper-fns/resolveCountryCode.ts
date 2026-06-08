@@ -32,7 +32,16 @@ export function resolveStateLabel(stateValue: string, countryCode: string): stri
     if (stateValue.length < 3) {
         const states = State.getStatesOfCountry(countryCode.toUpperCase())
         const match  = states.find(s => s.isoCode === stateValue.toUpperCase())
-        return match?.name ?? stateValue
+        const name   = match?.name ?? stateValue
+        // Normalize FCT to a clean, short form the backend accepts
+        if (countryCode.toUpperCase() === "NG" && name.toUpperCase().includes("ABUJA")) {
+            return "Abuja"
+        }
+        return name
+    }
+    // Also normalize if a long FCT label was stored directly
+    if (countryCode.toUpperCase() === "NG" && stateValue.toUpperCase().includes("ABUJA")) {
+        return "Abuja"
     }
     return stateValue
 }
