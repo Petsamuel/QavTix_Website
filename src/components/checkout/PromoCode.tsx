@@ -21,7 +21,7 @@ type PromoCodeForm = z.infer<typeof promoCodeSchema>
 
 export default function PromoCode() {
 
-    const { currentStep, discount, removeDiscount, validateCoupon } = useCheckout()
+    const { currentStep, discount, removeDiscount, validateCoupon, applyDiscount } = useCheckout()
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const {
@@ -38,7 +38,10 @@ export default function PromoCode() {
     const onSubmit = async (data: PromoCodeForm) => {
         setIsSubmitting(true)
         try {
-            await validateCoupon(data.code)
+            const result = await validateCoupon(data.code)
+            if (result) {
+                applyDiscount(result)
+            }
         } finally {
             setIsSubmitting(false)
         }

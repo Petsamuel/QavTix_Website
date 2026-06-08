@@ -76,8 +76,12 @@ export async function verifyPayment(
 
 
 interface ValidatePromoCodePayload {
-    code: string
+    promo_code: string
     event_id: string
+    tickets: Array<{
+        ticket_id: number
+        quantity: number
+    }>
 }
 
 interface ValidatePromoCodeResult {

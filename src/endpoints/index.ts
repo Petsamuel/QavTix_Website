@@ -42,7 +42,7 @@ export const CONTACT_HOST_ENDPOINT = "public/message/"
 
 export const CHECKOUT_ENDPOINT = "payments/checkout/"
 export const CHECKOUT_VERIFY_ENDPOINT = "payments/complete/"
-export const VALIDATE_PROMO_CODE_ENDPOINT = "payments/promo-code/validate/"
+export const VALIDATE_PROMO_CODE_ENDPOINT = "/public/promo/validate/"
 export const CANCEL_TICKET_ENDPOINT = "public/tickets/[ticket_id]/cancel/"
 
 export const SPLIT_PAYMENT_TOKEN_ENDPOINT = "payments/split/pay/[token]/"

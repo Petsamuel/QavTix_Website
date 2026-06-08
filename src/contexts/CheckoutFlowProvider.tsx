@@ -171,9 +171,8 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
 
     const discountAmount = useMemo(() => {
         if (!discount) return 0
-        return discount.percentage
-            ? subtotal * (discount.percentage / 100)
-            : Math.min(subtotal, discount.amount ?? 0)
+        const value = discount.percentage ?? discount.amount ?? 0;
+        return Math.min(subtotal, value)
     }, [discount, subtotal])
 
     const platformFee = useMemo(() => {
@@ -253,7 +252,15 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
     // CALLS THE SERVER ACTION TO VALIDATE A PROMO CODE AGAINST THE EVENT
     // RETURNS A DISCOUNT OBJECT ON SUCCESS OR NULL IF INVALID
     const validateCoupon = useCallback(async (code: string): Promise<Discount | null> => {
-        const result = await validatePromoCode({ code, event_id: event.id })
+        const payload = {
+            promo_code: code,
+            event_id: event.id,
+            tickets: selectedTickets.map(t => ({
+                ticket_id: Number(t.id),
+                quantity: t.quantity
+            }))
+        }
+        const result = await validatePromoCode(payload)
 
         if (!result.success || !result.data) {
             dispatch(showAlert({
@@ -271,7 +278,7 @@ export function CheckoutFlowProvider({ children, event, groups }: Props) {
             amount: result.data.amount,
             description: result.data.description,
         }
-    }, [event.id])
+    }, [event.id, selectedTickets])
 
     // MERGES PARTIAL FORM DATA INTO ATTENDEE INFO STATE
     // CALLED FROM CheckoutFlowActionBtns AFTER STEP 2 FORM VALIDATES SUCCESSFULLY
