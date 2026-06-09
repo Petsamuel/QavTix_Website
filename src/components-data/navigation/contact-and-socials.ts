@@ -64,8 +64,8 @@ export const CONTACT_LINKS = {
     },
     PHONE: {
       icon: "fluent-mdl2:phone",
-      text: "+234 812 345 6789",
-      href: "tel:+2348123456789"
+      text: "+234 803 429 9410",
+      href: "tel:+2348034299410"
     }
   },
 
