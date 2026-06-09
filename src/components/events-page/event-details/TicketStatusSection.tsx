@@ -20,11 +20,9 @@ export default function TicketStatusSection({ event, affiliateCode }: Props) {
     const { isAuthenticated } = useAppSelector(store => store.auth)
     const hasTicket = useHasTicketForEvent(event.id)
 
-    console.log(event.user_ticket_summary)
-
     // Check if user has at least ONE active ticket
     const hasActiveTicket = event.user_ticket_summary?.tickets?.some(
-        (t) => t.status === "active"
+        (t) => t.status === "active" || t.status === "transferred"
     ) ?? false
 
 
@@ -46,12 +44,12 @@ export default function TicketStatusSection({ event, affiliateCode }: Props) {
     }
 
     // Authenticated user with active ticket(s)
-    if (isAuthenticated && user && hasActiveTicket) {
+    if (isAuthenticated && user && event.user_ticket_summary && hasActiveTicket) {
         return <AuthUserGettingTicketCard event={event} />
     }
 
     // All tickets are cancelled
-    if (isAuthenticated && user && allTicketsCancelled && !hasReservedTicket) {
+    if (isAuthenticated && user && event.user_ticket_summary && allTicketsCancelled && !hasReservedTicket) {
         return <CancelledTicketCard event={event} />
     }
 

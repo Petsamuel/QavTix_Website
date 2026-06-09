@@ -47,7 +47,7 @@ type FilterFor = "homepage" | "eventPage"
 
 type EventType = "single" | "recurring"
 type EventLocationType = "physical" | "online" | "tba"
-type EventStatus = "draft" | "active" | "sold_out" | "fast_selling" | "new" | "normal" | "on_sale" | "ended" | "cancelled" | "banned" | "filling_fast" | "fast_filling" | "selling_fast" | "near_capacity" | "starts_soon" | "started"
+type EventStatus = "draft" | "active" | "sold_out" | "fast_selling" | "new" | "normal" | "on_sale" | "ended" | "cancelled" | "banned" | "filling_fast" | "fast_filling" | "selling_fast" | "near_capacity" | "starts_soon" | "started" | "transferred"
 type RefundPolicy = "no" | "partial" | "full" | "custom"
 
 interface PublicPagesEvent {
@@ -180,7 +180,7 @@ interface UserTicketSummary {
     tickets: {
         issued_ticket_id: number
         ticket_type: string
-        status: "active" | "cancelled"
+        status: "active" | "cancelled" | "transferred"
         status_display: string
     }[]
 }

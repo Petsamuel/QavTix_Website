@@ -85,4 +85,9 @@ export const statusStyles: StatusStylesRecord = {
     text: "text-accent-6",
     label: "Banned",
   },
+  transferred: {
+    bg: "bg-purple-50",
+    text: "text-purple-600",
+    label: "Transferred",
+  },
 };
