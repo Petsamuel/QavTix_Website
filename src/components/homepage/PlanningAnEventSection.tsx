@@ -9,7 +9,7 @@ import LiquidLink from "../custom-utils/buttons/LiquidGlassLink"
 export default function PlanningAnEventSection() {
 
     return (
-        <section className="mb-8 global-px mt-12 md:flex justify-between gap-7 items-center">
+        <section className="mb-8 global-px mt-12 md:mt-28 md:flex justify-between gap-7 items-center">
             <div className="md:w-[45%]">
                 <h2 className={`text-2xl sm:text-3xl md:text-[2rem] font-bold text-secondary-9 ${space_grotesk.className}`}>
                     Planning an event?
