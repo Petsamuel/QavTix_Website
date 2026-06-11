@@ -30,6 +30,11 @@ const LEGAL_NAV = [
         href: '/legal/ticket-services-agreement',
         icon: 'hugeicons:ticket-01',
     },
+    {
+        label: 'Data Deletion',
+        href: '/legal/data-deletion',
+        icon: 'hugeicons:delete-02',
+    },
 ]
 
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
@@ -84,8 +89,8 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
                         'fixed top-0 left-0 z-50 h-full bg-white border-r border-neutral-5 flex flex-col pt-20 pb-8 px-4',
                         // Mobile: slide in/out
                         'w-72 transition-transform duration-300 ease-in-out lg:translate-x-0',
-                        // Desktop: static sidebar taking ~30% max 280px
-                        'lg:static lg:w-[280px] lg:shrink-0 lg:pt-8',
+                        // Desktop: sticky sidebar (scrolls with page but stays in view)
+                        'lg:static lg:top-20 lg:h-[calc(100vh-5rem)] lg:w-[280px] lg:shrink-0 lg:pt-8 lg:overflow-y-auto',
                         mobileNavOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
                     )}
                 >
