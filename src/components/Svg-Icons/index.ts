@@ -12,6 +12,14 @@ import Timer02 from "./Timer02";
 import TravelIcon from "./Travel";
 import UserMultipleListIcon from "./UserMultipleListIcon";
 import UserMultipleLock from "./UserMultipleLock";
+import BigCreditCard from "./BigCreditCard";
+import HelpPromotionIcon from "./HelpPromotionIcon";
+import HelpOperationsIcon from "./HelpOperationsIcon";
+import HelpPoliciesIcon from "./HelpPoliciesIcon";
+import HelpAnalyticsIcon from "./HelpAnalyticsIcon";
+import HelpCancellationIcon from "./HelpCancellationIcon";
+import HelpEventEntryIcon from "./HelpEventEntryIcon";
+import HelpAccountSecurityIcon from "./HelpAccountSecurityIcon";
 
 export const CustomIcons = {
     ticket: TicketIcon,
@@ -27,5 +35,14 @@ export const CustomIcons = {
     timer02: Timer02,
     userMultipleLock: UserMultipleLock,
     userMultipleListIcon: UserMultipleListIcon,
-    eighteen: Eighteen
+    eighteen: Eighteen,
+    // Help center icons
+    bigCreditCard: BigCreditCard,
+    helpPromotion: HelpPromotionIcon,
+    helpOperations: HelpOperationsIcon,
+    helpPolicies: HelpPoliciesIcon,
+    helpAnalytics: HelpAnalyticsIcon,
+    helpCancellation: HelpCancellationIcon,
+    helpEventEntry: HelpEventEntryIcon,
+    helpAccountSecurity: HelpAccountSecurityIcon,
 }

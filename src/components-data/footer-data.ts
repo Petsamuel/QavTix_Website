@@ -23,9 +23,10 @@ export const footerData = {
       title: 'Legal',
       links: [
         LEGAL_LINKS.PRIVACY,
-        LEGAL_LINKS.REFUND,
         LEGAL_LINKS.TERMS,
         LEGAL_LINKS.TICKET_SERVICE,
+        LEGAL_LINKS.REFUND,
+        LEGAL_LINKS.DATA_DELETION,
       ]
     }
   ],
@@ -33,7 +34,7 @@ export const footerData = {
     title: 'Get in touch',
     info: Object.values(CONTACT_LINKS.LAGOS)
   },
-  social: Object.values(SOCIAL_LINKS), 
+  social: Object.values(SOCIAL_LINKS),
   legal: [
     LEGAL_LINKS.PRIVACY,
     LEGAL_LINKS.REFUND,

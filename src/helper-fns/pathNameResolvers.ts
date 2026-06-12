@@ -15,6 +15,7 @@ export const pathsForHeader2 = (pathName: string) => (
   (
     pathName.startsWith(NAV_LINKS.ABOUT.href.replace(/\/$/, "")) ||
     pathName === NAV_LINKS.SEARCH_PAGE.href ||
+    pathName === NAV_LINKS.HELP.href ||
     pathName.startsWith(NAV_LINKS.EVENTS.href.replace(/\/$/, "")) ||
     pathName.startsWith(NAV_LINKS.CONTACT_US.href.replace(/\/$/, "")) ||
     pathName.startsWith(NAV_LINKS.FAQ.href.replace(/\/$/, "")) ||
