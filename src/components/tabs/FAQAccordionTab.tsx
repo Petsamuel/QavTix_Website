@@ -39,26 +39,32 @@ const itemVariants = {
 
 const FAQ = ({ data }:{ data: typeof hostFaqData }) => {
     return (
-        <Accordion type="single" collapsible className="w-full space-y-5">
-            {data.map((faq, index) => (
-                <motion.div
-                    key={`${faq.id}-${index}`}
-                    variants={itemVariants}
-                >
-                    <AccordionItem 
-                        value={faq.id} 
-                        className="bg-secondary-1 w-full border-none rounded-lg px-6 py-2"
-                    >
-                        <AccordionTrigger className="text-secondary-9 font-medium hover:no-underline text-left">
-                            {faq.question}
-                        </AccordionTrigger>
-                        <AccordionContent className="text-neutral-7 pt-2 pb-4">
-                            {faq.answer}
-                        </AccordionContent>
-                    </AccordionItem>
-                </motion.div>
-            ))}
-        </Accordion>
+        <div className="relative w-full">
+            <div className="w-full max-h-[500px] overflow-y-auto pr-2 pb-6 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-300 hover:[&::-webkit-scrollbar-thumb]:bg-neutral-400 [&::-webkit-scrollbar-thumb]:rounded-full">
+                <Accordion type="single" collapsible className="w-full space-y-5">
+                    {data.map((faq, index) => (
+                        <motion.div
+                            key={`${faq.id}-${index}`}
+                            variants={itemVariants}
+                        >
+                            <AccordionItem 
+                                value={faq.id} 
+                                className="bg-secondary-1 w-full border-none rounded-lg px-6 py-2"
+                            >
+                                <AccordionTrigger className="text-secondary-9 font-medium hover:no-underline text-left">
+                                    {faq.question}
+                                </AccordionTrigger>
+                                <AccordionContent className="text-neutral-7 pt-2 pb-4">
+                                    {faq.answer}
+                                </AccordionContent>
+                            </AccordionItem>
+                        </motion.div>
+                    ))}
+                </Accordion>
+            </div>
+            {/* Scroll indicator shadow at the bottom */}
+            <div className="absolute bottom-0 left-0 right-2 h-12 bg-gradient-to-t from-black/5 to-transparent pointer-events-none rounded-b-xl"></div>
+        </div>
     )
 }
 
