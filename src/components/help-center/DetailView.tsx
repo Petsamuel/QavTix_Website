@@ -105,7 +105,7 @@ export default function DetailView({
             initial="hidden"
             animate="show"
             exit="exit"
-            className="flex gap-0 min-h-[600px]"
+            className="flex gap-0 min-h-[600px] min-w-0 lg:min-w-[340px]"
         >
             {/* Left sidebar nav — desktop only */}
             <nav className="hidden lg:block w-52 shrink-0 border-r border-neutral-4 pr-4 pt-1 space-y-0.5 self-start sticky top-24">
@@ -133,13 +133,15 @@ export default function DetailView({
                             icon={t.icon}
                             className={cn('size-[18px] shrink-0', activeTopic.id === t.id ? 'text-primary-6' : 'text-secondary-5')}
                         />
-                        {t.label}
+                        <span className="truncate">
+                            {t.label.split(' &')[0]}
+                        </span>
                     </button>
                 ))}
             </nav>
 
             {/* Content area */}
-            <div className="flex-1 min-w-0 lg:pl-8 pt-1">
+            <div className="flex-1 min-w-0 lg:pl-20 pt-1">
 
                 {/* Mobile breadcrumb */}
                 <div className="flex lg:hidden items-center gap-1.5 text-xs text-neutral-6 mb-4">
