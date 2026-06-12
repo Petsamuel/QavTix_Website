@@ -9,6 +9,7 @@ export const NAV_LINKS = {
   ABOUT: { label: 'About', href: '/about-us' },
   HOW_IT_WORKS: { label: 'How it works', href: '/how-it-works' },
   FAQ: { label: 'FAQ', href: '/faq' },
+  HELP: { label: 'Help Center', href: '/help' },
   CONTACT_US: { label: 'Contact Us', href: '/contact' },
   PRICING: { label: 'Pricing', href: '/pricing' },
   EVENTS: { label: 'Events', href: '/events' },
@@ -66,6 +67,7 @@ export const navLinksMobileMenu: NavLink[] = [
   NAV_LINKS.PRICING,
   NAV_LINKS.DASHBOARD,
   NAV_LINKS.FAQ,
+  NAV_LINKS.HELP,
 ]
 
 export const header2NavLinks: NavLink[] = [
@@ -105,6 +107,7 @@ export const LEGAL_LINKS = {
   REFUND: { label: "Refund Policy", href: "/legal/refund-policy" },
   TERMS: { label: "Terms of Service", href: "/legal/terms-of-service" },
   TICKET_SERVICE: { label: "Ticket Services Agreement", href: "/legal/ticket-services-agreement" },
+  DATA_DELETION: { label: "Data Deletion", href: "/legal/data-deletion" },
 } as const;
 
 

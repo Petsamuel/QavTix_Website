@@ -11,9 +11,9 @@ import { space_grotesk } from '@/lib/fonts'
 
 const LEGAL_NAV = [
     {
-        label: 'Refund Policy',
-        href: '/legal/refund-policy',
-        icon: 'hugeicons:credit-card',
+        label: 'Privacy Policy',
+        href: '/legal/privacy-policy',
+        icon: 'solar:lock-linear',
     },
     {
         label: 'Terms of Service',
@@ -21,14 +21,19 @@ const LEGAL_NAV = [
         icon: 'hugeicons:agreement-02',
     },
     {
-        label: 'Privacy Policy',
-        href: '/legal/privacy-policy',
-        icon: 'solar:lock-linear',
-    },
-    {
         label: 'Ticket Services Agreement',
         href: '/legal/ticket-services-agreement',
         icon: 'hugeicons:ticket-01',
+    },
+    {
+        label: 'Refund Policy',
+        href: '/legal/refund-policy',
+        icon: 'hugeicons:credit-card',
+    },
+    {
+        label: 'Data Deletion',
+        href: '/legal/data-deletion',
+        icon: 'hugeicons:delete-02',
     },
 ]
 
@@ -69,7 +74,8 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
                 </button>
             </header>
 
-            <div className="flex flex-1 overflow-hidden">
+            {/* Body */}
+            <div className="flex flex-1">
 
                 {mobileNavOpen && (
                     <div
@@ -78,15 +84,15 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
                     />
                 )}
 
+                {/* Sidebar — fixed on mobile (slides in), sticky on desktop */}
                 <aside
                     className={cn(
-                        // Base
+                        // Mobile base: fixed full-screen overlay drawer
                         'fixed top-0 left-0 z-50 h-full bg-white border-r border-neutral-5 flex flex-col pt-20 pb-8 px-4',
-                        // Mobile: slide in/out
-                        'w-72 transition-transform duration-300 ease-in-out lg:translate-x-0',
-                        // Desktop: static sidebar taking ~30% max 280px
-                        'lg:static lg:w-[280px] lg:shrink-0 lg:pt-8',
-                        mobileNavOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+                        'w-72 transition-transform duration-300 ease-in-out',
+                        mobileNavOpen ? 'translate-x-0' : '-translate-x-full',
+                        // Desktop: taken out of fixed positioning, becomes a sticky sidebar
+                        'lg:translate-x-0 lg:sticky lg:top-20 lg:self-start lg:h-[calc(100vh-5rem)] lg:w-[280px] lg:shrink-0 lg:pt-8 lg:overflow-y-auto',
                     )}
                 >
                     {/* Mobile header inside sidebar */}
@@ -131,7 +137,8 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
                     </nav>
                 </aside>
 
-                <main className="flex-1 overflow-y-auto">
+                {/* Main scrollable content */}
+                <main className="flex-1 min-w-0">
                     <div className="max-w-3xl mx-auto px-6 md:px-10 py-10">
                         {children}
                     </div>
