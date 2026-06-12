@@ -13,15 +13,24 @@ interface TeamMember {
     role: string
     image: string
     bio: string
+    socials?: {
+        linkedin?: string
+        x?: string
+    }
 }
 
 const teamMembers: TeamMember[] = [
     {
         id: 1,
-        name: 'Charles Favored',
-        role: 'General Counsel',
-        image: "/images/demo-images/e1a4a42ef6ef88f832562cc54e3dd6a31acde354.jpg",
-        bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo'
+        name: 'Ifeanyi J. Chimezie',
+        role: 'Lead Business Consultant',
+        // image: "/images/demo-images/e1a4a42ef6ef88f832562cc54e3dd6a31acde354.jpg",
+        image:"/images/demo-images/b76f34c50f4f7854ebeeb92447d3311ffb8eaa5b.jpg",
+        bio: `Ifeanyi J. Chimezie is a dynamic and results-oriented business consultant with a proven track record of driving growth and innovation. With over a decade of experience in the industry, he has led numerous successful projects, delivering measurable results for clients across various sectors.\n\n His expertise spans strategy development, market analysis, and operational optimization, making him a valuable asset to any organization.`,
+        socials: {
+            linkedin: "https://www.linkedin.com/in/efynyi/",
+            x: "https://x.com/efynyi_"
+        }
     },
     {
         id: 2,
@@ -30,20 +39,20 @@ const teamMembers: TeamMember[] = [
         image: "/images/demo-images/bef301984ae3bf1b8703e4ec91a45e32045fe523.jpg",
         bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo'
     },
-    {
-        id: 3,
-        name: 'Sarah Williams',
-        role: 'Chief Technology Officer',
-        image: "/images/demo-images/b76f34c50f4f7854ebeeb92447d3311ffb8eaa5b.jpg",
-        bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo'
-    },
-    {
-        id: 4,
-        name: 'Amy Jenny',
-        role: 'Chief Executive Officer',
-        image: "/images/demo-images/d5e805332d43cd0ed9dd77016db84f44acf2ddd4.jpeg",
-        bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo'
-    },
+    // {
+    //     id: 3,
+    //     name: 'Sarah Williams',
+    //     role: 'Chief Technology Officer',
+    //     image: "/images/demo-images/b76f34c50f4f7854ebeeb92447d3311ffb8eaa5b.jpg",
+    //     bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo'
+    // },
+    // {
+    //     id: 4,
+    //     name: 'Amy Jenny',
+    //     role: 'Chief Executive Officer',
+    //     image: "/images/demo-images/d5e805332d43cd0ed9dd77016db84f44acf2ddd4.jpeg",
+    //     bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo'
+    // },
 ]
 
 export default function TeamLeadersCarousel() {
@@ -51,23 +60,34 @@ export default function TeamLeadersCarousel() {
     const [direction, setDirection] = useState(0)
 
     const scrollPrev = useCallback(() => {
-        setDirection(-1)
-        setSelectedIndex((prev) => (prev - 1 + teamMembers.length) % teamMembers.length)
-    }, [])
-
-    const scrollNext = useCallback(() => {
+        // setDirection(-1)
+        // setSelectedIndex((prev) => (prev - 1 + teamMembers.length) % teamMembers.length)
         setDirection(1)
         setSelectedIndex((prev) => (prev + 1) % teamMembers.length)
     }, [])
 
+    const scrollNext = useCallback(() => {
+         setDirection(-1)
+        setSelectedIndex((prev) => (prev - 1 + teamMembers.length) % teamMembers.length)
+
+
+        
+        // setDirection(1)
+        // setSelectedIndex((prev) => (prev + 1) % teamMembers.length)
+    }, [])
+
     const currentMember = teamMembers[selectedIndex]
-    const nextMember = teamMembers[(selectedIndex + 1) % teamMembers.length]
+
+    // Thumbnail members: ordered sequentially starting from the next member (queue flow: next, next+1, next+2)
+    const thumbnailMembers = Array.from({ length: teamMembers.length - 1 }, (_, i) =>
+        teamMembers[(selectedIndex + 1 + i) % teamMembers.length]
+    )
 
     const variants = {
         enter: (direction: number) => ({
-            x: direction > 0 ? -300 : 300,
+            x: direction > 0 ? 300 : -300,
             opacity: 0,
-            scale: 0.9,
+            scale: 0.95,
         }),
         center: {
             zIndex: 1,
@@ -77,9 +97,9 @@ export default function TeamLeadersCarousel() {
         },
         exit: (direction: number) => ({
             zIndex: 0,
-            x: direction > 0 ? 400 : -400,
+            x: direction > 0 ? -300 : 300,
             opacity: 0,
-            scale: 1.1,
+            scale: 0.95,
         }),
     }
 
@@ -103,13 +123,13 @@ export default function TeamLeadersCarousel() {
                         <div className="w-[15%] flex items-center justify-start overflow-hidden">
                             <motion.div 
                                 layout
-                                key={nextMember.id}
+                                key={thumbnailMembers[0].id}
                                 className="relative w-[10.5em] shrink-0 h-[12em] rounded-3xl overflow-hidden"
                             >
                                 <button onClick={scrollNext} className="w-full h-full">
                                     <Image
-                                        src={nextMember.image}
-                                        alt={nextMember.name}
+                                        src={thumbnailMembers[0].image}
+                                        alt={thumbnailMembers[0].name}
                                         fill
                                         className="object-cover opacity-90 transition-all duration-500"
                                     />
@@ -163,9 +183,25 @@ export default function TeamLeadersCarousel() {
                             <h3 className={`text-2xl sm:text-3xl md:text-[2rem] font-medium text-secondary-9 leading-8 ${space_grotesk.className}`}>
                                 {currentMember.name}
                             </h3>
-                            <p className="text-neutral-8 text-xs">{currentMember.role}</p>
+                            <div className="flex items-center gap-3 mt-1 mb-2">
+                                <p className="text-neutral-8 text-xs">{currentMember.role}</p>
+                                {currentMember.socials && (
+                                    <div className="flex gap-2 items-center">
+                                        {currentMember.socials.linkedin && (
+                                            <a href={currentMember.socials.linkedin} target="_blank" rel="noreferrer" className="text-neutral-5 hover:text-primary transition-colors">
+                                                <Icon icon="mdi:linkedin" width="16" height="16" />
+                                            </a>
+                                        )}
+                                        {currentMember.socials.x && (
+                                            <a href={currentMember.socials.x} target="_blank" rel="noreferrer" className="text-neutral-5 hover:text-primary transition-colors">
+                                                <Icon icon="ri:twitter-x-fill" width="14" height="14" />
+                                            </a>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <p className="text-neutral-7 text-sm leading-relaxed">{currentMember.bio}</p>
+                        <p className="text-neutral-7 text-sm leading-relaxed whitespace-pre-line text-justify">{currentMember.bio}</p>
                         <div className="flex gap-3 mb-5 sm:mt-8">
                             <LiquidBtn onClick={scrollPrev} variant="ghost">
                                 <Icon icon="si:chevron-left-line" width="24" height="24" className="text-primary" />
@@ -182,20 +218,46 @@ export default function TeamLeadersCarousel() {
                     <div className="flex gap-4 lg:gap-8 items-end">
                         <div className="w-[24%] lg:w-[25%] flex items-center justify-end overflow-hidden">
                             <div className="flex gap-4 h-full items-center">
-                                {teamMembers.map((v, i) => (
-                                    <motion.div
-                                        layout
-                                        key={`${v.id}-${i}`}
-                                        className="relative w-[10.5em] h-[12em] my-auto aspect-3/4 rounded-3xl overflow-hidden"
-                                    >
-                                        <Image
-                                            src={teamMembers[(selectedIndex + i + 2) % teamMembers.length].image}
-                                            alt="Next member"
-                                            fill
-                                            className="object-cover opacity-90 transition-all duration-500"
-                                        />
-                                    </motion.div>
-                                ))}
+                                <AnimatePresence mode="popLayout" initial={false}>
+                                    {thumbnailMembers.map((member) => (
+                                        <motion.div
+                                            layout
+                                            key={member.id}
+                                            initial={{
+                                                opacity: 0,
+                                                x: direction >= 0 ? 80 : -80,
+                                                scale: 0.85,
+                                            }}
+                                            animate={{
+                                                opacity: 1,
+                                                x: 0,
+                                                scale: 1,
+                                            }}
+                                            exit={{
+                                                opacity: 0,
+                                                x: direction >= 0 ? -80 : 80,
+                                                scale: 0.85,
+                                            }}
+                                            transition={{
+                                                duration: 0.35,
+                                                ease: 'easeInOut',
+                                            }}
+                                            className="relative w-[10.5em] h-[12em] my-auto shrink-0 aspect-3/4 rounded-3xl overflow-hidden cursor-pointer"
+                                            onClick={() => {
+                                                const newIndex = teamMembers.findIndex(m => m.id === member.id)
+                                                setDirection(newIndex > selectedIndex ? 1 : -1)
+                                                setSelectedIndex(newIndex)
+                                            }}
+                                        >
+                                            <Image
+                                                src={member.image}
+                                                alt={member.name}
+                                                fill
+                                                className="object-cover opacity-90"
+                                            />
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
                             </div>
                         </div>
 
@@ -210,10 +272,9 @@ export default function TeamLeadersCarousel() {
                                         animate="center"
                                         exit="exit"
                                         transition={{
-                                            opacity: { duration: 0.6 },
-                                            scale: { type: 'spring', stiffness: 200, damping: 22 },
-                                            y: { type: 'spring', stiffness: 200, damping: 22 },
-                                            filter: { duration: 0.3 },
+                                            opacity: { duration: 0.4 },
+                                            scale: { duration: 0.4, ease: 'easeInOut' },
+                                            x: { type: 'spring', stiffness: 260, damping: 28 },
                                         }}
                                         className="absolute inset-0 w-full h-full"
                                     >
@@ -233,8 +294,24 @@ export default function TeamLeadersCarousel() {
                                     <h3 className={`text-2xl sm:text-3xl md:text-[2rem] font-medium text-secondary-9 leading-8 ${space_grotesk.className}`}>
                                         {currentMember.name}
                                     </h3>
-                                    <p className="text-neutral-8 text-xs mt-1">{currentMember.role}</p>
-                                    <p className="text-neutral-7 mt-6 text-sm leading-relaxed">{currentMember.bio}</p>
+                                    <div className="flex items-center gap-3 mt-1">
+                                        <p className="text-neutral-8 text-xs">{currentMember.role}</p>
+                                        {currentMember.socials && (
+                                            <div className="flex gap-2 items-center">
+                                                {currentMember.socials.linkedin && (
+                                                    <a href={currentMember.socials.linkedin} target="_blank" rel="noreferrer" className="text-neutral-5 hover:text-primary transition-colors">
+                                                        <Icon icon="mdi:linkedin" width="16" height="16" />
+                                                    </a>
+                                                )}
+                                                {currentMember.socials.x && (
+                                                    <a href={currentMember.socials.x} target="_blank" rel="noreferrer" className="text-neutral-5 hover:text-primary transition-colors">
+                                                        <Icon icon="ri:twitter-x-fill" width="14" height="14" />
+                                                    </a>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <p className="text-neutral-7 mt-6 text-sm leading-relaxed whitespace-pre-line text-justify">{currentMember.bio}</p>
                                 </div>
 
                                 <div className="flex gap-4">
